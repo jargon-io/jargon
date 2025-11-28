@@ -16,9 +16,19 @@ class IngestArticleJob < ApplicationJob
       status: :complete
     )
 
-    Turbo::StreamsChannel.broadcast_prepend_to(
+    broadcast_update(article)
+  rescue StandardError => e
+    article&.update!(status: :failed)
+    broadcast_update(article) if article
+    raise e
+  end
+
+  private
+
+  def broadcast_update(article)
+    Turbo::StreamsChannel.broadcast_replace_to(
       "articles",
-      target: "articles",
+      target: article,
       partial: "articles/article",
       locals: { article: }
     )

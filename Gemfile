@@ -27,7 +27,7 @@ group :development, :test do
   gem "htmlbeautifier"
   gem "rubocop", "1.79.2"
   gem "rubocop-rails", require: false
-  gem "ruby-lsp", "0.23.23"
+  gem "ruby-lsp", "0.26.4"
 end
 
 group :development do

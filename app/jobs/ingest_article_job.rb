@@ -21,6 +21,7 @@ class IngestArticleJob < ApplicationJob
 
     GenerateInsightsJob.perform_later(article.id)
   rescue StandardError => e
+    # TODO: fall back to crawl4ai
     Rails.logger.error("IngestArticleJob failed: #{e.message}")
     article&.update!(status: :failed)
     broadcast_update(article) if article

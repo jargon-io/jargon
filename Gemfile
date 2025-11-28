@@ -25,7 +25,7 @@ group :development, :test do
   gem "bundler-audit", require: false
   gem "debug", platforms: %i[mri windows], require: "debug/prelude"
   gem "htmlbeautifier"
-  gem "rubocop", "1.79.2"
+  gem "rubocop", "1.81.7"
   gem "rubocop-rails", require: false
   gem "ruby-lsp", "0.23.23"
 end

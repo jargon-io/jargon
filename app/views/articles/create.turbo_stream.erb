@@ -1,0 +1,18 @@
+<%= turbo_stream.prepend "articles" do %>
+  <article id="<%= dom_id(@article) %>">
+    <h2><%= link_to "Processing...", @article %></h2>
+    <p><em><%= @article.url %></em></p>
+  </article>
+<% end %>
+
+<%= turbo_stream.replace "new_article" do %>
+  <%= form_with model: Article.new do |f| %>
+    <div>
+      <%= f.label :url %>
+      <%= f.url_field :url, placeholder: "https://example.com/article", required: true %>
+    </div>
+    <div>
+      <%= f.submit "Add Article" %>
+    </div>
+  <% end %>
+<% end %>

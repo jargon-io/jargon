@@ -1,0 +1,31 @@
+<article>
+  <h1><%= @article.title || "Processing..." %></h1>
+
+  <% if @article.pending? %>
+    <p><em>This article is being processed...</em></p>
+  <% else %>
+    <% if @article.author.present? %>
+      <p><strong>By:</strong> <%= @article.author %></p>
+    <% end %>
+
+    <% if @article.published_at.present? %>
+      <p><strong>Published:</strong> <%= @article.published_at.to_date %></p>
+    <% end %>
+
+    <% if @article.image_url.present? %>
+      <%= image_tag @article.image_url, alt: @article.title %>
+    <% end %>
+
+    <% if @article.summary.present? %>
+      <h2>Summary</h2>
+      <p><%= @article.summary %></p>
+    <% end %>
+
+    <% if @article.text.present? %>
+      <h2>Content</h2>
+      <div><%= simple_format @article.text %></div>
+    <% end %>
+  <% end %>
+
+  <p><%= link_to "Back", root_path %></p>
+</article>

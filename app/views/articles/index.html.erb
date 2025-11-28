@@ -1,0 +1,28 @@
+<%= turbo_stream_from "articles" %>
+
+<h1>Articles</h1>
+
+<%= form_with model: @article do |f| %>
+  <% if @article.errors.any? %>
+    <div id="error_explanation">
+      <ul>
+        <% @article.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :url %>
+    <%= f.url_field :url, placeholder: "https://example.com/article", required: true %>
+  </div>
+
+  <div>
+    <%= f.submit "Add Article" %>
+  </div>
+<% end %>
+
+<div id="articles">
+  <%= render @articles %>
+</div>

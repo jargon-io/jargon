@@ -1,0 +1,9 @@
+<article id="<%= dom_id(article) %>">
+  <h2><%= link_to article.title, article %></h2>
+  <% if article.author.present? %>
+    <p><strong>By:</strong> <%= article.author %></p>
+  <% end %>
+  <% if article.summary.present? %>
+    <p><%= article.summary %></p>
+  <% end %>
+</article>

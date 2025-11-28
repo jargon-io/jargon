@@ -13,7 +13,9 @@ class ResearchThreadJob < ApplicationJob
       Your task is to search the web for interesting articles related to
       the research question given the provided context.
 
-      Try to find 2-4 articles that offer different perspectives or insights.
+      ONLY return HTML web sources - no PDFs or other downloadable files.
+
+      Try to find 2-4 pages that offer different perspectives or insights.
     INSTRUCTIONS
 
     prompt = <<~PROMPT

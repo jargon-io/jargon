@@ -231,6 +231,8 @@ GEM
     minitest (5.26.2)
     msgpack (1.8.0)
     multipart-post (2.4.1)
+    neighbor (0.6.0)
+      activerecord (>= 7.1)
     net-http (0.8.0)
       uri (>= 0.11.1)
     net-imap (0.5.12)
@@ -458,6 +460,7 @@ DEPENDENCIES
   htmlbeautifier
   httpx
   importmap-rails
+  neighbor
   pg (~> 1.1)
   propshaft
   rails (~> 8.1.1)

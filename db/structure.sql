@@ -25,6 +25,20 @@ COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
 --
+-- Name: vector; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS vector WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION vector; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION vector IS 'vector data type and ivfflat and hnsw access methods';
+
+
+--
 -- Name: nanoid(integer, text, double precision); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -130,7 +144,8 @@ CREATE TABLE public.articles (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     nanoid character varying DEFAULT public.nanoid() NOT NULL,
-    status integer DEFAULT 0 NOT NULL
+    status integer DEFAULT 0 NOT NULL,
+    embedding public.vector(1536)
 );
 
 
@@ -166,7 +181,8 @@ CREATE TABLE public.insights (
     snippet text,
     status integer DEFAULT 0 NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    embedding public.vector(1536)
 );
 
 
@@ -452,6 +468,7 @@ ALTER TABLE ONLY public.insights
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251128222601'),
 ('20251128210721'),
 ('20251128203952'),
 ('20251128200427'),

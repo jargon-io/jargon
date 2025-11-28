@@ -8,6 +8,13 @@ class ArticlesController < ApplicationController
 
   def show
     @article = Article.find_by!(nanoid: params[:id])
+
+    @similar_articles =
+      if @article.embedding.present?
+        @article.nearest_neighbors(:embedding, distance: "cosine").complete.limit(5)
+      else
+        []
+      end
   end
 
   def create

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Article < ApplicationRecord
+  has_neighbors :embedding
+
   has_many :insights, dependent: :destroy
   has_many :thread_articles, dependent: :destroy
   has_many :research_threads, through: :thread_articles

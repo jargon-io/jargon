@@ -68,6 +68,19 @@
           <% end %>
         </div>
       </div>
+
+      <% if @similar_articles.any? %>
+        <div class="pt-2">
+          <h2 class="text-lg font-semibold mb-4">Similar Articles</h2>
+          <ul class="space-y-2">
+            <% @similar_articles.each do |article| %>
+              <li>
+                <%= link_to article.title, article, class: "text-blue-600 hover:text-blue-800" %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
     </article>
   <% end %>
 </div>

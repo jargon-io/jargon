@@ -9,6 +9,12 @@
     <h2 class="text-xl font-semibold mb-2 text-red-700">Failed to process</h2>
     <p class="text-sm text-red-600"><%= article.url %></p>
   <% else %>
+    <% if article.image_url.present? %>
+      <%= image_tag article.image_url,
+            alt: article.title,
+            class: "h-32 float-right ml-4" %>
+    <% end %>
+
     <h2 class="text-xl font-semibold mb-2">
       <%= link_to article.title || "Untitled", article, class: "hover:text-blue-600" %>
     </h2>

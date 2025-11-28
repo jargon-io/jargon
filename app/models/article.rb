@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Article < ApplicationRecord
+  has_many :insights, dependent: :destroy
+
   enum :status, { pending: 0, complete: 1, failed: 2 }
 
   validates :url, presence: true, uniqueness: true

@@ -13,4 +13,5 @@ Rails.application.routes.draw do
 
   root "articles#index"
   resources :articles, only: [:index, :create, :show]
+  resources :insights, only: [:show]
 end

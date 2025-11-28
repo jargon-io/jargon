@@ -17,6 +17,8 @@ class IngestArticleJob < ApplicationJob
     )
 
     broadcast_update(article)
+
+    GenerateInsightsJob.perform_later(article.id)
   rescue StandardError => e
     article&.update!(status: :failed)
     broadcast_update(article) if article

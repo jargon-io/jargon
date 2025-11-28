@@ -1,0 +1,38 @@
+<div class="w-full max-w-2xl mx-auto">
+  <p class="text-sm text-gray-500 mb-4">
+    From: <%= link_to @article.title, @article, class: "text-blue-600 hover:text-blue-800" %>
+  </p>
+
+  <h1 class="text-3xl font-bold mb-4"><%= @insight.title %></h1>
+
+  <% if @insight.body.present? %>
+    <p class="text-lg text-gray-700 leading-relaxed mb-6"><%= @insight.body %></p>
+  <% end %>
+
+  <% if @insight.snippet.present? %>
+    <div class="bg-gray-50 rounded-lg p-4 mb-6">
+      <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">Source</p>
+      <blockquote class="text-gray-600 italic">
+        "<%= @insight.snippet %>"
+      </blockquote>
+    </div>
+  <% end %>
+
+  <% if @insight.research_threads.any? %>
+    <div class="mb-8">
+      <h2 class="text-lg font-semibold mb-4">Explore Further</h2>
+      <ul class="space-y-3">
+        <% @insight.research_threads.each do |thread| %>
+          <li class="flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:border-blue-300 cursor-pointer transition-colors">
+            <span class="text-blue-500">→</span>
+            <span class="text-gray-700"><%= thread.query %></span>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="pt-4 border-t border-gray-200">
+    <%= link_to "← Back to article", @article, class: "text-gray-500 hover:text-gray-700" %>
+  </div>
+</div>

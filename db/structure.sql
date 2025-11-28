@@ -154,6 +154,42 @@ ALTER SEQUENCE public.articles_id_seq OWNED BY public.articles.id;
 
 
 --
+-- Name: insights; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.insights (
+    id bigint NOT NULL,
+    article_id bigint NOT NULL,
+    nanoid character varying DEFAULT public.nanoid() NOT NULL,
+    title character varying,
+    body text,
+    snippet text,
+    status integer DEFAULT 0 NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: insights_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.insights_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: insights_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.insights_id_seq OWNED BY public.insights.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -163,10 +199,57 @@ CREATE TABLE public.schema_migrations (
 
 
 --
+-- Name: threads; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.threads (
+    id bigint NOT NULL,
+    insight_id bigint NOT NULL,
+    query text NOT NULL,
+    status integer DEFAULT 0 NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: threads_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.threads_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: threads_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.threads_id_seq OWNED BY public.threads.id;
+
+
+--
 -- Name: articles id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.articles ALTER COLUMN id SET DEFAULT nextval('public.articles_id_seq'::regclass);
+
+
+--
+-- Name: insights id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.insights ALTER COLUMN id SET DEFAULT nextval('public.insights_id_seq'::regclass);
+
+
+--
+-- Name: threads id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.threads ALTER COLUMN id SET DEFAULT nextval('public.threads_id_seq'::regclass);
 
 
 --
@@ -186,11 +269,27 @@ ALTER TABLE ONLY public.articles
 
 
 --
+-- Name: insights insights_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.insights
+    ADD CONSTRAINT insights_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: threads threads_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.threads
+    ADD CONSTRAINT threads_pkey PRIMARY KEY (id);
 
 
 --
@@ -208,12 +307,50 @@ CREATE UNIQUE INDEX index_articles_on_url ON public.articles USING btree (url);
 
 
 --
+-- Name: index_insights_on_article_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_insights_on_article_id ON public.insights USING btree (article_id);
+
+
+--
+-- Name: index_insights_on_nanoid; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_insights_on_nanoid ON public.insights USING btree (nanoid);
+
+
+--
+-- Name: index_threads_on_insight_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_threads_on_insight_id ON public.threads USING btree (insight_id);
+
+
+--
+-- Name: threads fk_rails_ce6ff6a226; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.threads
+    ADD CONSTRAINT fk_rails_ce6ff6a226 FOREIGN KEY (insight_id) REFERENCES public.insights(id);
+
+
+--
+-- Name: insights fk_rails_fcb882bec4; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.insights
+    ADD CONSTRAINT fk_rails_fcb882bec4 FOREIGN KEY (article_id) REFERENCES public.articles(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251128203952'),
 ('20251128200427'),
 ('20251128195711'),
 ('20251128195639'),

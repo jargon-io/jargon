@@ -12,7 +12,7 @@ class ExaClient
     json = {
       urls:,
       text: true,
-      summary: { query: "Summarize the article in a single paragraph." }
+      summary: { query: "Summarize the main idea of the article in 200-300 characters." }
     }
 
     HTTPX.post(uri, json:, headers:).raise_for_status.json

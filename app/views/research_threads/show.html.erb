@@ -1,0 +1,55 @@
+<%= turbo_stream_from "research_thread_#{@thread.id}" %>
+
+<div class="w-full max-w-2xl mx-auto">
+  <% if @source_article %>
+    <p class="text-sm text-gray-500 mb-4">
+      Research from: <%= link_to @source_article.title || "Article", @source_article, class: "text-blue-600 hover:text-blue-800" %>
+      <% if @thread.insight %>
+        → <%= link_to @thread.insight.title, @thread.insight, class: "text-blue-600 hover:text-blue-800" %>
+      <% end %>
+    </p>
+  <% end %>
+
+  <h1 class="text-2xl font-bold mb-2"><%= @thread.query %></h1>
+
+  <div id="thread_status" class="mb-6">
+    <% if @thread.pending? %>
+      <span class="text-amber-600 flex items-center gap-2">
+        <span class="animate-pulse">●</span> Researching...
+      </span>
+    <% else %>
+      <span class="text-green-600">Research complete</span>
+    <% end %>
+  </div>
+
+  <div class="mb-8">
+    <h2 class="text-lg font-semibold mb-4">Discovered Articles</h2>
+    <div id="thread_articles" class="space-y-4">
+      <% if @thread_articles.any? %>
+        <% @thread_articles.each do |ta| %>
+          <%= render "research_threads/thread_article", article: ta.article, relevance_note: ta.relevance_note %>
+        <% end %>
+      <% elsif @thread.pending? %>
+        <div id="thread_articles_loading">
+          <div class="animate-pulse space-y-3">
+            <div class="h-5 bg-gray-200 rounded w-2/3"></div>
+            <div class="h-4 bg-gray-100 rounded w-full"></div>
+          </div>
+          <p class="text-sm text-gray-400 mt-2">Searching for relevant articles...</p>
+        </div>
+      <% else %>
+        <p class="text-gray-500">No articles found.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="pt-4 border-t border-gray-200">
+    <% if @thread.insight %>
+      <%= link_to "← Back to insight", @thread.insight, class: "text-gray-500 hover:text-gray-700" %>
+    <% elsif @source_article %>
+      <%= link_to "← Back to article", @source_article, class: "text-gray-500 hover:text-gray-700" %>
+    <% else %>
+      <%= link_to "← Home", root_path, class: "text-gray-500 hover:text-gray-700" %>
+    <% end %>
+  </div>
+</div>

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class GenerateInsightsJob < ApplicationJob
+  MODEL = "google/gemini-2.5-flash"
+
   def perform(article_id)
     article = Article.find(article_id)
 
@@ -13,6 +15,7 @@ class GenerateInsightsJob < ApplicationJob
     PROMPT
 
     response = RubyLLM.chat
+                      .with_model(MODEL)
                       .with_instructions(prompt)
                       .with_schema(InsightsSchema)
                       .ask(article.text)
@@ -31,7 +34,7 @@ class GenerateInsightsJob < ApplicationJob
         insight.research_threads.create!(query:)
       end
 
-      # broadcast_insight(article, insight)
+      broadcast_insight(article, insight)
     end
   rescue StandardError => e
     Rails.logger.error("GenerateInsightsJob failed: #{e.message}")
@@ -41,6 +44,11 @@ class GenerateInsightsJob < ApplicationJob
   private
 
   def broadcast_insight(article, insight)
+    Turbo::StreamsChannel.broadcast_remove_to(
+      "article_#{article.id}_insights",
+      target: "insights_loading"
+    )
+
     Turbo::StreamsChannel.broadcast_append_to(
       "article_#{article.id}_insights",
       target: "insights",

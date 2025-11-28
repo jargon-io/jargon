@@ -14,4 +14,5 @@ Rails.application.routes.draw do
   root "articles#index"
   resources :articles, only: [:index, :create, :show]
   resources :insights, only: [:show]
+  resources :research_threads, only: [:show, :create], path: "threads"
 end

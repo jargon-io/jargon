@@ -18,7 +18,7 @@ class ExaClient
     HTTPX.post(uri, json:, headers:).raise_for_status.json
   end
 
-  def search(query:, category: nil, start_published_date: nil, end_published_date: nil)
+  def search(query:, category: nil, start_published_date: nil, end_published_date: nil, domains: nil)
     uri = URI.join(@base_url, "/search")
 
     json = { query: }

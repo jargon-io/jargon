@@ -1,8 +1,6 @@
 <%= turbo_stream_from "articles" %>
 
 <div class="w-full max-w-2xl mx-auto">
-  <h1 class="text-3xl font-bold mb-8">Jargon</h1>
-
   <%= form_with model: @article, class: "mb-10" do |f| %>
     <% if @article.errors.any? %>
       <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">

@@ -11,26 +11,44 @@
 
   <% if @insight.snippet.present? %>
     <div class="bg-gray-50 rounded-lg p-4 mb-6">
-      <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">Source</p>
       <blockquote class="text-gray-600 italic">
         "<%= @insight.snippet %>"
       </blockquote>
     </div>
   <% end %>
 
-  <% if @insight.research_threads.any? %>
-    <div class="mb-8">
-      <h2 class="text-lg font-semibold mb-4">Explore Further</h2>
-      <ul class="space-y-3">
+  <div class="mb-8">
+    <h2 class="text-lg font-semibold mb-4">Explore Further</h2>
+
+    <% if @insight.research_threads.any? %>
+      <ul class="space-y-3 mb-3">
         <% @insight.research_threads.each do |thread| %>
-          <li class="flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:border-blue-300 cursor-pointer transition-colors">
-            <span class="text-blue-500">→</span>
-            <span class="text-gray-700"><%= thread.query %></span>
+          <li>
+            <%= button_to research_threads_path(research_thread_id: thread.id),
+                method: :post,
+                class: "w-full text-left flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-colors" do %>
+              <span class="text-blue-500">→</span>
+              <span class="text-gray-700 flex-1"><%= thread.query %></span>
+              <% if thread.researched? %>
+                <span class="text-xs text-green-600">Researched</span>
+              <% end %>
+            <% end %>
           </li>
         <% end %>
       </ul>
+    <% end %>
+
+    <div>
+      <%= form_with url: research_threads_path, method: :post, class: "flex gap-2" do |f| %>
+        <%= f.hidden_field :insight_id, value: @insight.id %>
+        <%= f.text_field :query,
+            required: true,
+            class: "flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-300 focus:border-transparent text-sm" %>
+        <%= f.submit "Ask your own",
+            class: "px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer" %>
+      <% end %>
     </div>
-  <% end %>
+  </div>
 
   <div class="pt-4 border-t border-gray-200">
     <%= link_to "← Back to article", @article, class: "text-gray-500 hover:text-gray-700" %>

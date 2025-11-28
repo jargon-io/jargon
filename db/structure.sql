@@ -199,6 +199,39 @@ CREATE TABLE public.schema_migrations (
 
 
 --
+-- Name: thread_articles; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.thread_articles (
+    id bigint NOT NULL,
+    research_thread_id bigint NOT NULL,
+    article_id bigint NOT NULL,
+    relevance_note text,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: thread_articles_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.thread_articles_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: thread_articles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.thread_articles_id_seq OWNED BY public.thread_articles.id;
+
+
+--
 -- Name: threads; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -208,7 +241,9 @@ CREATE TABLE public.threads (
     query text NOT NULL,
     status integer DEFAULT 0 NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    nanoid character varying DEFAULT public.nanoid() NOT NULL,
+    article_id bigint
 );
 
 
@@ -243,6 +278,13 @@ ALTER TABLE ONLY public.articles ALTER COLUMN id SET DEFAULT nextval('public.art
 --
 
 ALTER TABLE ONLY public.insights ALTER COLUMN id SET DEFAULT nextval('public.insights_id_seq'::regclass);
+
+
+--
+-- Name: thread_articles id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.thread_articles ALTER COLUMN id SET DEFAULT nextval('public.thread_articles_id_seq'::regclass);
 
 
 --
@@ -285,6 +327,14 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
+-- Name: thread_articles thread_articles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.thread_articles
+    ADD CONSTRAINT thread_articles_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: threads threads_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -321,10 +371,54 @@ CREATE UNIQUE INDEX index_insights_on_nanoid ON public.insights USING btree (nan
 
 
 --
+-- Name: index_thread_articles_on_article_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_thread_articles_on_article_id ON public.thread_articles USING btree (article_id);
+
+
+--
+-- Name: index_thread_articles_on_research_thread_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_thread_articles_on_research_thread_id ON public.thread_articles USING btree (research_thread_id);
+
+
+--
+-- Name: index_thread_articles_on_research_thread_id_and_article_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_thread_articles_on_research_thread_id_and_article_id ON public.thread_articles USING btree (research_thread_id, article_id);
+
+
+--
 -- Name: index_threads_on_insight_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_threads_on_insight_id ON public.threads USING btree (insight_id);
+
+
+--
+-- Name: index_threads_on_nanoid; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_threads_on_nanoid ON public.threads USING btree (nanoid);
+
+
+--
+-- Name: thread_articles fk_rails_11c79ccb57; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.thread_articles
+    ADD CONSTRAINT fk_rails_11c79ccb57 FOREIGN KEY (article_id) REFERENCES public.articles(id);
+
+
+--
+-- Name: thread_articles fk_rails_5c2c73703b; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.thread_articles
+    ADD CONSTRAINT fk_rails_5c2c73703b FOREIGN KEY (research_thread_id) REFERENCES public.threads(id);
 
 
 --
@@ -333,6 +427,14 @@ CREATE INDEX index_threads_on_insight_id ON public.threads USING btree (insight_
 
 ALTER TABLE ONLY public.threads
     ADD CONSTRAINT fk_rails_ce6ff6a226 FOREIGN KEY (insight_id) REFERENCES public.insights(id);
+
+
+--
+-- Name: threads fk_rails_daafb51834; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.threads
+    ADD CONSTRAINT fk_rails_daafb51834 FOREIGN KEY (article_id) REFERENCES public.articles(id);
 
 
 --
@@ -350,6 +452,7 @@ ALTER TABLE ONLY public.insights
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251128210721'),
 ('20251128203952'),
 ('20251128200427'),
 ('20251128195711'),

@@ -1,0 +1,63 @@
+plugins: rubocop-rails
+
+# https://stackoverflow.com/a/70818366/7981413
+inherit_mode:
+  merge:
+    - Exclude
+
+AllCops:
+  NewCops: enable
+  Exclude:
+    - "db/schema.rb"
+
+Rails/I18nLocaleTexts:
+  Enabled: false
+
+Rails/BulkChangeTable:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/ClassVars:
+  Enabled: false
+
+Style/CommentedKeyword:
+  Enabled: false
+
+Metrics:
+  Enabled: false
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+Style/MutableConstant:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  EnforcedStyle: always
+  SafeAutoCorrect: true
+
+Style/NumericPredicate:
+  Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: false
+
+Layout/LineLength:
+  Enabled: false
+
+Style/HashSyntax:
+  Enabled: true
+  EnforcedShorthandSyntax: always
+
+# https://rubyllm.com/guides/tools#custom-initialization
+Lint/MissingSuper:
+  Exclude:
+    - "app/tools/**/*"
+    - "app/components/**/*"

@@ -1,0 +1,4 @@
+{
+  "rubyLsp.formatter": "rubocop",
+  "rubyLsp.linters": ["rubocop"]
+}

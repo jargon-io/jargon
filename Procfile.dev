@@ -1,0 +1,2 @@
+server: OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES bundle exec falcon serve -b http://localhost:3000
+css: bin/rails tailwindcss:watch

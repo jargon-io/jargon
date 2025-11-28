@@ -1,9 +1,18 @@
-<article id="<%= dom_id(article) %>">
-  <h2><%= link_to article.title, article %></h2>
-  <% if article.author.present? %>
-    <p><strong>By:</strong> <%= article.author %></p>
-  <% end %>
+<article id="<%= dom_id(article) %>" class="border border-gray-200 rounded-lg p-5 hover:border-gray-300 transition-colors">
+  <h2 class="text-xl font-semibold mb-2">
+    <%= link_to article.title || "Untitled", article, class: "hover:text-blue-600" %>
+  </h2>
+
+  <div class="text-sm text-gray-500 mb-3 space-x-3">
+    <% if article.author.present? %>
+      <span><%= article.author %></span>
+    <% end %>
+    <% if article.published_at.present? %>
+      <span><%= article.published_at.to_date %></span>
+    <% end %>
+  </div>
+
   <% if article.summary.present? %>
-    <p><%= article.summary %></p>
+    <p class="text-gray-700 line-clamp-3"><%= article.summary %></p>
   <% end %>
 </article>

@@ -1,31 +1,44 @@
-<article>
-  <h1><%= @article.title || "Processing..." %></h1>
-
+<div class="w-full max-w-2xl mx-auto">
   <% if @article.pending? %>
-    <p><em>This article is being processed...</em></p>
+    <div class="text-center py-12">
+      <div class="animate-pulse">
+        <div class="h-8 bg-gray-200 rounded w-3/4 mx-auto mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
+      </div>
+      <p class="text-gray-500 mt-6">Processing article...</p>
+    </div>
   <% else %>
-    <% if @article.author.present? %>
-      <p><strong>By:</strong> <%= @article.author %></p>
-    <% end %>
+    <article>
+      <h1 class="text-3xl font-bold mb-4"><%= @article.title %></h1>
 
-    <% if @article.published_at.present? %>
-      <p><strong>Published:</strong> <%= @article.published_at.to_date %></p>
-    <% end %>
+      <div class="text-sm text-gray-500 mb-6 flex items-center gap-4">
+        <% if @article.author.present? %>
+          <span>By <%= @article.author %></span>
+        <% end %>
+        <% if @article.published_at.present? %>
+          <span><%= @article.published_at.to_date %></span>
+        <% end %>
+      </div>
 
-    <% if @article.image_url.present? %>
-      <%= image_tag @article.image_url, alt: @article.title %>
-    <% end %>
+      <% if @article.image_url.present? %>
+        <%= image_tag @article.image_url,
+            alt: @article.title,
+            class: "w-80 float-right ml-4 mb-4" %>
+      <% end %>
 
-    <% if @article.summary.present? %>
-      <h2>Summary</h2>
-      <p><%= @article.summary %></p>
-    <% end %>
+      <% if @article.summary.present? %>
+        <p class="text-lg text-gray-700 leading-relaxed mb-6"><%= @article.summary %></p>
+      <% end %>
 
-    <% if @article.text.present? %>
-      <h2>Content</h2>
-      <div><%= simple_format @article.text %></div>
-    <% end %>
+      <div class="flex items-center gap-4 pt-4 border-t border-gray-200">
+        <%= link_to "Read original",
+            @article.url,
+            target: "_blank",
+            rel: "noopener",
+            class: "text-blue-600 hover:text-blue-800 font-medium" %>
+        <span class="text-gray-300">|</span>
+        <%= link_to "Back", root_path, class: "text-gray-500 hover:text-gray-700" %>
+      </div>
+    </article>
   <% end %>
-
-  <p><%= link_to "Back", root_path %></p>
-</article>
+</div>

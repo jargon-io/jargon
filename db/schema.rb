@@ -10,19 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_28_194539) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_28_195711) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "pgcrypto"
 
   create_table "articles", force: :cascade do |t|
     t.string "author"
     t.datetime "created_at", null: false
     t.string "image_url"
+    t.string "nanoid", default: -> { "nanoid()" }, null: false
     t.datetime "published_at"
     t.text "summary"
     t.text "text", null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.string "url", null: false
+    t.index ["nanoid"], name: "index_articles_on_nanoid", unique: true
   end
 end

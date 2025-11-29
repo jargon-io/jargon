@@ -21,5 +21,12 @@
   </div>
 
   <%= render "shared/section_heading", title: "Related" %>
-  <%= render partial: "shared/item", collection: @related_items, as: :item %>
+  <div class="space-y-4" data-controller="expandable-list" data-expandable-list-limit-value="3">
+    <% @related_items.each do |item| %>
+      <div data-expandable-list-target="item">
+        <%= render "shared/item", item: item %>
+      </div>
+    <% end %>
+    <%= render "shared/expandable_toggle" %>
+  </div>
 </div>

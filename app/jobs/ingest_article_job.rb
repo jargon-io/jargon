@@ -197,9 +197,18 @@ class IngestArticleJob < ApplicationJob
   end
 
   def extract_metadata(text)
+    prompt = <<~PROMPT
+      Extract metadata from this article.
+
+      URL: #{@article.url}
+
+      Content:
+      #{text.truncate(10_000)}
+    PROMPT
+
     RubyLLM.chat
            .with_schema(ArticleMetadataSchema)
-           .ask("Extract the title from this article:\n\n#{text.truncate(10_000)}")
+           .ask(prompt)
            .content
   end
 

@@ -81,8 +81,8 @@ class GenerateInsightsJob < ApplicationJob
     Turbo::StreamsChannel.broadcast_append_to(
       "article_#{article.id}_insights",
       target: "insights",
-      partial: "insights/insight",
-      locals: { insight:, suppress_source: true }
+      partial: "insights/broadcast_insight",
+      locals: { insight: }
     )
   end
 end

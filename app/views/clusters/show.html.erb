@@ -12,11 +12,16 @@
 
     <%= render "shared/snippet", text: @cluster.snippet %>
 
-    <div class="space-y-4 clear-both">
-      <% @source_items.each do |item| %>
-        <%= render partial: "shared/item", locals: { item: } %>
-      <% end %>
-    </div>
+    <% if @source_items.any? %>
+      <div class="space-y-4 clear-both pt-4" data-controller="expandable-list" data-expandable-list-limit-value="3">
+        <% @source_items.each do |item| %>
+          <div data-expandable-list-target="item">
+            <%= render "shared/item", item: item %>
+          </div>
+        <% end %>
+        <%= render "shared/expandable_toggle" %>
+      </div>
+    <% end %>
   <% else %>
     <% if @cluster.summary.present? %>
       <p class="text-lg text-gray-700 leading-relaxed"><%= safe_html(@cluster.summary) %></p>
@@ -34,19 +39,27 @@
       <% end %>
     </ul>
 
-    <div class="space-y-4">
-      <% @insights.each do |item| %>
-        <%= render partial: "shared/item", locals: { item:, suppress_source: true } %>
-      <% end %>
-    </div>
+    <% if @insights.any? %>
+      <div class="space-y-4 pt-4" data-controller="expandable-list" data-expandable-list-limit-value="3">
+        <% @insights.each do |item| %>
+          <div data-expandable-list-target="item">
+            <%= render "shared/item", item: item, suppress_source: true %>
+          </div>
+        <% end %>
+        <%= render "shared/expandable_toggle" %>
+      </div>
+    <% end %>
   <% end %>
 
   <% if @similar_items.any? %>
     <%= render "shared/section_heading", title: "Related" %>
-    <div class="space-y-4">
+    <div class="space-y-4" data-controller="expandable-list" data-expandable-list-limit-value="3">
       <% @similar_items.each do |item| %>
-        <%= render partial: "shared/item", locals: { item: } %>
+        <div data-expandable-list-target="item">
+          <%= render "shared/item", item: item %>
+        </div>
       <% end %>
+      <%= render "shared/expandable_toggle" %>
     </div>
   <% end %>
 </div>

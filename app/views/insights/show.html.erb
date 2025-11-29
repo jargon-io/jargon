@@ -7,7 +7,9 @@
 
   <%= render "shared/snippet", text: @insight.snippet %>
 
-  <%= render partial: "articles/article", locals: { article: @insight.article } %>
+  <div class="pt-4">
+    <%= render partial: "articles/article", locals: { article: @insight.article } %>
+  </div>
 
   <%= render "shared/section_heading", title: "Explore", id: "insights" %>
 
@@ -25,15 +27,25 @@
   <% if @more_from_article.any? %>
     <% source_label = @insight.article.video? ? "video" : (@insight.article.paper? ? "paper" : "article") %>
     <%= render "shared/section_heading", title: "More from the #{source_label}" %>
-    <% @more_from_article.each do |item| %>
-      <%= render partial: "shared/item", locals: { item:, suppress_source: true } %>
-    <% end %>
+    <div class="space-y-4" data-controller="expandable-list" data-expandable-list-limit-value="3">
+      <% @more_from_article.each do |item| %>
+        <div data-expandable-list-target="item">
+          <%= render "shared/item", item: item, suppress_source: true %>
+        </div>
+      <% end %>
+      <%= render "shared/expandable_toggle" %>
+    </div>
   <% end %>
 
   <% if @similar_items.any? %>
     <%= render "shared/section_heading", title: "Related" %>
-    <% @similar_items.each do |item| %>
-      <%= render partial: "shared/item", locals: { item: } %>
-    <% end %>
+    <div class="space-y-4" data-controller="expandable-list" data-expandable-list-limit-value="3">
+      <% @similar_items.each do |item| %>
+        <div data-expandable-list-target="item">
+          <%= render "shared/item", item: item %>
+        </div>
+      <% end %>
+      <%= render "shared/expandable_toggle" %>
+    </div>
   <% end %>
 </div>

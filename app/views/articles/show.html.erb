@@ -1,7 +1,7 @@
 <%= turbo_stream_from "article_#{@article.id}_insights" %>
 
 <div class="w-full max-w-2xl mx-auto space-y-4">
-  <div>
+  <div class="space-y-1">
     <h1 class="text-3xl font-bold"><%= @article.title %></h1>
     <%= render "shared/byline", author: @article.author, date: @article.published_at %>
   </div>
@@ -35,16 +35,30 @@
     </div>
   <% end %>
 
-  <div id="insights" class="space-y-4">
-    <% if @article.insights.complete.any? %>
-      <%= render @article.insights.complete, suppress_source: true %>
-    <% elsif @article.text.present? && @article.updated_at > 1.minute.ago %>
+  <% has_insights = @article.insights.complete.any? %>
+  <% generating = @article.text.present? && @article.updated_at > 1.minute.ago %>
+  <div id="insights" class="space-y-4 <%= 'pt-4' if has_insights || generating %>" data-controller="expandable-list" data-expandable-list-limit-value="3">
+    <% if has_insights %>
+      <% @article.insights.complete.each do |insight| %>
+        <div data-expandable-list-target="item">
+          <%= render insight, suppress_source: true %>
+        </div>
+      <% end %>
+    <% elsif generating %>
       <%= render "shared/loading_placeholder", id: "insights_loading", message: "Generating insights..." %>
     <% end %>
+    <%= render "shared/expandable_toggle" %>
   </div>
 
   <% if @similar_items.any? %>
     <%= render "shared/section_heading", title: "Related" %>
-    <%= render partial: "shared/item", collection: @similar_items, as: :item %>
+    <div class="space-y-4" data-controller="expandable-list" data-expandable-list-limit-value="3">
+      <% @similar_items.each do |item| %>
+        <div data-expandable-list-target="item">
+          <%= render "shared/item", item: item %>
+        </div>
+      <% end %>
+      <%= render "shared/expandable_toggle" %>
+    </div>
   <% end %>
 </div>

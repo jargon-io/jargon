@@ -3,7 +3,7 @@
 
   <div class="space-y-4">
     <% if @insight.body.present? %>
-      <p class="text-lg text-gray-700 leading-relaxed mb-4"><%= @insight.body.html_safe %></p>
+      <p class="text-lg text-gray-700 leading-relaxed mb-4"><%= safe_html(@insight.body) %></p>
     <% end %>
 
     <%= render "shared/snippet", text: @insight.snippet %>

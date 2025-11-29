@@ -27,7 +27,7 @@
   <% end %>
 
   <% if @article.summary.present? %>
-    <p class="text-lg text-gray-700 leading-relaxed"><%= @article.summary.html_safe %></p>
+    <p class="text-lg text-gray-700 leading-relaxed"><%= safe_html(@article.summary) %></p>
   <% end %>
 
   <% unless @article.video? %>

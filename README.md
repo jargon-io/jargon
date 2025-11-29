@@ -25,3 +25,4 @@ crawl4ai-setup  # Downloads browser dependencies
 * specs
 * page titles
 * better root page ui (all nodes, no header, search box is in content area instead of floating header)
+* internal links in summaries

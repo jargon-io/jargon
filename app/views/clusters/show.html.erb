@@ -7,7 +7,7 @@
 
   <% if @cluster.clusterable_type == "Insight" %>
     <% if @cluster.body.present? %>
-      <p class="text-lg text-gray-700 leading-relaxed mb-6"><%= @cluster.body.html_safe %></p>
+      <p class="text-lg text-gray-700 leading-relaxed mb-6"><%= safe_html(@cluster.body) %></p>
     <% end %>
 
     <%= render "shared/snippet", text: @cluster.snippet %>
@@ -19,7 +19,7 @@
     </div>
   <% else %>
     <% if @cluster.summary.present? %>
-      <p class="text-lg text-gray-700 leading-relaxed mb-6"><%= @cluster.summary.html_safe %></p>
+      <p class="text-lg text-gray-700 leading-relaxed mb-6"><%= safe_html(@cluster.summary) %></p>
     <% end %>
 
     <% if @cluster.snippet.present? %>

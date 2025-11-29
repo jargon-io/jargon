@@ -1,0 +1,18 @@
+{
+  "ignored_warnings": [
+    {
+      "fingerprint": "43f768f89161cc396d4bec50140a937ae520f107670d1d4b31da5e036b593a44",
+      "note": "Snippet content is sanitized via safe_html() in _snippet partial"
+    },
+    {
+      "fingerprint": "9b81817fb94af263eeb4af6dedc07b3ebb78a4cf1b2636773735620056527f02",
+      "note": "Snippet content is sanitized via safe_html() in _snippet partial"
+    },
+    {
+      "fingerprint": "e259ba651c0c06ffc2f4709a4dc04071dee30e659096f645ad4235d3eea93cb7",
+      "note": "Snippet content is sanitized via safe_html() in _snippet partial"
+    }
+  ],
+  "updated": "2025-11-29",
+  "brakeman_version": "7.1.1"
+}

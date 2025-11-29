@@ -49,7 +49,7 @@ class AddLinksJob < ApplicationJob
       #{content}
     PROMPT
 
-    response = RubyLLM.chat.ask(prompt)
+    response = LLM.chat.ask(prompt)
     linked = normalize_markup(response.content)
 
     return nil unless valid_linked_content?(content, linked)

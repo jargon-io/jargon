@@ -29,13 +29,7 @@ class SearchController < ApplicationController
   end
 
   def search_library(query)
-    embedding = RubyLLM.embed(
-      query,
-      model: Embeddable::MODEL,
-      provider: :openrouter,
-      assume_model_exists: true
-    ).vectors
-
+    embedding = LLM.embed(query).vectors
     SimilarItemsQuery.new(embedding:, limit: 20).call
   end
 end

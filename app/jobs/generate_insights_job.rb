@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class GenerateInsightsJob < ApplicationJob
-  MODEL = "google/gemini-2.5-flash"
-
   def perform(article_id)
     article = Article.find(article_id)
 
@@ -10,8 +8,7 @@ class GenerateInsightsJob < ApplicationJob
 
     prompt = build_prompt(article)
 
-    response = RubyLLM.chat
-                      .with_model(MODEL)
+    response = LLM.chat
                       .with_instructions(prompt)
                       .with_schema(InsightsSchema)
                       .ask(article.text)

@@ -5,7 +5,7 @@ class ExaClient
 
   def initialize
     @base_url = "https://api.exa.ai"
-    @api_key = ENV.fetch("EXA_API_KEY", Rails.application.credentials.exa_api_key)
+    @api_key = ENV.fetch("EXA_API_KEY")
   end
 
   def crawl(urls:)

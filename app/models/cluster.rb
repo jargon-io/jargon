@@ -62,7 +62,7 @@ class Cluster < ApplicationRecord
       #{context}
     PROMPT
 
-    response = RubyLLM.chat
+    response = LLM.chat
                       .with_schema(ClusterMetadataSchema)
                       .ask(prompt)
 
@@ -106,7 +106,7 @@ class Cluster < ApplicationRecord
       #{context}
     PROMPT
 
-    response = RubyLLM.chat
+    response = LLM.chat
                       .with_schema(InsightClusterSchema)
                       .ask(prompt)
 

@@ -26,7 +26,7 @@ module Topicable
   def generate_topics!
     return if topic_source_text.blank?
 
-    response = RubyLLM.chat
+    response = LLM.chat
                       .with_schema(TopicsSchema)
                       .with_instructions(TOPIC_INSTRUCTIONS)
                       .ask(topic_source_text)

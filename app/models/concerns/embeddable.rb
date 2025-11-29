@@ -3,8 +3,6 @@
 module Embeddable
   extend ActiveSupport::Concern
 
-  MODEL = "openai/text-embedding-3-small"
-
   class_methods do
     attr_reader :embeddable_field
 
@@ -21,12 +19,7 @@ module Embeddable
     text = send(field)
     return if text.blank?
 
-    embedding = RubyLLM.embed(
-      text,
-      model: MODEL,
-      provider: :openrouter,
-      assume_model_exists: true
-    )
+    embedding = LLM.embed(text)
 
     update!(embedding: embedding.vectors)
   end

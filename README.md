@@ -2,6 +2,46 @@
 
 https://github.com/user-attachments/assets/78bd9150-f113-47b7-b682-b5d1647e49c6
 
+## Configuration
+
+Copy `.env.example` to `.env` and configure:
+
+```bash
+cp .env.example .env
+```
+
+### LLM Providers
+
+Set API keys for the providers you want to use. RubyLLM supports OpenRouter, OpenAI, Anthropic, and Google Gemini:
+
+```bash
+OPENROUTER_API_KEY=your-key    # OpenRouter (default, proxies all providers)
+OPENAI_API_KEY=your-key        # Direct OpenAI access
+ANTHROPIC_API_KEY=your-key     # Direct Anthropic access
+GEMINI_API_KEY=your-key        # Direct Google Gemini access
+```
+
+### Model and Provider Selection
+
+Override default models and providers via environment variables:
+
+```bash
+LLM_MODEL=google/gemini-2.5-flash              # Chat model (default)
+LLM_PROVIDER=openrouter                        # Chat provider (default)
+EMBEDDING_MODEL=openai/text-embedding-3-small  # Embedding model (default)
+EMBEDDING_PROVIDER=openrouter                  # Embedding provider (default)
+```
+
+Provider must match the API key you're using. OpenRouter model names use `provider/model` format.
+
+### Rails Master Key
+
+Set `RAILS_MASTER_KEY` instead of using `config/master.key`:
+
+```bash
+RAILS_MASTER_KEY=your-master-key
+```
+
 ## Dependencies
 
 ### crawl4ai
@@ -26,7 +66,6 @@ apt-get install poppler-utils
 ```
 
 ## TODO
-* make it easier to configure different LLM providers with env vars
 * specs
 * better UI for ask question -> fetch web results
 * publish docker image on GH and add compose recipe to readme

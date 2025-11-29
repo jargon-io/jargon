@@ -27,7 +27,7 @@ module ResearchThreadGeneratable
     prompt = format(QUERIES_PROMPT, count:)
     context = research_thread_context
 
-    RubyLLM.chat
+    LLM.chat
            .with_instructions(prompt)
            .with_schema(ResearchQueriesSchema)
            .ask(context)

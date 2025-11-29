@@ -175,7 +175,7 @@ class IngestArticleJob < ApplicationJob
   def evaluate_content(text, url)
     prompt = "URL: #{url}\n\nContent:\n#{text.truncate(5000)}"
 
-    RubyLLM.chat
+    LLM.chat
            .with_instructions(CONTENT_EVALUATION_INSTRUCTIONS)
            .with_schema(ContentEvaluationSchema)
            .ask(prompt)
@@ -232,14 +232,14 @@ class IngestArticleJob < ApplicationJob
       #{text.truncate(10_000)}
     PROMPT
 
-    RubyLLM.chat
+    LLM.chat
            .with_schema(ArticleMetadataSchema)
            .ask(prompt)
            .content
   end
 
   def generate_summary(text)
-    RubyLLM.chat
+    LLM.chat
            .with_instructions(SUMMARY_INSTRUCTIONS)
            .with_schema(ArticleSummarySchema)
            .ask(text.truncate(10_000))

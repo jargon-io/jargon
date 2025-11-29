@@ -44,7 +44,7 @@ class ResearchThreadJob < ApplicationJob
       Research question: #{thread.query}
     CONTEXT
 
-    RubyLLM.chat
+    LLM.chat
            .with_instructions("Generate a concise search query (5-10 words) to find articles related to the research question. Return only the query, nothing else.")
            .ask(context)
            .content
@@ -68,7 +68,7 @@ class ResearchThreadJob < ApplicationJob
       Select 2-4 articles that offer different perspectives. Exclude PDFs and non-article pages.
     PROMPT
 
-    RubyLLM.chat
+    LLM.chat
            .with_schema(SelectedArticlesSchema)
            .ask(prompt)
            .content["articles"] || []

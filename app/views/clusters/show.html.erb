@@ -1,3 +1,4 @@
+<% content_for(:title) { "#{@cluster.name.presence || 'Cluster'} | Jargon" } %>
 <div class="w-full max-w-2xl mx-auto space-y-4">
   <h1 class="text-3xl font-bold"><%= @cluster.name.presence || "Unnamed Cluster" %></h1>
 

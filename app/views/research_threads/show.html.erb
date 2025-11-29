@@ -1,3 +1,4 @@
+<% content_for(:title) { "#{@thread.query.truncate(50)} | Jargon" } %>
 <%= turbo_stream_from "research_thread_#{@thread.id}" %>
 
 <div class="w-full max-w-2xl mx-auto space-y-4">

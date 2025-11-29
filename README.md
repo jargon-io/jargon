@@ -26,7 +26,6 @@ apt-get install poppler-utils
 ```
 
 ## TODO
-* page titles
 * dark mode
 * make it easier to configure different LLM providers with env vars
 * specs

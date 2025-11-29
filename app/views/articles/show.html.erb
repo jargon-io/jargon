@@ -1,3 +1,4 @@
+<% content_for(:title) { "#{@article.title} | Jargon" } %>
 <%= turbo_stream_from "article_#{@article.id}_insights" %>
 
 <div class="w-full max-w-2xl mx-auto space-y-4">

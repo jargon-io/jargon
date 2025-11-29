@@ -2,7 +2,7 @@
 
 class ArticlesController < ApplicationController
   def index
-    @articles = Article.complete.order(created_at: :desc)
+    @articles = Article.order(created_at: :desc)
   end
 
   def show
@@ -14,5 +14,4 @@ class ArticlesController < ApplicationController
       exclude: [@article] + @article.insights.to_a
     ).call
   end
-
 end

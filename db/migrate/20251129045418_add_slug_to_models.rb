@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddSlugToModels < ActiveRecord::Migration[8.1]
   def change
     add_column :articles, :slug, :string

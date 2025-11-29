@@ -16,6 +16,6 @@ class EnhanceResearchThreads < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :thread_articles, [:research_thread_id, :article_id], unique: true
+    add_index :thread_articles, %i[research_thread_id article_id], unique: true
   end
 end

@@ -3,6 +3,7 @@
 # Named ResearchThread to avoid conflict with Ruby's Thread class
 class ResearchThread < ApplicationRecord
   include Sluggable
+
   slug :query
 
   self.table_name = "threads"

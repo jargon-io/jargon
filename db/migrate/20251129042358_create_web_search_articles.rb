@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateWebSearchArticles < ActiveRecord::Migration[8.1]
   def change
     create_table :web_search_articles do |t|

@@ -34,7 +34,7 @@ class ResearchThreadsController < ApplicationController
   end
 
   def find_related_items
-    return [] unless @thread.insight&.embedding.present?
+    return [] if @thread.insight&.embedding.blank?
 
     discovered_article_ids = @thread_articles.map(&:article_id)
 

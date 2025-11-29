@@ -12,9 +12,9 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   root "articles#index"
-  resources :articles, only: [:index, :show]
+  resources :articles, only: %i[index show]
   get "search", to: "search#show"
   post "web_search", to: "web_searches#create"
   resources :insights, only: [:show]
-  resources :research_threads, only: [:show, :create], path: "threads"
+  resources :research_threads, only: %i[show create], path: "threads"
 end

@@ -2,6 +2,7 @@
 
 class Article < ApplicationRecord
   include Sluggable
+
   slug -> { title.presence || "untitled" }
 
   has_neighbors :embedding

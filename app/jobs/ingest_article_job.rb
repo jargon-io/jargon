@@ -93,7 +93,7 @@ class IngestArticleJob < ApplicationJob
   end
 
   def pdf_url?(url)
-    url.to_s.match?(/\.pdf(\?|$)/i)
+    url.to_s.match?(/\.pdf(\?|$)/i) || url.to_s.match?(%r{arxiv\.org/pdf/}i)
   end
 
   def extract_pdf_text(url)

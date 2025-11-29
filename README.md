@@ -26,14 +26,14 @@ apt-get install poppler-utils
 ```
 
 ## TODO
-* have claude generate a better readme
-* better UI for ask question -> fetch web results
+* page titles
+* dark mode
 * make it easier to configure different LLM providers with env vars
+* specs
+* better UI for ask question -> fetch web results
 * publish docker image on GH and add compose recipe to readme
 * better responsive styles
-* specs
-* page titles
 * better root page ui (all nodes, no header, search box is in content area instead of floating header, explainer content?)
-* internal links in summaries
+* have claude generate a better readme
 * use library as RAG and have search box return results but also synthesize and respond with LLM answer
 * export markdown to clipboard

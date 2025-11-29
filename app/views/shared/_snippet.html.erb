@@ -1,8 +1,8 @@
-<%# locals: (text:, source: nil, compact: false) %>
+<%# locals: (text:, source: nil, compact: false, current_item: nil) %>
 
 <% if text.present? %>
   <div class="<%= compact ? 'text-base p-3 mt-4 border-l-3' : 'text-lg p-4 mb-6 border-l-4' %> border-blue-300 bg-blue-50/50 text-gray-700">
-    <%= safe_html(text) %>
+    <%= render_content(text, current_item: current_item) %>
     <% if source.present? %>
       <div class="mt-4 text-base leading-tight">
         <%= link_to source.is_a?(String) ? source : source.title, source, class: "text-blue-500 hover:text-blue-600" %>

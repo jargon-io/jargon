@@ -6,6 +6,7 @@ class Article < ApplicationRecord
   include Embeddable
   include NormalizesMarkup
   include Topicable
+  include Linkable
 
   slug -> { title.presence || "untitled" }
 

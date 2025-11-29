@@ -6,6 +6,7 @@ class Insight < ApplicationRecord
   include Embeddable
   include NormalizesMarkup
   include Topicable
+  include Linkable
 
   slug -> { title.presence || "untitled" }
 
@@ -20,6 +21,8 @@ class Insight < ApplicationRecord
   has_many :research_threads, dependent: :destroy
 
   enum :status, { pending: 0, complete: 1, failed: 2 }
+
+  after_destroy_commit -> { CleanupDeadLinksJob.perform_later(slug) }
 
   def topic_source_text
     "#{title}\n\n#{body}"

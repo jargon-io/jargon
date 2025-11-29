@@ -4,6 +4,7 @@ class Cluster < ApplicationRecord
   include Sluggable
   include Embeddable
   include NormalizesMarkup
+  include Linkable
 
   slug -> { name.presence || "untitled" }
 
@@ -72,6 +73,7 @@ class Cluster < ApplicationRecord
     )
 
     generate_embedding!
+    AddLinksJob.set(wait: 30.seconds).perform_later("Cluster", id)
   end
 
   def format_article_for_metadata(article)
@@ -113,6 +115,7 @@ class Cluster < ApplicationRecord
       status: :complete
     )
     generate_embedding!
+    AddLinksJob.set(wait: 30.seconds).perform_later("Cluster", id)
   rescue StandardError => e
     Rails.logger.error("Insight cluster metadata generation failed: #{e.message}")
     update!(status: :complete)

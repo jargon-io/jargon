@@ -22,7 +22,7 @@
     </div>
 
     <% if article.summary.present? %>
-      <p class="text-gray-700 mt-3"><%= safe_html(article.summary) %></p>
+      <p class="text-gray-700 mt-3"><%= render_content(article.summary, current_item: article) %></p>
     <% end %>
   <% end %>
 </div>

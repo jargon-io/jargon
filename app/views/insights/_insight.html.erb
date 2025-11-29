@@ -6,11 +6,12 @@
   </h2>
 
   <% if insight.body.present? %>
-    <p class="text-gray-700 mt-2"><%= safe_html(insight.body) %></p>
+    <p class="text-gray-700 mt-2"><%= render_content(insight.body, current_item: insight) %></p>
   <% end %>
 
   <%= render "shared/snippet",
              text: insight.snippet,
              source: suppress_source ? nil : insight.article,
-             compact: true %>
+             compact: true,
+             current_item: insight %>
 </div>

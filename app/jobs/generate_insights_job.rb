@@ -37,6 +37,11 @@ class GenerateInsightsJob < ApplicationJob
     end
 
     article.generate_topics! if article.topics.empty?
+
+    # Queue link generation after delay to allow batch insights to be available as targets
+    article.insights.complete.each do |insight|
+      AddLinksJob.set(wait: 30.seconds).perform_later("Insight", insight.id)
+    end
   rescue StandardError => e
     Rails.logger.error("GenerateInsightsJob failed: #{e.message}")
     raise e

@@ -2,10 +2,10 @@
   <h1 class="text-3xl font-bold"><%= @insight.title %></h1>
 
   <% if @insight.body.present? %>
-    <p class="text-lg text-gray-700 leading-relaxed"><%= safe_html(@insight.body) %></p>
+    <p class="text-lg text-gray-700 leading-relaxed"><%= render_content(@insight.body, current_item: @insight) %></p>
   <% end %>
 
-  <%= render "shared/snippet", text: @insight.snippet %>
+  <%= render "shared/snippet", text: @insight.snippet, current_item: @insight %>
 
   <div class="pt-4">
     <%= render partial: "articles/article", locals: { article: @insight.article } %>

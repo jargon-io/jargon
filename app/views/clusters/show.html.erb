@@ -7,10 +7,10 @@
 
   <% if @cluster.clusterable_type == "Insight" %>
     <% if @cluster.body.present? %>
-      <p class="text-lg text-gray-700 leading-relaxed"><%= safe_html(@cluster.body) %></p>
+      <p class="text-lg text-gray-700 leading-relaxed"><%= render_content(@cluster.body, current_item: @cluster) %></p>
     <% end %>
 
-    <%= render "shared/snippet", text: @cluster.snippet %>
+    <%= render "shared/snippet", text: @cluster.snippet, current_item: @cluster %>
 
     <% if @source_items.any? %>
       <div class="space-y-4 clear-both pt-4" data-controller="expandable-list" data-expandable-list-limit-value="3">
@@ -24,11 +24,11 @@
     <% end %>
   <% else %>
     <% if @cluster.summary.present? %>
-      <p class="text-lg text-gray-700 leading-relaxed"><%= safe_html(@cluster.summary) %></p>
+      <p class="text-lg text-gray-700 leading-relaxed"><%= render_content(@cluster.summary, current_item: @cluster) %></p>
     <% end %>
 
     <% if @cluster.snippet.present? %>
-      <%= render "shared/snippet", text: @cluster.snippet %>
+      <%= render "shared/snippet", text: @cluster.snippet, current_item: @cluster %>
     <% end %>
 
     <ul class="text-blue-500 text-sm space-y-1 clear-both">

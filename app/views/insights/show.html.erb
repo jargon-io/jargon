@@ -6,11 +6,7 @@
       <p class="text-lg text-gray-700 leading-relaxed mb-4"><%= @insight.body %></p>
     <% end %>
 
-    <% if @insight.snippet.present? %>
-      <div class="text-lg pl-4 mb-b border-l-4 border-blue-300 text-gray-700 italic">
-        <%= @insight.snippet %>
-      </div>
-    <% end %>
+    <%= render "shared/snippet", text: @insight.snippet %>
 
     <div class="pt-4">
       <%= render partial: "articles/article", locals: { article: @insight.article } %>

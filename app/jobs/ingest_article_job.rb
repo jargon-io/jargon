@@ -13,7 +13,9 @@ class IngestArticleJob < ApplicationJob
       update_from_fallback(article, markdown)
     end
 
-    generate_embedding(article)
+    article.generate_embedding!
+    article.cluster_if_similar!
+
     broadcast_update(article)
 
     GenerateInsightsJob.perform_later(article.id)
@@ -82,16 +84,5 @@ class IngestArticleJob < ApplicationJob
         locals: { article: }
       )
     end
-  end
-
-  def generate_embedding(article)
-    return if article.summary.blank?
-
-    embedding = RubyLLM.embed(article.summary,
-                              model: "openai/text-embedding-3-small",
-                              provider: :openrouter,
-                              assume_model_exists: true)
-
-    article.update!(embedding: embedding.vectors)
   end
 end

@@ -15,6 +15,7 @@ class SimilarItemsQuery
     results = []
     results.concat(similar_articles)
     results.concat(similar_insights)
+    results.concat(similar_clusters)
 
     results
       .sort_by(&:distance)
@@ -25,7 +26,7 @@ class SimilarItemsQuery
   private
 
   def similar_articles
-    scope = Article.complete
+    scope = Article.complete.where.missing(:cluster_membership)
     scope = exclude_from_scope(scope, Article)
 
     scope
@@ -35,13 +36,23 @@ class SimilarItemsQuery
   end
 
   def similar_insights
-    scope = Insight.complete
+    scope = Insight.complete.where.missing(:cluster_membership)
     scope = exclude_from_scope(scope, Insight)
 
     scope
       .nearest_neighbors(:embedding, @embedding, distance: "cosine")
       .limit(@limit)
       .map { |i| Result.new(item: i, distance: i.neighbor_distance) }
+  end
+
+  def similar_clusters
+    scope = Cluster.complete
+    scope = exclude_from_scope(scope, Cluster)
+
+    scope
+      .nearest_neighbors(:embedding, @embedding, distance: "cosine")
+      .limit(@limit)
+      .map { |c| Result.new(item: c, distance: c.neighbor_distance) }
   end
 
   def exclude_from_scope(scope, klass)

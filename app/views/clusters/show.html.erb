@@ -1,0 +1,42 @@
+<div class="w-full max-w-2xl mx-auto">
+  <h1 class="text-3xl font-bold mb-4"><%= @cluster.name.presence || "Unnamed Cluster" %></h1>
+
+  <% if @cluster.image_url.present? %>
+    <%= image_tag @cluster.image_url, class: "float-right ml-4 mb-4 max-h-48 rounded" %>
+  <% end %>
+
+  <% if @cluster.clusterable_type == "Insight" %>
+    <% if @cluster.body.present? %>
+      <p class="text-lg text-gray-700 leading-relaxed mb-6"><%= @cluster.body %></p>
+    <% end %>
+
+    <%= render "shared/snippet", text: @cluster.snippet %>
+  <% else %>
+    <% if @cluster.summary.present? %>
+      <p class="text-lg text-gray-700 leading-relaxed mb-6"><%= @cluster.summary %></p>
+    <% end %>
+  <% end %>
+
+  <div class="space-y-4 clear-both">
+    <% if @cluster.clusterable_type == "Article" %>
+      <ul>
+        <% @members.each do |article| %>
+          <li class="text-gray-600 text-sm ">
+            <%= link_to article.url, article.url, target: "_blank", rel: "noopener", class: "text-blue-600 hover:underline break-all" %>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <% @source_items.each do |item| %>
+        <%= render partial: "shared/item", locals: { item: item, article: nil } %>
+      <% end %>
+    <% end %>
+
+    <% if @similar_items.any? %>
+      <%= render "shared/section_heading", title: "Related" %>
+      <% @similar_items.each do |item| %>
+        <%= render partial: "shared/item", locals: { item:, article: nil } %>
+      <% end %>
+    <% end %>
+  </div>
+</div>

@@ -30,7 +30,8 @@ class GenerateInsightsJob < ApplicationJob
         status: :complete
       )
 
-      generate_embedding(insight)
+      insight.generate_embedding!
+      insight.cluster_if_similar!
 
       data["queries"].each do |query|
         insight.research_threads.create!(query:)
@@ -57,16 +58,5 @@ class GenerateInsightsJob < ApplicationJob
       partial: "insights/insight",
       locals: { insight:, article: }
     )
-  end
-
-  def generate_embedding(insight)
-    return if insight.body.blank?
-
-    embedding = RubyLLM.embed(insight.body,
-                              model: "openai/text-embedding-3-small",
-                              provider: :openrouter,
-                              assume_model_exists: true)
-
-    insight.update!(embedding: embedding.vectors)
   end
 end

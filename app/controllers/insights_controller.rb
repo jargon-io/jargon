@@ -3,6 +3,9 @@
 class InsightsController < ApplicationController
   def show
     @insight = Insight.by_slug!(params[:id])
+
+    return redirect_to @insight.cluster, status: :moved_permanently if @insight.clustered?
+
     @more_from_article = @insight.article.insights.complete.where.not(id: @insight.id)
 
     @similar_items = SimilarItemsQuery.new(

@@ -9,14 +9,8 @@
     <p class="text-gray-700 mt-2"><%= insight.body %></p>
   <% end %>
 
-  <% if insight.snippet.present? %>
-    <div class="text-base pl-4 mt-4 border-l-4 border-blue-300 text-gray-700 italic">
-      <%= truncate(insight.snippet, length: 500) %>
-      <% unless article.present? && article == insight.article %>
-        <div class="mt-4 text-base leading-tight">
-          <%= link_to insight.article.title, insight.article, class: "text-blue-500 hover:text-blue-600 not-italic" %>
-        </div>
-      <% end %>
-    </div>
-  <% end %>
+  <%= render "shared/snippet",
+             text: insight.snippet,
+             source: (article.present? && article == insight.article ? nil : insight.article),
+             compact: true %>
 </div>

@@ -3,8 +3,11 @@
 <div class="w-full max-w-2xl mx-auto">
   <h1 class="text-3xl font-bold mb-4">Articles</h1>
   <div id="articles" class="space-y-6">
-    <% if @articles.any? %>
-      <%= render @articles %>
+    <% items = (@articles + @clusters).sort_by(&:created_at).reverse %>
+    <% if items.any? %>
+      <% items.each do |item| %>
+        <%= render item %>
+      <% end %>
     <% else %>
       <div class="text-gray-500">
         <p>No articles yet.</p>

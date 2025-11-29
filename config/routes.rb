@@ -16,5 +16,6 @@ Rails.application.routes.draw do
   get "search", to: "search#show"
   post "web_search", to: "web_searches#create"
   resources :insights, only: [:show]
+  resources :clusters, only: [:show]
   resources :research_threads, only: %i[show create], path: "threads"
 end

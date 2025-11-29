@@ -35,10 +35,17 @@ module Sluggable
   private
 
   def generate_slug
-    return if slug.present?
+    return if slug.present? && !should_regenerate_slug?
 
     base_slug = compute_base_slug
     self.slug = resolve_slug_collisions(base_slug) if base_slug
+  end
+
+  def should_regenerate_slug?
+    return false unless slug&.start_with?("untitled")
+
+    base = compute_base_slug
+    base.present? && !base.start_with?("untitled")
   end
 
   def compute_base_slug

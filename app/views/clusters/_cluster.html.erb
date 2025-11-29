@@ -1,0 +1,23 @@
+<%# locals: (cluster:) %>
+
+<div id="<%= dom_id(cluster) %>" class="border rounded-lg p-5 transition-colors border-gray-200 hover:border-gray-300 relative">
+  <% if cluster.image_url.present? %>
+    <%= image_tag cluster.image_url, class: "h-32 float-right ml-4" %>
+  <% end %>
+
+  <h2 class="text-xl font-semibold pr-24">
+    <%= link_to cluster.name.presence || "Unnamed cluster", cluster, class: "hover:text-blue-600" %>
+  </h2>
+
+  <% if cluster.clusterable_type == "Insight" %>
+    <% if cluster.body.present? %>
+      <p class="text-gray-700 mt-2"><%= cluster.body %></p>
+    <% end %>
+
+    <%= render "shared/snippet", text: cluster.snippet, compact: true %>
+  <% else %>
+    <% if cluster.summary.present? %>
+      <p class="text-gray-700 mt-2"><%= cluster.summary %></p>
+    <% end %>
+  <% end %>
+</div>

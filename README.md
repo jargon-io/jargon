@@ -36,3 +36,5 @@ apt-get install poppler-utils
 * page titles
 * better root page ui (all nodes, no header, search box is in content area instead of floating header, explainer content?)
 * internal links in summaries
+* use library as RAG and have search box return results but also synthesize and respond with LLM answer
+* export markdown to clipboard

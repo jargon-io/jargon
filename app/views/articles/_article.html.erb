@@ -1,37 +1,28 @@
 <%# locals: (article:) %>
 <div id="<%= dom_id(article) %>" class="border rounded-lg p-5 transition-colors <%= article.failed? ? 'border-red-200 bg-red-50' : 'border-gray-200 hover:border-gray-300' %>">
   <% if article.pending? %>
-    <div class="animate-pulse">
-      <div class="h-6 bg-gray-200 rounded w-3/4 mb-3"></div>
+    <div class="animate-pulse space-y-3">
+      <div class="h-6 bg-gray-200 rounded w-3/4"></div>
       <div class="h-4 bg-gray-100 rounded w-1/2"></div>
     </div>
     <p class="text-sm text-gray-400 mt-3 overflow-hidden"><%= article.url %></p>
   <% elsif article.failed? %>
-    <h2 class="text-xl font-semibold mb-2 text-red-700">Failed to process</h2>
+    <h2 class="text-xl font-semibold text-red-700">Failed to process</h2>
     <p class="text-sm text-red-600"><%= article.url %></p>
   <% else %>
     <% if article.image_url.present? %>
-      <%= image_tag article.image_url,
-            class: "h-32 max-w-48 object-contain float-right ml-4" %>
+      <%= image_tag article.image_url, class: "h-32 max-w-48 object-contain float-right ml-4" %>
     <% end %>
 
-    <h2 class="text-xl font-semibold">
-      <%= link_to article.title.presence || "Untitled", article, class: "hover:text-blue-600" %>
-    </h2>
-
-    <% if article.author.present? || article.published_at.present? %>
-      <div class="overflow-hidden text-sm text-gray-500 mb-3 space-x-3">
-        <% if article.author.present? %>
-          <span><%= article.author %></span>
-        <% end %>
-        <% if article.published_at.present? %>
-          <span><%= article.published_at.to_date %></span>
-        <% end %>
-      </div>
-    <% end %>
+    <div class="space-y-2">
+      <h2 class="text-xl font-semibold">
+        <%= link_to article.title.presence || "Untitled", article, class: "hover:text-blue-600" %>
+      </h2>
+      <%= render "shared/byline", author: article.author, date: article.published_at %>
+    </div>
 
     <% if article.summary.present? %>
-      <p class="text-gray-700"><%= safe_html(article.summary) %></p>
+      <p class="text-gray-700 mt-3"><%= safe_html(article.summary) %></p>
     <% end %>
   <% end %>
 </div>

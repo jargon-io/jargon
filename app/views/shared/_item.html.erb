@@ -1,9 +1,9 @@
-<%# locals: (item:, article: nil) %>
+<%# locals: (item:, suppress_source: false) %>
 <% case item %>
 <% when Article %>
   <%= render "articles/article", article: item %>
 <% when Insight %>
-  <%= render "insights/insight", insight: item, article: %>
+  <%= render "insights/insight", insight: item, suppress_source: %>
 <% when Cluster %>
   <%= render "clusters/cluster", cluster: item %>
 <% end %>

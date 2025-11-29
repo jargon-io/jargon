@@ -51,13 +51,17 @@ module Clusterable
   end
 
   def find_unclustered_match(threshold)
-    self.class
-        .where.not(id:)
-        .where.missing(:cluster_membership)
-        .where.not(embedding: nil)
-        .nearest_neighbors(:embedding, embedding, distance: "cosine")
-        .first
-        &.then { |i| similar_enough?(i, threshold) ? i : nil }
+    scope = self.class
+                .where.not(id:)
+                .where.missing(:cluster_membership)
+                .where.not(embedding: nil)
+
+    # Don't cluster insights from the same article
+    scope = scope.where.not(article_id:) if is_a?(Insight)
+
+    scope.nearest_neighbors(:embedding, embedding, distance: "cosine")
+         .first
+         &.then { |i| similar_enough?(i, threshold) ? i : nil }
   end
 
   def similar_enough?(match, threshold)

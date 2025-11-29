@@ -66,12 +66,13 @@ class IngestArticleJob < ApplicationJob
   def process_web_content(url)
     text = crawl_content(url)
     evaluation = evaluate_content(text, url)
+    is_paper = evaluation["is_academic_paper"]
 
     case evaluation["content_type"]
     when "full"
-      update_article(text:, content_type: :full)
+      update_article(text:, content_type: is_paper ? :paper : :full)
     when "abstract"
-      handle_abstract(text, evaluation["full_text_url"])
+      handle_abstract(text, evaluation["full_text_url"], is_paper:)
     when "partial", "video", "podcast"
       update_article(text:, content_type: :partial)
       queue_embedded_video(evaluation["embedded_video_url"])
@@ -80,11 +81,11 @@ class IngestArticleJob < ApplicationJob
     end
   end
 
-  def handle_abstract(abstract_text, full_text_url)
+  def handle_abstract(abstract_text, full_text_url, is_paper:)
     if full_text_url.present?
       full_text = pdf_url?(full_text_url) ? extract_pdf_text(full_text_url) : crawl_content(full_text_url)
       if full_text.present? && full_text.length > abstract_text.length * 2
-        update_article(text: full_text, content_type: :full)
+        update_article(text: full_text, content_type: is_paper ? :paper : :full)
         return
       end
     end
@@ -161,12 +162,28 @@ class IngestArticleJob < ApplicationJob
     metadata = extract_metadata(text)
 
     @article.update!(
-      title: metadata["title"],
+      title: presence(metadata["title"]),
+      author: presence(metadata["author"]),
+      published_at: parse_date(metadata["published_at"]),
       text:,
       summary: generate_summary(text),
       content_type:,
       status: :complete
     )
+  end
+
+  def presence(value)
+    return nil if value.blank? || value.casecmp?("null")
+
+    value
+  end
+
+  def parse_date(date_str)
+    return nil if date_str.blank? || date_str.casecmp?("null")
+
+    Date.parse(date_str)
+  rescue ArgumentError
+    nil
   end
 
   def finalize_article
@@ -176,7 +193,7 @@ class IngestArticleJob < ApplicationJob
     @article.cluster_if_similar!
     broadcast_update
 
-    GenerateInsightsJob.perform_later(@article.id) unless @article.partial?
+    GenerateInsightsJob.perform_later(@article.id)
   end
 
   def extract_metadata(text)

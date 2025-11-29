@@ -1,5 +1,5 @@
-<div class="w-full max-w-2xl mx-auto">
-  <h1 class="text-3xl font-bold mb-4"><%= @cluster.name.presence || "Unnamed Cluster" %></h1>
+<div class="w-full max-w-2xl mx-auto space-y-4">
+  <h1 class="text-3xl font-bold"><%= @cluster.name.presence || "Unnamed Cluster" %></h1>
 
   <% if @cluster.image_url.present? %>
     <%= image_tag @cluster.image_url, class: "float-right ml-4 mb-4 max-h-48 max-w-64 object-contain rounded" %>
@@ -7,26 +7,26 @@
 
   <% if @cluster.clusterable_type == "Insight" %>
     <% if @cluster.body.present? %>
-      <p class="text-lg text-gray-700 leading-relaxed mb-6"><%= safe_html(@cluster.body) %></p>
+      <p class="text-lg text-gray-700 leading-relaxed"><%= safe_html(@cluster.body) %></p>
     <% end %>
 
     <%= render "shared/snippet", text: @cluster.snippet %>
 
     <div class="space-y-4 clear-both">
       <% @source_items.each do |item| %>
-        <%= render partial: "shared/item", locals: { item: item, article: nil } %>
+        <%= render partial: "shared/item", locals: { item: } %>
       <% end %>
     </div>
   <% else %>
     <% if @cluster.summary.present? %>
-      <p class="text-lg text-gray-700 leading-relaxed mb-6"><%= safe_html(@cluster.summary) %></p>
+      <p class="text-lg text-gray-700 leading-relaxed"><%= safe_html(@cluster.summary) %></p>
     <% end %>
 
     <% if @cluster.snippet.present? %>
       <%= render "shared/snippet", text: @cluster.snippet %>
     <% end %>
 
-    <ul class="text-blue-500 text-sm space-y-1 clear-both mb-6">
+    <ul class="text-blue-500 text-sm space-y-1 clear-both">
       <% @members.each do |article| %>
         <li>
           <%= link_to article.url, article.url, target: "_blank", rel: "noopener", class: "hover:underline break-all" %>
@@ -36,7 +36,7 @@
 
     <div class="space-y-4">
       <% @insights.each do |item| %>
-        <%= render partial: "shared/item", locals: { item: item, article: nil } %>
+        <%= render partial: "shared/item", locals: { item:, suppress_source: true } %>
       <% end %>
     </div>
   <% end %>
@@ -45,7 +45,7 @@
     <%= render "shared/section_heading", title: "Related" %>
     <div class="space-y-4">
       <% @similar_items.each do |item| %>
-        <%= render partial: "shared/item", locals: { item:, article: nil } %>
+        <%= render partial: "shared/item", locals: { item: } %>
       <% end %>
     </div>
   <% end %>

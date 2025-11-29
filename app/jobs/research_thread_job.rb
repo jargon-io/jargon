@@ -80,7 +80,7 @@ class ResearchThreadJob < ApplicationJob
       target: "thread_articles_loading"
     )
 
-    Turbo::StreamsChannel.broadcast_after_to(
+    Turbo::StreamsChannel.broadcast_append_to(
       "research_thread_#{thread.id}",
       target: "articles",
       partial: "articles/article",

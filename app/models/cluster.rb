@@ -103,7 +103,6 @@ class Cluster < ApplicationRecord
     PROMPT
 
     response = RubyLLM.chat
-                      .with_model(MODEL)
                       .with_schema(InsightClusterSchema)
                       .ask(prompt)
 

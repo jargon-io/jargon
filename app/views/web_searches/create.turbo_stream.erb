@@ -4,6 +4,8 @@
   <%= turbo_stream_from "articles" %>
   <%= turbo_stream_from "web_search_#{@web_search.id}" %>
 
-  <%= render "shared/section_heading", title: "From the web", id: "from-the-web" %>
-  <%= render "shared/loading_placeholder", id: "web_search_loading", message: "Searching the web..." %>
+  <%= render "shared/section_heading", title: "From the web" %>
+  <div id="from-the-web" class="space-y-4">
+    <%= render "shared/loading_placeholder", id: "web_search_loading", message: "Searching the web..." %>
+  </div>
 <% end %>

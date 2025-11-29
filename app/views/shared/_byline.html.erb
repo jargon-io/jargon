@@ -1,0 +1,6 @@
+<%# locals: (author: nil, date: nil) %>
+<% if author.present? || date.present? %>
+  <p class="text-sm text-gray-500">
+    <% if author.present? %>By <%= author %><% end %><% if author.present? && date.present? %> • <% end %><% if date.present? %><%= date.respond_to?(:to_date) ? date.to_date : date %><% end %>
+  </p>
+<% end %>

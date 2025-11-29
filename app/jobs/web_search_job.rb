@@ -28,7 +28,7 @@ class WebSearchJob < ApplicationJob
       target: "web_search_loading"
     )
 
-    Turbo::StreamsChannel.broadcast_after_to(
+    Turbo::StreamsChannel.broadcast_append_to(
       "web_search_#{web_search.id}",
       target: "from-the-web",
       partial: "articles/article",

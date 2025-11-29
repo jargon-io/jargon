@@ -20,7 +20,7 @@ class Article < ApplicationRecord
   has_many :web_search_articles, dependent: :destroy
 
   enum :status, { pending: 0, complete: 1, failed: 2 }
-  enum :content_type, { full: 0, partial: 1, video: 2, podcast: 3 }
+  enum :content_type, { full: 0, partial: 1, video: 2, podcast: 3, paper: 4 }
 
   validates :url, presence: true, uniqueness: true
 

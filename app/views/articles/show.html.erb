@@ -1,19 +1,13 @@
 <%= turbo_stream_from "article_#{@article.id}_insights" %>
 
 <div class="w-full max-w-2xl mx-auto space-y-4">
-  <h1 class="text-3xl font-bold mb-4"><%= @article.title %></h1>
-
-  <div class="text-sm text-gray-500 mb-6 flex items-center gap-4">
-    <% if @article.author.present? %>
-      <span>By <%= @article.author %></span>
-    <% end %>
-    <% if @article.published_at.present? %>
-      <span><%= @article.published_at.to_date %></span>
-    <% end %>
+  <div>
+    <h1 class="text-3xl font-bold"><%= @article.title %></h1>
+    <%= render "shared/byline", author: @article.author, date: @article.published_at %>
   </div>
 
   <% if @article.video? && (video_id = @article.url&.match(YoutubeClient::URL_REGEX)&.[](1)) %>
-    <div class="aspect-video mb-4">
+    <div class="aspect-video">
       <iframe
         src="https://www.youtube.com/embed/<%= video_id %>"
         class="w-full h-full rounded-lg"
@@ -32,7 +26,7 @@
 
   <% unless @article.video? %>
     <div>
-      <% label = @article.url&.match?(/\.pdf(\?|$)/i) ? "Read original (PDF)" : "Read original" %>
+      <% label = @article.paper? ? "Read original paper" : "Read original" %>
       <%= link_to label,
               @article.url,
               target: "_blank",
@@ -41,11 +35,13 @@
     </div>
   <% end %>
 
-  <% if @article.insights.complete.any? %>
-    <%= render @article.insights.complete, article: @article %>
-  <% elsif @article.text.present? %>
-    <%= render "shared/loading_placeholder", id: "insights_loading", message: "Generating insights..." %>
-  <% end %>
+  <div id="insights" class="space-y-4">
+    <% if @article.insights.complete.any? %>
+      <%= render @article.insights.complete, suppress_source: true %>
+    <% elsif @article.text.present? && @article.updated_at > 1.minute.ago %>
+      <%= render "shared/loading_placeholder", id: "insights_loading", message: "Generating insights..." %>
+    <% end %>
+  </div>
 
   <% if @similar_items.any? %>
     <%= render "shared/section_heading", title: "Related" %>

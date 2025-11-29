@@ -1,44 +1,39 @@
-<div class="w-full max-w-2xl mx-auto">
-  <h1 class="text-3xl font-bold mb-4"><%= @insight.title %></h1>
+<div class="w-full max-w-2xl mx-auto space-y-4">
+  <h1 class="text-3xl font-bold"><%= @insight.title %></h1>
 
-  <div class="space-y-4">
-    <% if @insight.body.present? %>
-      <p class="text-lg text-gray-700 leading-relaxed mb-4"><%= safe_html(@insight.body) %></p>
+  <% if @insight.body.present? %>
+    <p class="text-lg text-gray-700 leading-relaxed"><%= safe_html(@insight.body) %></p>
+  <% end %>
+
+  <%= render "shared/snippet", text: @insight.snippet %>
+
+  <%= render partial: "articles/article", locals: { article: @insight.article } %>
+
+  <%= render "shared/section_heading", title: "Explore", id: "insights" %>
+
+  <%= render @insight.research_threads %>
+
+  <%= form_with url: research_threads_path, method: :post, class: "flex gap-2" do |f| %>
+    <%= f.hidden_field :insight_id, value: @insight.id %>
+    <%= f.text_field :query,
+        required: true,
+        class: "flex-1 py-3 px-5 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-300 focus:border-transparent" %>
+    <%= f.submit "→",
+        class: "px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer" %>
+  <% end %>
+
+  <% if @more_from_article.any? %>
+    <% source_label = @insight.article.video? ? "video" : (@insight.article.paper? ? "paper" : "article") %>
+    <%= render "shared/section_heading", title: "More from the #{source_label}" %>
+    <% @more_from_article.each do |item| %>
+      <%= render partial: "shared/item", locals: { item:, suppress_source: true } %>
     <% end %>
+  <% end %>
 
-    <%= render "shared/snippet", text: @insight.snippet %>
-
-    <div class="pt-4">
-      <%= render partial: "articles/article", locals: { article: @insight.article } %>
-    </div>
-
-    <%= render "shared/section_heading", title: "Explore", id: "insights" %>
-
-    <%= render @insight.research_threads %>
-
-    <div>
-      <%= form_with url: research_threads_path, method: :post, class: "flex gap-2" do |f| %>
-        <%= f.hidden_field :insight_id, value: @insight.id %>
-        <%= f.text_field :query,
-            required: true,
-            class: "flex-1 py-3 px-5 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-300 focus:border-transparent" %>
-        <%= f.submit "→",
-            class: "px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer" %>
-      <% end %>
-    </div>
-
-    <% if @more_from_article.any? %>
-      <%= render "shared/section_heading", title: "More from the article" %>
-      <% @more_from_article.each do |item| %>
-        <%= render partial: "shared/item", locals: { item:, article: @insight.article } %>
-      <% end %>
+  <% if @similar_items.any? %>
+    <%= render "shared/section_heading", title: "Related" %>
+    <% @similar_items.each do |item| %>
+      <%= render partial: "shared/item", locals: { item: } %>
     <% end %>
-
-    <% if @similar_items.any? %>
-      <%= render "shared/section_heading", title: "Related" %>
-      <% @similar_items.each do |item| %>
-        <%= render partial: "shared/item", locals: { item:, article: @insight.article } %>
-      <% end %>
-    <% end %>
-  </div>
+  <% end %>
 </div>

@@ -1,24 +1,24 @@
 <%= turbo_stream_from "research_thread_#{@thread.id}" %>
 
 <div class="w-full max-w-2xl mx-auto space-y-4">
-  <div>
-    <%= render partial: "insights/insight", locals: { insight: @thread.insight } %>
-  </div>
+  <%= render partial: "insights/insight", locals: { insight: @thread.insight, suppress_source: false } %>
 
   <div class="w-full text-left flex items-start gap-3 p-3 border-2 border-blue-300 bg-blue-50 rounded-lg text-lg">
     <span class="text-blue-500">→</span>
     <span class="text-gray-700 flex-1"><%= @thread.query %></span>
   </div>
 
-  <%= render "shared/section_heading", title: "Articles", id: "articles" %>
+  <%= render "shared/section_heading", title: "Articles" %>
 
-  <% if @thread_articles.any? %>
-    <% @thread_articles.each do |ta| %>
-      <%= render partial: "articles/article", locals: { article: ta.article } %>
+  <div id="articles" class="space-y-4">
+    <% if @thread_articles.any? %>
+      <% @thread_articles.each do |ta| %>
+        <%= render partial: "articles/article", locals: { article: ta.article } %>
+      <% end %>
+    <% else %>
+      <%= render "shared/loading_placeholder", id: "thread_articles_loading", message: "Searching for articles..." %>
     <% end %>
-  <% else %>
-    <%= render "shared/loading_placeholder", id: "thread_articles_loading", message: "Searching for articles..." %>
-  <% end %>
+  </div>
 
   <%= render "shared/section_heading", title: "Related" %>
   <%= render partial: "shared/item", collection: @related_items, as: :item %>

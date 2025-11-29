@@ -29,8 +29,12 @@ class SearchController < ApplicationController
   end
 
   def search_library(query)
-    embedding = EmbeddingService.generate(query)
-    return [] if embedding.nil?
+    embedding = RubyLLM.embed(
+      query,
+      model: Embeddable::MODEL,
+      provider: :openrouter,
+      assume_model_exists: true
+    ).vectors
 
     SimilarItemsQuery.new(embedding:, limit: 20).call
   end

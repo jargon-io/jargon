@@ -1,4 +1,4 @@
-<%# locals: (insight:, article: nil) %>
+<%# locals: (insight:, suppress_source: false) %>
 
 <div id="<%= dom_id(insight) %>" class="border rounded-lg p-5 transition-colors <%= insight.failed? ? 'border-red-200 bg-red-50' : 'border-gray-200 hover:border-gray-300' %>">
   <h2 class="text-xl font-semibold mb-2">
@@ -11,6 +11,6 @@
 
   <%= render "shared/snippet",
              text: insight.snippet,
-             source: (article.present? && article == insight.article ? nil : insight.article),
+             source: suppress_source ? nil : insight.article,
              compact: true %>
 </div>

@@ -26,7 +26,6 @@ apt-get install poppler-utils
 ```
 
 ## TODO
-* fix search controller ref to embedding service
 * have claude generate a better readme
 * semantic hooks - topic anchors for related content that is not necessarily directly related to a node, but related to a topic that is relevant
 * better UI for ask question -> fetch web results

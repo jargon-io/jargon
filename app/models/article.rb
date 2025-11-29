@@ -5,6 +5,7 @@ class Article < ApplicationRecord
   include Clusterable
   include Embeddable
   include NormalizesMarkup
+  include Topicable
 
   slug -> { title.presence || "untitled" }
 
@@ -26,6 +27,10 @@ class Article < ApplicationRecord
 
   def image_url=(value)
     super(url_accessible?(value) ? value : nil)
+  end
+
+  def topic_source_text
+    "#{title}\n\n#{summary}"
   end
 
   private

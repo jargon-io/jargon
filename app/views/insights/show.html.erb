@@ -48,4 +48,16 @@
       <%= render "shared/expandable_toggle" %>
     </div>
   <% end %>
+
+  <% @topics_with_items.each do |topic, items| %>
+    <%= render "shared/section_heading", title: topic.phrase.sub(/\A\w/, &:upcase), href: search_path(q: topic.phrase) %>
+    <div class="space-y-4" data-controller="expandable-list" data-expandable-list-limit-value="3">
+      <% items.each do |item| %>
+        <div data-expandable-list-target="item">
+          <%= render "shared/item", item: item %>
+        </div>
+      <% end %>
+      <%= render "shared/expandable_toggle" %>
+    </div>
+  <% end %>
 </div>

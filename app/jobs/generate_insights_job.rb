@@ -35,6 +35,8 @@ class GenerateInsightsJob < ApplicationJob
 
       broadcast_insight(article, insight)
     end
+
+    article.generate_topics! if article.topics.empty?
   rescue StandardError => e
     Rails.logger.error("GenerateInsightsJob failed: #{e.message}")
     raise e

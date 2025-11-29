@@ -356,6 +356,40 @@ ALTER SEQUENCE public.threads_id_seq OWNED BY public.threads.id;
 
 
 --
+-- Name: topics; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.topics (
+    id bigint NOT NULL,
+    topicable_type character varying NOT NULL,
+    topicable_id bigint NOT NULL,
+    phrase character varying NOT NULL,
+    embedding public.vector(1536),
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: topics_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.topics_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: topics_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.topics_id_seq OWNED BY public.topics.id;
+
+
+--
 -- Name: web_search_articles; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -462,6 +496,13 @@ ALTER TABLE ONLY public.threads ALTER COLUMN id SET DEFAULT nextval('public.thre
 
 
 --
+-- Name: topics id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.topics ALTER COLUMN id SET DEFAULT nextval('public.topics_id_seq'::regclass);
+
+
+--
 -- Name: web_search_articles id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -537,6 +578,14 @@ ALTER TABLE ONLY public.thread_articles
 
 ALTER TABLE ONLY public.threads
     ADD CONSTRAINT threads_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: topics topics_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.topics
+    ADD CONSTRAINT topics_pkey PRIMARY KEY (id);
 
 
 --
@@ -654,6 +703,20 @@ CREATE UNIQUE INDEX index_threads_on_slug ON public.threads USING btree (slug);
 
 
 --
+-- Name: index_topics_on_topicable; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_topics_on_topicable ON public.topics USING btree (topicable_type, topicable_id);
+
+
+--
+-- Name: index_topics_on_topicable_type_and_topicable_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_topics_on_topicable_type_and_topicable_id ON public.topics USING btree (topicable_type, topicable_id);
+
+
+--
 -- Name: index_web_search_articles_on_article_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -738,6 +801,7 @@ ALTER TABLE ONLY public.insights
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251129192004'),
 ('20251129164403'),
 ('20251129160954'),
 ('20251129153217'),

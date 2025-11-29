@@ -14,10 +14,21 @@ class ArticlesController < ApplicationController
 
     return redirect_to @article.cluster, status: :moved_permanently if @article.clustered?
 
+    exclude_items = [@article] + @article.insights.to_a
+
     @similar_items = SimilarItemsQuery.new(
       embedding: @article.embedding,
       limit: 8,
-      exclude: [@article] + @article.insights.to_a
+      exclude: exclude_items
     ).call
+
+    @topics_with_items = @article.topics.filter_map do |topic|
+      items = TopicExplorationQuery.new(
+        embedding: topic.embedding,
+        limit: 5,
+        exclude: exclude_items + @similar_items
+      ).call
+      [topic, items] if items.any?
+    end
   end
 end

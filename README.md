@@ -27,7 +27,6 @@ apt-get install poppler-utils
 
 ## TODO
 * have claude generate a better readme
-* semantic hooks - topic anchors for related content that is not necessarily directly related to a node, but related to a topic that is relevant
 * better UI for ask question -> fetch web results
 * make it easier to configure different LLM providers with env vars
 * publish docker image on GH and add compose recipe to readme

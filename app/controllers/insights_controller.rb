@@ -8,10 +8,21 @@ class InsightsController < ApplicationController
 
     @more_from_article = @insight.article.insights.complete.where.not(id: @insight.id)
 
+    exclude_items = [@insight, @insight.article] + @more_from_article.to_a
+
     @similar_items = SimilarItemsQuery.new(
       embedding: @insight.embedding,
       limit: 8,
-      exclude: [@insight, @insight.article] + @more_from_article
+      exclude: exclude_items
     ).call
+
+    @topics_with_items = @insight.topics.filter_map do |topic|
+      items = TopicExplorationQuery.new(
+        embedding: topic.embedding,
+        limit: 5,
+        exclude: exclude_items + @similar_items
+      ).call
+      [topic, items] if items.any?
+    end
   end
 end

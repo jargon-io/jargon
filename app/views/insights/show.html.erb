@@ -16,7 +16,7 @@
       <%= render partial: "articles/article", locals: { article: @insight.article } %>
     </div>
 
-    <h2 id="insights" class="text-2xl font-semibold pt-6 pb-2">Explore</h2>
+    <%= render "shared/section_heading", title: "Explore", id: "insights" %>
 
     <%= render @insight.research_threads %>
 
@@ -32,14 +32,14 @@
     </div>
 
     <% if @more_from_article.any? %>
-      <h2 class="text-2xl font-semibold pt-6 pb-2">More from the article</h2>
+      <%= render "shared/section_heading", title: "More from the article" %>
       <% @more_from_article.each do |item| %>
         <%= render partial: "shared/item", locals: { item:, article: @insight.article } %>
       <% end %>
     <% end %>
 
     <% if @similar_items.any? %>
-      <h2 class="text-2xl font-semibold pt-6 pb-2">Related</h2>
+      <%= render "shared/section_heading", title: "Related" %>
       <% @similar_items.each do |item| %>
         <%= render partial: "shared/item", locals: { item:, article: @insight.article } %>
       <% end %>

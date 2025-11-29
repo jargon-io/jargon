@@ -10,22 +10,16 @@
     <span class="text-gray-700 flex-1"><%= @thread.query %></span>
   </div>
 
-  <h2 id="articles" class="text-2xl font-semibold pt-6 pb-2">Articles</h2>
+  <%= render "shared/section_heading", title: "Articles", id: "articles" %>
 
   <% if @thread_articles.any? %>
     <% @thread_articles.each do |ta| %>
       <%= render partial: "articles/article", locals: { article: ta.article } %>
     <% end %>
   <% else %>
-    <div id="thread_articles_loading">
-      <div class="animate-pulse space-y-3">
-        <div class="h-5 bg-gray-200 rounded w-2/3"></div>
-        <div class="h-4 bg-gray-100 rounded w-full"></div>
-      </div>
-      <p class="text-sm text-gray-400 mt-2">Searching for articles...</p>
-    </div>
+    <%= render "shared/loading_placeholder", id: "thread_articles_loading", message: "Searching for articles..." %>
   <% end %>
 
-  <h2 class="text-2xl font-semibold pt-6 pb-2">Related</h2>
+  <%= render "shared/section_heading", title: "Related" %>
   <%= render partial: "shared/item", collection: @related_items, as: :item %>
 </div>

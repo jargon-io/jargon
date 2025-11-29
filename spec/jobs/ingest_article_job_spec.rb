@@ -9,10 +9,14 @@ RSpec.describe IngestArticleJob do
   def stub_web_ingestion
     stub_llm
 
-    # Stub Exa client
-    allow_any_instance_of(ExaClient).to receive(:crawl).and_return({
-                                                                     "results" => [{ "text" => article_text, "image" => "https://example.com/image.jpg" }]
-                                                                   })
+    # Stub Exa client - must stub .new since initialize calls ENV.fetch
+    exa_double = instance_double(ExaClient)
+    allow(ExaClient).to receive(:new).and_return(exa_double)
+    allow(exa_double).to receive(:crawl).and_return(
+      {
+        "results" => [{ "text" => article_text, "image" => "https://example.com/image.jpg" }]
+      }
+    )
 
     # Set up chat responses based on schema
     chat = stub_llm_chat
@@ -56,6 +60,7 @@ RSpec.describe IngestArticleJob do
 
   context "when content is blocked" do
     before do
+      # Re-stub chat to return blocked content type
       chat = stub_llm_chat
       allow(chat).to receive(:ask).and_return(
         instance_double(RubyLLM::Message, content: { "content_type" => "blocked" })
@@ -73,9 +78,6 @@ RSpec.describe IngestArticleJob do
     let(:youtube_article) { create(:article, :pending, url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ") }
 
     before do
-      # Override the default web ingestion stubs
-      RSpec::Mocks.space.proxy_for(ExaClient).reset
-
       stub_llm
 
       video = Struct.new(:title, :channel, :published_at, :transcript, keyword_init: true).new(

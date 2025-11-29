@@ -34,5 +34,5 @@ apt-get install poppler-utils
 * better responsive styles
 * specs
 * page titles
-* better root page ui (all nodes, no header, search box is in content area instead of floating header)
+* better root page ui (all nodes, no header, search box is in content area instead of floating header, explainer content?)
 * internal links in summaries

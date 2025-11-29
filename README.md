@@ -24,3 +24,4 @@ crawl4ai-setup  # Downloads browser dependencies
 * better UI for ask question -> fetch web results
 * max-w for images in cards and on show pages
 * make it easier to configure different LLM providers with env vars
+* publish docker image on GH and add compose recipe to readme

@@ -1,9 +1,19 @@
-# README
+# Jargon
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Article ingestion and insight extraction.
 
-Things you may want to cover:
+## Dependencies
+
+### crawl4ai
+
+Fallback crawler when Exa is unavailable. Install via pip:
+
+```bash
+pip install crawl4ai
+crawl4ai-setup  # Downloads browser dependencies
+```
+
+## Setup
 
 * Ruby version
 

@@ -101,7 +101,7 @@ jobs:
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/jargon_test
           RAILS_ENV: test
-        run: bin/rspec
+        run: bundle exec rspec
 
   build:
     runs-on: ubuntu-latest

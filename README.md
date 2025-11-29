@@ -20,7 +20,6 @@ crawl4ai-setup  # Downloads browser dependencies
 * semantic hooks - topic anchors for related content that is not necessarily directly related to a node, but related to a topic that is relevant
 * filter captcha results and other scraper / search fails, eg: http://localhost:3000/articles/effect-of-ai-performance-perceived-risk-and-trust-on
 * better UI for ask question -> fetch web results
-* max-w for images in cards and on show pages
 * make it easier to configure different LLM providers with env vars
 * publish docker image on GH and add compose recipe to readme
 * better responsive styles

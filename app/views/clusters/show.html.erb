@@ -2,7 +2,7 @@
   <h1 class="text-3xl font-bold mb-4"><%= @cluster.name.presence || "Unnamed Cluster" %></h1>
 
   <% if @cluster.image_url.present? %>
-    <%= image_tag @cluster.image_url, class: "float-right ml-4 mb-4 max-h-48 rounded" %>
+    <%= image_tag @cluster.image_url, class: "float-right ml-4 mb-4 max-h-48 max-w-64 object-contain rounded" %>
   <% end %>
 
   <% if @cluster.clusterable_type == "Insight" %>

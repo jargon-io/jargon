@@ -12,7 +12,7 @@
   <% else %>
     <% if article.image_url.present? %>
       <%= image_tag article.image_url,
-            class: "h-32 float-right ml-4" %>
+            class: "h-32 max-w-48 object-contain float-right ml-4" %>
     <% end %>
 
     <h2 class="text-xl font-semibold">

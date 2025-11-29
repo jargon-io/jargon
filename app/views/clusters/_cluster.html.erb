@@ -2,7 +2,7 @@
 
 <div id="<%= dom_id(cluster) %>" class="border rounded-lg p-5 transition-colors border-gray-200 hover:border-gray-300 relative">
   <% if cluster.image_url.present? %>
-    <%= image_tag cluster.image_url, class: "h-32 float-right ml-4" %>
+    <%= image_tag cluster.image_url, class: "h-32 max-w-48 object-contain float-right ml-4" %>
   <% end %>
 
   <h2 class="text-xl font-semibold pr-24">

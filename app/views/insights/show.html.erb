@@ -18,19 +18,7 @@
 
     <h2 id="insights" class="text-2xl font-semibold pt-6 pb-2">Explore</h2>
 
-    <% @insight.research_threads.each do |thread| %>
-      <div>
-        <%= button_to research_threads_path(research_thread_id: thread.id),
-                method: :post,
-                class: "w-full text-left flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-colors" do %>
-          <span class="text-blue-500">→</span>
-          <span class="text-gray-700 flex-1"><%= thread.query %></span>
-          <% if thread.researched? %>
-            <span class="text-xs text-green-600">Researched</span>
-          <% end %>
-        <% end %>
-      </div>
-    <% end %>
+    <%= render @insight.research_threads %>
 
     <div>
       <%= form_with url: research_threads_path, method: :post, class: "flex gap-2" do |f| %>

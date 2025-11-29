@@ -1,5 +1,5 @@
 <%# locals: (article:) %>
-<article id="<%= dom_id(article) %>" class="border rounded-lg p-5 transition-colors <%= article.failed? ? 'border-red-200 bg-red-50' : 'border-gray-200 hover:border-gray-300' %>">
+<div id="<%= dom_id(article) %>" class="border rounded-lg p-5 transition-colors <%= article.failed? ? 'border-red-200 bg-red-50' : 'border-gray-200 hover:border-gray-300' %>">
   <% if article.pending? %>
     <div class="animate-pulse">
       <div class="h-6 bg-gray-200 rounded w-3/4 mb-3"></div>
@@ -16,21 +16,23 @@
             class: "h-32 float-right ml-4" %>
     <% end %>
 
-    <h2 class="text-xl font-semibold mb-2">
-      <%= link_to article.title || "Untitled", article, class: "hover:text-blue-600" %>
+    <h2 class="text-xl font-semibold">
+      <%= link_to article.title.presence || "Untitled", article, class: "hover:text-blue-600" %>
     </h2>
 
-    <div class="text-sm text-gray-500 mb-3 space-x-3">
-      <% if article.author.present? %>
-        <span><%= article.author %></span>
-      <% end %>
-      <% if article.published_at.present? %>
-        <span><%= article.published_at.to_date %></span>
-      <% end %>
-    </div>
+    <% if article.author.present? || article.published_at.present? %>
+      <div class="text-sm text-gray-500 mb-3 space-x-3">
+        <% if article.author.present? %>
+          <span><%= article.author %></span>
+        <% end %>
+        <% if article.published_at.present? %>
+          <span><%= article.published_at.to_date %></span>
+        <% end %>
+      </div>
+    <% end %>
 
     <% if article.summary.present? %>
       <p class="text-gray-700"><%= article.summary %></p>
     <% end %>
   <% end %>
-</article>
+</div>

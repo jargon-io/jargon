@@ -1,38 +1,35 @@
 <div class="w-full max-w-2xl mx-auto">
   <h1 class="text-3xl font-bold mb-4"><%= @insight.title %></h1>
 
-  <% if @insight.body.present? %>
-    <p class="text-lg text-gray-700 leading-relaxed mb-6"><%= @insight.body %></p>
-  <% end %>
+  <div class="space-y-4">
+    <% if @insight.body.present? %>
+      <p class="text-lg text-gray-700 leading-relaxed mb-4"><%= @insight.body %></p>
+    <% end %>
 
-  <% if @insight.snippet.present? %>
-    <div class="text-lg pl-4 mb-8 border-l-4 border-blue-300">
-      <blockquote class="text-gray-700 italic">
+    <% if @insight.snippet.present? %>
+      <div class="text-lg pl-4 mb-b border-l-4 border-blue-300 text-gray-700 italic">
         <%= @insight.snippet %>
-        <div class="mt-4  text-base leading-tight">
-          <%= link_to @article.title, @article, class: "text-blue-500 hover:text-blue-600" %>
-        </div>
-      </blockquote>
-    </div>
-  <% end %>
+      </div>
+    <% end %>
 
-  <div class="mb-8">
-    <% if @insight.research_threads.any? %>
-      <ul class="space-y-3 mb-3">
-        <% @insight.research_threads.each do |thread| %>
-          <li>
-            <%= button_to research_threads_path(research_thread_id: thread.id),
+    <div class="pt-4">
+      <%= render partial: "articles/article", locals: { article: @insight.article } %>
+    </div>
+
+    <h2 id="insights" class="text-2xl font-semibold pt-6 pb-2">Explore</h2>
+
+    <% @insight.research_threads.each do |thread| %>
+      <div>
+        <%= button_to research_threads_path(research_thread_id: thread.id),
                 method: :post,
                 class: "w-full text-left flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-colors" do %>
-              <span class="text-blue-500">→</span>
-              <span class="text-gray-700 flex-1"><%= thread.query %></span>
-              <% if thread.researched? %>
-                <span class="text-xs text-green-600">Researched</span>
-              <% end %>
-            <% end %>
-          </li>
+          <span class="text-blue-500">→</span>
+          <span class="text-gray-700 flex-1"><%= thread.query %></span>
+          <% if thread.researched? %>
+            <span class="text-xs text-green-600">Researched</span>
+          <% end %>
         <% end %>
-      </ul>
+      </div>
     <% end %>
 
     <div>
@@ -40,23 +37,24 @@
         <%= f.hidden_field :insight_id, value: @insight.id %>
         <%= f.text_field :query,
             required: true,
-            class: "flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-300 focus:border-transparent text-sm" %>
-        <%= f.submit "Ask your own",
+            class: "flex-1 py-3 px-5 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-300 focus:border-transparent" %>
+        <%= f.submit "→",
             class: "px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer" %>
       <% end %>
     </div>
-  </div>
 
-  <% if @similar_insights.any? %>
-    <div class="pt-2">
-      <h2 class="text-lg font-semibold mb-4">Similar Insights</h2>
-      <div class="space-y-2">
-        <%= render partial: "insights/insight", collection: @similar_insights, locals: { expanded: true, show_source: true } %>
-      </div>
-    </div>
-  <% end %>
+    <% if @more_from_article.any? %>
+      <h2 class="text-2xl font-semibold pt-6 pb-2">More from the article</h2>
+      <% @more_from_article.each do |item| %>
+        <%= render partial: "shared/item", locals: { item:, article: @insight.article } %>
+      <% end %>
+    <% end %>
 
-  <div class="py-4">
-    <%= link_to "← Back to article", @article, class: "text-gray-500 hover:text-gray-700" %>
+    <% if @similar_items.any? %>
+      <h2 class="text-2xl font-semibold pt-6 pb-2">Related</h2>
+      <% @similar_items.each do |item| %>
+        <%= render partial: "shared/item", locals: { item:, article: @insight.article } %>
+      <% end %>
+    <% end %>
   </div>
 </div>

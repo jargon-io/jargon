@@ -79,7 +79,7 @@ class IngestArticleJob < ApplicationJob
         "research_thread_#{ta.research_thread_id}",
         target: article,
         partial: "articles/article",
-        locals: { article:, relevance_note: ta.relevance_note }
+        locals: { article: }
       )
     end
   end

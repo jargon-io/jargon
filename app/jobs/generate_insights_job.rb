@@ -51,11 +51,11 @@ class GenerateInsightsJob < ApplicationJob
       target: "insights_loading"
     )
 
-    Turbo::StreamsChannel.broadcast_append_to(
+    Turbo::StreamsChannel.broadcast_after_to(
       "article_#{article.id}_insights",
       target: "insights",
       partial: "insights/insight",
-      locals: { insight: }
+      locals: { insight:, article: }
     )
   end
 

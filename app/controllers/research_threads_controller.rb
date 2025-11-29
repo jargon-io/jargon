@@ -5,6 +5,8 @@ class ResearchThreadsController < ApplicationController
     @thread = ResearchThread.find_by!(nanoid: params[:id])
     @source_article = @thread.source_article
     @thread_articles = @thread.thread_articles.includes(:article)
+
+    @related_items = find_related_items
   end
 
   def create
@@ -29,5 +31,17 @@ class ResearchThreadsController < ApplicationController
     else
       raise ActionController::BadRequest, "Missing required parameters"
     end
+  end
+
+  def find_related_items
+    return [] unless @thread.insight&.embedding.present?
+
+    discovered_article_ids = @thread_articles.map(&:article_id)
+
+    SimilarItemsQuery.new(
+      embedding: @thread.insight.embedding,
+      limit: 6,
+      exclude: [@thread.insight, @source_article].compact
+    ).call.reject { |item| item.is_a?(Article) && discovered_article_ids.include?(item.id) }
   end
 end

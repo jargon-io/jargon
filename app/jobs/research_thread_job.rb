@@ -57,7 +57,7 @@ class ResearchThreadJob < ApplicationJob
 
       IngestArticleJob.perform_later(url) if is_new
 
-      broadcast_article(thread, article, data["relevance_note"])
+      broadcast_article(thread, article)
     end
 
     thread.update!(status: :researched)
@@ -70,25 +70,24 @@ class ResearchThreadJob < ApplicationJob
 
   private
 
-  def broadcast_article(thread, article, relevance_note)
+  def broadcast_article(thread, article)
     Turbo::StreamsChannel.broadcast_remove_to(
       "research_thread_#{thread.id}",
       target: "thread_articles_loading"
     )
 
-    Turbo::StreamsChannel.broadcast_append_to(
+    Turbo::StreamsChannel.broadcast_after_to(
       "research_thread_#{thread.id}",
-      target: "thread_articles",
+      target: "articles",
       partial: "articles/article",
-      locals: { article:, relevance_note: }
+      locals: { article: }
     )
   end
 
   def broadcast_complete(thread)
-    Turbo::StreamsChannel.broadcast_replace_to(
+    Turbo::StreamsChannel.broadcast_remove_to(
       "research_thread_#{thread.id}",
-      target: "thread_status",
-      html: '<span class="text-green-600">Research complete</span>'
+      target: "thread_loading"
     )
   end
 end

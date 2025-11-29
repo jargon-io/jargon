@@ -13,9 +13,7 @@
   </div>
 
   <% if @article.image_url.present? %>
-    <%= image_tag @article.image_url,
-            alt: @article.title,
-            class: "w-64 float-right ml-4 mb-4" %>
+    <%= image_tag @article.image_url, class: "w-64 float-right ml-4 mb-4" %>
   <% end %>
 
   <% if @article.summary.present? %>

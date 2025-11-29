@@ -25,10 +25,13 @@ group :development, :test do
   gem "brakeman", require: false
   gem "bundler-audit", require: false
   gem "debug", platforms: %i[mri windows], require: "debug/prelude"
+  gem "factory_bot_rails"
   gem "htmlbeautifier"
+  gem "rspec-rails"
   gem "rubocop", "1.79.2"
   gem "rubocop-rails", require: false
   gem "ruby-lsp", "0.23.23"
+  gem "webmock"
 end
 
 group :development do

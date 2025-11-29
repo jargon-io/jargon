@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ResearchThreadsController < ApplicationController
+  ALLOWED_SUBJECT_TYPES = %w[Article Insight Cluster].freeze
+
   def show
     @thread = ResearchThread.by_slug!(params[:id])
     @source_article = @thread.source_article
@@ -21,11 +23,17 @@ class ResearchThreadsController < ApplicationController
     if params[:research_thread_id].present?
       ResearchThread.find(params[:research_thread_id])
     elsif params[:subject_id].present? && params[:subject_type].present? && params[:query].present?
-      subject = params[:subject_type].constantize.find(params[:subject_id])
+      subject = find_subject(params[:subject_type], params[:subject_id])
       subject.research_threads.create!(query: params[:query])
     else
       raise ActionController::BadRequest, "Missing required parameters"
     end
+  end
+
+  def find_subject(type, id)
+    raise ActionController::BadRequest, "Invalid subject type" unless ALLOWED_SUBJECT_TYPES.include?(type)
+
+    type.constantize.find(id)
   end
 
   def find_related_items

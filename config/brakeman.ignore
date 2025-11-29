@@ -1,16 +1,12 @@
 {
   "ignored_warnings": [
     {
-      "fingerprint": "43f768f89161cc396d4bec50140a937ae520f107670d1d4b31da5e036b593a44",
-      "note": "Snippet content is sanitized via safe_html() in _snippet partial"
+      "fingerprint": "3a3f89f22e197120ddeedc398f36eba7b7d53bc2df56092195e3da63ff020cd4",
+      "note": "Snippet content is sanitized via render_content() which uses Rails sanitize()"
     },
     {
-      "fingerprint": "9b81817fb94af263eeb4af6dedc07b3ebb78a4cf1b2636773735620056527f02",
-      "note": "Snippet content is sanitized via safe_html() in _snippet partial"
-    },
-    {
-      "fingerprint": "e259ba651c0c06ffc2f4709a4dc04071dee30e659096f645ad4235d3eea93cb7",
-      "note": "Snippet content is sanitized via safe_html() in _snippet partial"
+      "fingerprint": "3cfe8f50b30e1632bc3ac1ad4139cbaf590cb70ebf0a5206db303c4c5648fdcd",
+      "note": "Snippet content is sanitized via render_content() which uses Rails sanitize()"
     }
   ],
   "updated": "2025-11-29",

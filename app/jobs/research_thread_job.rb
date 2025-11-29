@@ -45,9 +45,9 @@ class ResearchThreadJob < ApplicationJob
     CONTEXT
 
     LLM.chat
-           .with_instructions("Generate a concise search query (5-10 words) to find articles related to the research question. Return only the query, nothing else.")
-           .ask(context)
-           .content
+       .with_instructions("Generate a concise search query (5-10 words) to find articles related to the research question. Return only the query, nothing else.")
+       .ask(context)
+       .content
   end
 
   def filter_results(thread, results)
@@ -69,9 +69,9 @@ class ResearchThreadJob < ApplicationJob
     PROMPT
 
     LLM.chat
-           .with_schema(SelectedArticlesSchema)
-           .ask(prompt)
-           .content["articles"] || []
+       .with_schema(SelectedArticlesSchema)
+       .ask(prompt)
+       .content["articles"] || []
   end
 
   def broadcast_article(thread, article)

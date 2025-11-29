@@ -27,9 +27,9 @@ module Topicable
     return if topic_source_text.blank?
 
     response = LLM.chat
-                      .with_schema(TopicsSchema)
-                      .with_instructions(TOPIC_INSTRUCTIONS)
-                      .ask(topic_source_text)
+                  .with_schema(TopicsSchema)
+                  .with_instructions(TOPIC_INSTRUCTIONS)
+                  .ask(topic_source_text)
 
     topics.destroy_all
     response.content["topics"].each do |phrase|

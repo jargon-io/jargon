@@ -28,11 +28,11 @@ module ResearchThreadGeneratable
     context = research_thread_context
 
     LLM.chat
-           .with_instructions(prompt)
-           .with_schema(ResearchQueriesSchema)
-           .ask(context)
-           .content["queries"]
-           .first(count)
+       .with_instructions(prompt)
+       .with_schema(ResearchQueriesSchema)
+       .ask(context)
+       .content["queries"]
+       .first(count)
   end
 
   def research_thread_context

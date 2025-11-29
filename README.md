@@ -66,8 +66,6 @@ apt-get install poppler-utils
 ```
 
 ## TODO
-* specs
-* better UI for ask question -> fetch web results
 * publish docker image on GH and add compose recipe to readme
 * better responsive styles
 * better root page ui (all nodes, no header, search box is in content area instead of floating header, explainer content?)

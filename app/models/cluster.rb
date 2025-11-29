@@ -63,8 +63,8 @@ class Cluster < ApplicationRecord
     PROMPT
 
     response = LLM.chat
-                      .with_schema(ClusterMetadataSchema)
-                      .ask(prompt)
+                  .with_schema(ClusterMetadataSchema)
+                  .ask(prompt)
 
     update!(
       name: response.content["name"],
@@ -107,8 +107,8 @@ class Cluster < ApplicationRecord
     PROMPT
 
     response = LLM.chat
-                      .with_schema(InsightClusterSchema)
-                      .ask(prompt)
+                  .with_schema(InsightClusterSchema)
+                  .ask(prompt)
 
     update!(
       name: response.content["title"],

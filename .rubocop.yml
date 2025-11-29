@@ -7,6 +7,7 @@ inherit_mode:
 
 AllCops:
   NewCops: enable
+  SuggestExtensions: false
   Exclude:
     - "db/schema.rb"
 

@@ -9,9 +9,9 @@ class GenerateInsightsJob < ApplicationJob
     prompt = build_prompt(article)
 
     response = LLM.chat
-                      .with_instructions(prompt)
-                      .with_schema(InsightsSchema)
-                      .ask(article.text)
+                  .with_instructions(prompt)
+                  .with_schema(InsightsSchema)
+                  .ask(article.text)
 
     insights_data = response.content["insights"]
 

@@ -146,8 +146,6 @@ class IngestArticleJob < ApplicationJob
     IngestArticleJob.perform_later(article.url)
   end
 
-  CrawlResult = Struct.new(:text, :image_url, keyword_init: true)
-
   def crawl_content(url)
     result = crawl_with_exa(url)
     if result
@@ -176,10 +174,10 @@ class IngestArticleJob < ApplicationJob
     prompt = "URL: #{url}\n\nContent:\n#{text.truncate(5000)}"
 
     LLM.chat
-           .with_instructions(CONTENT_EVALUATION_INSTRUCTIONS)
-           .with_schema(ContentEvaluationSchema)
-           .ask(prompt)
-           .content
+       .with_instructions(CONTENT_EVALUATION_INSTRUCTIONS)
+       .with_schema(ContentEvaluationSchema)
+       .ask(prompt)
+       .content
   end
 
   def update_article(text:, content_type:)
@@ -233,17 +231,17 @@ class IngestArticleJob < ApplicationJob
     PROMPT
 
     LLM.chat
-           .with_schema(ArticleMetadataSchema)
-           .ask(prompt)
-           .content
+       .with_schema(ArticleMetadataSchema)
+       .ask(prompt)
+       .content
   end
 
   def generate_summary(text)
     LLM.chat
-           .with_instructions(SUMMARY_INSTRUCTIONS)
-           .with_schema(ArticleSummarySchema)
-           .ask(text.truncate(10_000))
-           .content["summary"]
+       .with_instructions(SUMMARY_INSTRUCTIONS)
+       .with_schema(ArticleSummarySchema)
+       .ask(text.truncate(10_000))
+       .content["summary"]
   end
 
   def broadcast_update

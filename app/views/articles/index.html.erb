@@ -1,27 +1,7 @@
 <%= turbo_stream_from "articles" %>
 
 <div class="w-full max-w-2xl mx-auto">
-  <%= form_with model: @article, class: "mb-10" do |f| %>
-    <% if @article.errors.any? %>
-      <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
-        <ul class="list-disc list-inside">
-          <% @article.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
-
-    <div class="flex gap-3">
-      <%= f.url_field :url,
-          placeholder: "https://example.com/article",
-          required: true,
-          class: "flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
-      <%= f.submit "Add",
-          class: "px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer" %>
-    </div>
-  <% end %>
-
+  <h1 class="text-3xl font-bold mb-4">Articles</h1>
   <div id="articles" class="space-y-6">
     <%= render @articles %>
   </div>

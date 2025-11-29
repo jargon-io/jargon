@@ -1,0 +1,21 @@
+<div class="w-full max-w-2xl mx-auto space-y-4">
+
+  <div id="query" class="w-full text-left flex items-start gap-3 p-3 border-2 border-blue-300 bg-blue-50 rounded-lg text-lg">
+    <span class="text-blue-500">→</span>
+    <span class="text-gray-700 flex-1"><%= @query %></span>
+  </div>
+
+  <div id="web_search_button" class="flex justify-end">
+    <%= button_to "Search web",
+        web_search_path(q: @query),
+        method: :post,
+        class: "px-4 py-2 border bg-blue-500 text-white rounded-lg hover:bg-blue-600 cursor-pointer" %>
+  </div>
+
+  <% if @results.any? %>
+    <h2 class="text-2xl font-semibold pt-2 pb-2">In your library</h2>
+    <%= render partial: "shared/item", collection: @results, as: :item %>
+  <% else %>
+    <p class="text-gray-500">No results found in your library.</p>
+  <% end %>
+</div>

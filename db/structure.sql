@@ -283,6 +283,70 @@ ALTER SEQUENCE public.threads_id_seq OWNED BY public.threads.id;
 
 
 --
+-- Name: web_search_articles; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.web_search_articles (
+    id bigint NOT NULL,
+    web_search_id bigint NOT NULL,
+    article_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: web_search_articles_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.web_search_articles_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: web_search_articles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.web_search_articles_id_seq OWNED BY public.web_search_articles.id;
+
+
+--
+-- Name: web_searches; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.web_searches (
+    id bigint NOT NULL,
+    query character varying NOT NULL,
+    status integer DEFAULT 0 NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: web_searches_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.web_searches_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: web_searches_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.web_searches_id_seq OWNED BY public.web_searches.id;
+
+
+--
 -- Name: articles id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -308,6 +372,20 @@ ALTER TABLE ONLY public.thread_articles ALTER COLUMN id SET DEFAULT nextval('pub
 --
 
 ALTER TABLE ONLY public.threads ALTER COLUMN id SET DEFAULT nextval('public.threads_id_seq'::regclass);
+
+
+--
+-- Name: web_search_articles id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.web_search_articles ALTER COLUMN id SET DEFAULT nextval('public.web_search_articles_id_seq'::regclass);
+
+
+--
+-- Name: web_searches id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.web_searches ALTER COLUMN id SET DEFAULT nextval('public.web_searches_id_seq'::regclass);
 
 
 --
@@ -356,6 +434,22 @@ ALTER TABLE ONLY public.thread_articles
 
 ALTER TABLE ONLY public.threads
     ADD CONSTRAINT threads_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: web_search_articles web_search_articles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.web_search_articles
+    ADD CONSTRAINT web_search_articles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: web_searches web_searches_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.web_searches
+    ADD CONSTRAINT web_searches_pkey PRIMARY KEY (id);
 
 
 --
@@ -422,6 +516,20 @@ CREATE UNIQUE INDEX index_threads_on_nanoid ON public.threads USING btree (nanoi
 
 
 --
+-- Name: index_web_search_articles_on_article_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_web_search_articles_on_article_id ON public.web_search_articles USING btree (article_id);
+
+
+--
+-- Name: index_web_search_articles_on_web_search_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_web_search_articles_on_web_search_id ON public.web_search_articles USING btree (web_search_id);
+
+
+--
 -- Name: thread_articles fk_rails_11c79ccb57; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -430,11 +538,27 @@ ALTER TABLE ONLY public.thread_articles
 
 
 --
+-- Name: web_search_articles fk_rails_1e9a52c862; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.web_search_articles
+    ADD CONSTRAINT fk_rails_1e9a52c862 FOREIGN KEY (article_id) REFERENCES public.articles(id);
+
+
+--
 -- Name: thread_articles fk_rails_5c2c73703b; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.thread_articles
     ADD CONSTRAINT fk_rails_5c2c73703b FOREIGN KEY (research_thread_id) REFERENCES public.threads(id);
+
+
+--
+-- Name: web_search_articles fk_rails_711ba9ba8c; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.web_search_articles
+    ADD CONSTRAINT fk_rails_711ba9ba8c FOREIGN KEY (web_search_id) REFERENCES public.web_searches(id);
 
 
 --
@@ -468,6 +592,8 @@ ALTER TABLE ONLY public.insights
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251129042358'),
+('20251129042341'),
 ('20251128222601'),
 ('20251128210721'),
 ('20251128203952'),

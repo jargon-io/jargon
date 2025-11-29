@@ -5,7 +5,7 @@
       <div class="h-6 bg-gray-200 rounded w-3/4 mb-3"></div>
       <div class="h-4 bg-gray-100 rounded w-1/2"></div>
     </div>
-    <p class="text-sm text-gray-400 mt-3"><%= article.url %></p>
+    <p class="text-sm text-gray-400 mt-3 overflow-hidden"><%= article.url %></p>
   <% elsif article.failed? %>
     <h2 class="text-xl font-semibold mb-2 text-red-700">Failed to process</h2>
     <p class="text-sm text-red-600"><%= article.url %></p>
@@ -20,7 +20,7 @@
     </h2>
 
     <% if article.author.present? || article.published_at.present? %>
-      <div class="text-sm text-gray-500 mb-3 space-x-3">
+      <div class="overflow-hidden text-sm text-gray-500 mb-3 space-x-3">
         <% if article.author.present? %>
           <span><%= article.author %></span>
         <% end %>

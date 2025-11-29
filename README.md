@@ -1,6 +1,6 @@
 # Jargon
 
-<iframe width="560" height="315" src="cb44c955/raw/a4f91ff408aa95ca12d63b9c73ac1f9459dd19d1/Screen%2520Recording%25202025-11-28%2520at%252011.22.14%25E2%2580%25AFPM.mov" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<video src="https://gist.github.com/schoblaska/ab49a62d1d507bda8564a412cb44c955/raw/a4f91ff408aa95ca12d63b9c73ac1f9459dd19d1/Screen%2520Recording%25202025-11-28%2520at%252011.22.14%25E2%2580%25AFPM.mov" width="320" height="240" controls></video>
 
 ## Dependencies
 

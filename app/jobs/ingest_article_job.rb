@@ -143,9 +143,14 @@ class IngestArticleJob < ApplicationJob
     IngestArticleJob.perform_later(article.url)
   end
 
+  CrawlResult = Struct.new(:text, :image_url, keyword_init: true)
+
   def crawl_content(url)
     result = crawl_with_exa(url)
-    return result["text"] if result
+    if result
+      @crawl_image_url = result["image"]
+      return result["text"]
+    end
 
     crawl_with_fallback(url)
   end
@@ -181,6 +186,7 @@ class IngestArticleJob < ApplicationJob
       title: presence(metadata["title"]),
       author: presence(metadata["author"]),
       published_at: parse_date(metadata["published_at"]),
+      image_url: @crawl_image_url,
       text:,
       summary: generate_summary(text),
       content_type:,

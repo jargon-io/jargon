@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ExaClient
+  EXCLUDED_DOMAINS = %w[facebook.com].freeze
+
   def initialize
     @base_url = "https://api.exa.ai"
     @api_key = ENV.fetch("EXA_API_KEY", Rails.application.credentials.exa_api_key)
@@ -21,7 +23,7 @@ class ExaClient
   def search(query:, category: nil, start_published_date: nil, end_published_date: nil, domains: nil)
     uri = URI.join(@base_url, "/search")
 
-    json = { query: }
+    json = { query:, excludeDomains: EXCLUDED_DOMAINS }
 
     json[:category] = category if category
     json[:startPublishedDate] = start_published_date if start_published_date

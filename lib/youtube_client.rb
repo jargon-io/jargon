@@ -14,6 +14,13 @@ class YoutubeClient
     url.to_s.match?(URL_REGEX)
   end
 
+  def self.normalize_url(url)
+    video_id = url.to_s.match(URL_REGEX)&.[](1)
+    return nil unless video_id
+
+    "https://www.youtube.com/watch?v=#{video_id}"
+  end
+
   def fetch(url)
     video_id = extract_video_id(url)
     return nil unless video_id

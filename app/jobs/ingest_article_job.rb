@@ -137,9 +137,12 @@ class IngestArticleJob < ApplicationJob
   def queue_embedded_video(video_url)
     return if video_url.blank?
     return unless YoutubeClient.youtube_url?(video_url)
-    return if Article.exists?(url: video_url)
 
-    article = Article.create!(url: video_url)
+    normalized_url = YoutubeClient.normalize_url(video_url)
+    return if normalized_url.blank?
+    return if Article.exists?(url: normalized_url)
+
+    article = Article.create!(url: normalized_url)
     IngestArticleJob.perform_later(article.url)
   end
 

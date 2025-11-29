@@ -13,8 +13,23 @@
 
     <%= render "shared/snippet", text: @cluster.snippet, current_item: @cluster %>
 
+    <%= render "shared/section_heading", title: "Explore" %>
+
+    <%= render @cluster.research_threads %>
+
+    <%= form_with url: research_threads_path, method: :post, class: "flex gap-2" do |f| %>
+      <%= f.hidden_field :subject_type, value: "Cluster" %>
+      <%= f.hidden_field :subject_id, value: @cluster.id %>
+      <%= f.text_field :query,
+          required: true,
+          class: "flex-1 py-3 px-5 surface border border-strong rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-300 focus:border-transparent" %>
+      <%= f.submit "→",
+          class: "px-4 py-2 btn-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer" %>
+    <% end %>
+
     <% if @source_items.any? %>
-      <div class="space-y-4 clear-both pt-4" data-controller="expandable-list" data-expandable-list-limit-value="3">
+      <%= render "shared/section_heading", title: "Sources" %>
+      <div class="space-y-4 clear-both" data-controller="expandable-list" data-expandable-list-limit-value="3">
         <% @source_items.each do |item| %>
           <div data-expandable-list-target="item">
             <%= render "shared/item", item: item %>

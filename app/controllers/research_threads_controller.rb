@@ -19,29 +19,24 @@ class ResearchThreadsController < ApplicationController
 
   def find_or_create_thread
     if params[:research_thread_id].present?
-      # Clicking existing thread from insight page
       ResearchThread.find(params[:research_thread_id])
-    elsif params[:insight_id].present? && params[:query].present?
-      # Custom query from insight page
-      insight = Insight.find(params[:insight_id])
-      insight.research_threads.create!(
-        query: params[:query],
-        article: insight.article
-      )
+    elsif params[:subject_id].present? && params[:subject_type].present? && params[:query].present?
+      subject = params[:subject_type].constantize.find(params[:subject_id])
+      subject.research_threads.create!(query: params[:query])
     else
       raise ActionController::BadRequest, "Missing required parameters"
     end
   end
 
   def find_related_items
-    return [] if @thread.insight&.embedding.blank?
+    return [] if @thread.subject&.embedding.blank?
 
     discovered_article_ids = @thread_articles.map(&:article_id)
 
     SimilarItemsQuery.new(
-      embedding: @thread.insight.embedding,
+      embedding: @thread.subject.embedding,
       limit: 6,
-      exclude: [@thread.insight, @source_article].compact
+      exclude: [@thread.subject, @source_article].compact
     ).call.reject { |item| item.is_a?(Article) && discovered_article_ids.include?(item.id) }
   end
 end

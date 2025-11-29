@@ -7,6 +7,7 @@ class Article < ApplicationRecord
   include NormalizesMarkup
   include Topicable
   include Linkable
+  include ResearchThreadGeneratable
 
   slug -> { title.presence || "untitled" }
 
@@ -18,7 +19,7 @@ class Article < ApplicationRecord
 
   has_many :insights, dependent: :destroy
   has_many :thread_articles, dependent: :destroy
-  has_many :research_threads, through: :thread_articles
+  has_many :discovered_research_threads, through: :thread_articles, source: :research_thread
   has_many :web_search_articles, dependent: :destroy
 
   enum :status, { pending: 0, complete: 1, failed: 2 }
@@ -32,6 +33,10 @@ class Article < ApplicationRecord
 
   def topic_source_text
     "#{title}\n\n#{summary}"
+  end
+
+  def research_thread_context
+    "Title: #{title}\nSummary: #{summary}"
   end
 
   private

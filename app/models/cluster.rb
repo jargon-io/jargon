@@ -5,6 +5,7 @@ class Cluster < ApplicationRecord
   include Embeddable
   include NormalizesMarkup
   include Linkable
+  include ResearchThreadGeneratable
 
   slug -> { name.presence || "untitled" }
 
@@ -73,6 +74,7 @@ class Cluster < ApplicationRecord
     )
 
     generate_embedding!
+    generate_research_threads!
     AddLinksJob.set(wait: 30.seconds).perform_later("Cluster", id)
   end
 
@@ -115,6 +117,7 @@ class Cluster < ApplicationRecord
       status: :complete
     )
     generate_embedding!
+    generate_research_threads!
     AddLinksJob.set(wait: 30.seconds).perform_later("Cluster", id)
   rescue StandardError => e
     Rails.logger.error("Insight cluster metadata generation failed: #{e.message}")
@@ -130,6 +133,14 @@ class Cluster < ApplicationRecord
   end
 
   alias regenerate_metadata! generate_metadata!
+
+  def research_thread_context
+    if clusterable_type == "Insight"
+      "Title: #{name}\nBody: #{body}\nSnippet: #{snippet}"
+    else
+      "Title: #{name}\nSummary: #{summary}"
+    end
+  end
 
   private
 

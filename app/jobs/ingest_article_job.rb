@@ -191,6 +191,7 @@ class IngestArticleJob < ApplicationJob
 
     @article.generate_embedding!
     @article.cluster_if_similar!
+    @article.generate_research_threads!
     broadcast_update
 
     GenerateInsightsJob.perform_later(@article.id)

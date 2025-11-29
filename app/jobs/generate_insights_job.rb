@@ -28,10 +28,7 @@ class GenerateInsightsJob < ApplicationJob
 
       insight.generate_embedding!
       insight.cluster_if_similar!
-
-      data["queries"].each do |query|
-        insight.research_threads.create!(query:)
-      end
+      insight.generate_research_threads!
 
       broadcast_insight(article, insight)
     end
@@ -56,7 +53,6 @@ class GenerateInsightsJob < ApplicationJob
         - title: Short, memorable name (3-5 words)
         - body: 200-300 char insight. Use <strong> for 1-2 key terms. State what this is likely about.
         - snippet: Use available text. May use ... to tighten.
-        - queries: 2-4 research questions to explore the topic further
       PROMPT
     elsif article.video? || article.podcast?
       <<~PROMPT
@@ -64,7 +60,6 @@ class GenerateInsightsJob < ApplicationJob
         - title: Short, memorable name (3-5 words)
         - body: 200-300 char insight. Use <strong> for 1-2 key terms. State the idea directly.
         - snippet: Source excerpt. Use ... to tighten. May bold key phrases with <strong>.
-        - queries: 2-4 research questions to explore further
 
         Note: This is a transcript, so focus on explicitly stated ideas rather than inferring.
       PROMPT
@@ -74,7 +69,6 @@ class GenerateInsightsJob < ApplicationJob
         - title: Short, memorable name (3-5 words)
         - body: 200-300 char insight. Use <strong> for 1-2 key terms. State the idea directly.
         - snippet: Source excerpt. Use ... to tighten. May bold key phrases with <strong>.
-        - queries: 2-4 research questions to explore further
       PROMPT
     end
   end

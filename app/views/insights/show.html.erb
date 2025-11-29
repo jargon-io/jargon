@@ -17,7 +17,8 @@
   <%= render @insight.research_threads %>
 
   <%= form_with url: research_threads_path, method: :post, class: "flex gap-2" do |f| %>
-    <%= f.hidden_field :insight_id, value: @insight.id %>
+    <%= f.hidden_field :subject_type, value: "Insight" %>
+    <%= f.hidden_field :subject_id, value: @insight.id %>
     <%= f.text_field :query,
         required: true,
         class: "flex-1 py-3 px-5 surface border border-strong rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-300 focus:border-transparent" %>

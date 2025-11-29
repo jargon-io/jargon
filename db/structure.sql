@@ -326,13 +326,13 @@ ALTER SEQUENCE public.thread_articles_id_seq OWNED BY public.thread_articles.id;
 
 CREATE TABLE public.threads (
     id bigint NOT NULL,
-    insight_id bigint NOT NULL,
     query text NOT NULL,
     status integer DEFAULT 0 NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    article_id bigint,
-    slug character varying NOT NULL
+    slug character varying NOT NULL,
+    subject_type character varying,
+    subject_id bigint
 );
 
 
@@ -689,17 +689,17 @@ CREATE UNIQUE INDEX index_thread_articles_on_research_thread_id_and_article_id O
 
 
 --
--- Name: index_threads_on_insight_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_threads_on_insight_id ON public.threads USING btree (insight_id);
-
-
---
 -- Name: index_threads_on_slug; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_threads_on_slug ON public.threads USING btree (slug);
+
+
+--
+-- Name: index_threads_on_subject; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_threads_on_subject ON public.threads USING btree (subject_type, subject_id);
 
 
 --
@@ -771,22 +771,6 @@ ALTER TABLE ONLY public.cluster_memberships
 
 
 --
--- Name: threads fk_rails_ce6ff6a226; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.threads
-    ADD CONSTRAINT fk_rails_ce6ff6a226 FOREIGN KEY (insight_id) REFERENCES public.insights(id);
-
-
---
--- Name: threads fk_rails_daafb51834; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.threads
-    ADD CONSTRAINT fk_rails_daafb51834 FOREIGN KEY (article_id) REFERENCES public.articles(id);
-
-
---
 -- Name: insights fk_rails_fcb882bec4; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -801,6 +785,7 @@ ALTER TABLE ONLY public.insights
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251129221540'),
 ('20251129192004'),
 ('20251129164403'),
 ('20251129160954'),

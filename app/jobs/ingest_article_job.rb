@@ -77,15 +77,11 @@ class IngestArticleJob < ApplicationJob
     article.thread_articles.includes(:research_thread).find_each do |ta|
       Turbo::StreamsChannel.broadcast_replace_to(
         "research_thread_#{ta.research_thread_id}",
-        target: dom_id(article, :thread),
-        partial: "research_threads/thread_article",
+        target: article,
+        partial: "articles/article",
         locals: { article:, relevance_note: ta.relevance_note }
       )
     end
-  end
-
-  def dom_id(record, prefix = nil)
-    ActionView::RecordIdentifier.dom_id(record, prefix)
   end
 
   def generate_embedding(article)

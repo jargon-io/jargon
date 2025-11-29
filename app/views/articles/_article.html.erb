@@ -1,3 +1,4 @@
+<%# locals: (article:) %>
 <article id="<%= dom_id(article) %>" class="border rounded-lg p-5 transition-colors <%= article.failed? ? 'border-red-200 bg-red-50' : 'border-gray-200 hover:border-gray-300' %>">
   <% if article.pending? %>
     <div class="animate-pulse">
@@ -29,7 +30,7 @@
     </div>
 
     <% if article.summary.present? %>
-      <p class="text-gray-700 line-clamp-3"><%= article.summary %></p>
+      <p class="text-gray-700"><%= article.summary %></p>
     <% end %>
   <% end %>
 </article>

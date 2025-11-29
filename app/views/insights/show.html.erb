@@ -1,8 +1,4 @@
 <div class="w-full max-w-2xl mx-auto">
-  <p class="text-sm text-gray-500 mb-4">
-    From: <%= link_to @article.title, @article, class: "text-blue-600 hover:text-blue-800" %>
-  </p>
-
   <h1 class="text-3xl font-bold mb-4"><%= @insight.title %></h1>
 
   <% if @insight.body.present? %>
@@ -10,16 +6,17 @@
   <% end %>
 
   <% if @insight.snippet.present? %>
-    <div class="bg-gray-50 rounded-lg p-4 mb-6">
-      <blockquote class="text-gray-600 italic">
-        "<%= @insight.snippet %>"
+    <div class="text-lg pl-4 mb-8 border-l-4 border-blue-300">
+      <blockquote class="text-gray-700 italic">
+        <%= @insight.snippet %>
+        <div class="mt-4  text-base leading-tight">
+          <%= link_to @article.title, @article, class: "text-blue-500 hover:text-blue-600" %>
+        </div>
       </blockquote>
     </div>
   <% end %>
 
   <div class="mb-8">
-    <h2 class="text-lg font-semibold mb-4">Explore Further</h2>
-
     <% if @insight.research_threads.any? %>
       <ul class="space-y-3 mb-3">
         <% @insight.research_threads.each do |thread| %>
@@ -53,17 +50,9 @@
   <% if @similar_insights.any? %>
     <div class="pt-2">
       <h2 class="text-lg font-semibold mb-4">Similar Insights</h2>
-      <ul class="space-y-3">
-        <% @similar_insights.each do |insight| %>
-          <li class="p-3 bg-gray-50 rounded-lg">
-            <%= link_to insight.title, insight, class: "font-medium text-blue-600 hover:text-blue-800" %>
-            <p class="text-sm text-gray-600 mt-1"><%= insight.body %></p>
-            <p class="text-xs text-gray-600 mt-3">
-              From: <%= link_to insight.article.title, insight.article, class: "hover:text-gray-600" %>
-            </p>
-          </li>
-        <% end %>
-      </ul>
+      <div class="space-y-2">
+        <%= render partial: "insights/insight", collection: @similar_insights, locals: { expanded: true, show_source: true } %>
+      </div>
     </div>
   <% end %>
 

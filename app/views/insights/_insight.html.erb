@@ -1,9 +1,15 @@
-<%# locals: (insight:, expanded: true) %>
+<%# locals: (insight:, expanded: true, show_source: false) %>
 
 <div id="<%= dom_id(insight) %>" class="py-2">
   <h2 class="font-medium">
     <%= link_to insight.title, insight, class: "text-blue-600 hover:text-blue-800" %>
   </h2>
+
+  <% if show_source %>
+    <p class="text-xs text-gray-500 mt-1">
+      From: <%= link_to insight.article.title, insight.article, class: "hover:text-gray-700" %>
+    </p>
+  <% end %>
 
   <% if expanded %>
     <% if insight.body.present? %>

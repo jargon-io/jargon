@@ -79,7 +79,7 @@ class ResearchThreadJob < ApplicationJob
     Turbo::StreamsChannel.broadcast_append_to(
       "research_thread_#{thread.id}",
       target: "thread_articles",
-      partial: "research_threads/thread_article",
+      partial: "articles/article",
       locals: { article:, relevance_note: }
     )
   end

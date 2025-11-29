@@ -17,17 +17,14 @@
       <span class="text-amber-600 flex items-center gap-2">
         <span class="animate-pulse">●</span> Researching...
       </span>
-    <% else %>
-      <span class="text-green-600">Research complete</span>
     <% end %>
   </div>
 
   <div class="mb-8">
-    <h2 class="text-lg font-semibold mb-4">Discovered Articles</h2>
     <div id="thread_articles" class="space-y-4">
       <% if @thread_articles.any? %>
         <% @thread_articles.each do |ta| %>
-          <%= render "research_threads/thread_article", article: ta.article, relevance_note: ta.relevance_note %>
+          <%= render "articles/article", article: ta.article %>
         <% end %>
       <% elsif @thread.pending? %>
         <div id="thread_articles_loading">

@@ -1,9 +1,9 @@
 <%# locals: (research_thread:) %>
 <%= button_to research_threads_path(research_thread_id: research_thread.id),
         method: :post,
-        class: "w-full text-left flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 cursor-pointer transition-colors" do %>
-  <span class="text-blue-500">→</span>
-  <span class="text-gray-700 flex-1"><%= research_thread.query %></span>
+        class: "w-full text-left flex items-start gap-3 p-3 border border-default rounded-lg hover:border-blue-300 hover:bg-blue-50 dark:hover:border-blue-900 dark:hover:bg-slate-900 cursor-pointer transition-colors" do %>
+  <span class="text-blue-500 dark:text-blue-400">→</span>
+  <span class="text-body flex-1"><%= research_thread.query %></span>
   <% if research_thread.researched? %>
     <svg class="w-6 h-6 text-emerald-400" fill="currentColor"  viewBox="0 0 24 24">
       <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />

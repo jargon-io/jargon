@@ -1,28 +1,28 @@
 <%# locals: (article:) %>
-<div id="<%= dom_id(article) %>" class="border rounded-lg p-5 transition-colors <%= article.failed? ? 'border-red-200 bg-red-50' : 'border-gray-200 hover:border-gray-300' %>">
+<div id="<%= dom_id(article) %>" class="border rounded-lg p-5 transition-colors <%= article.failed? ? 'border-red-300 bg-red-50 dark:border-red-800 dark:bg-red-950' : 'border-default hover:border-strong' %>">
   <% if article.pending? %>
     <div class="animate-pulse space-y-3">
-      <div class="h-6 bg-gray-200 rounded w-3/4"></div>
-      <div class="h-4 bg-gray-100 rounded w-1/2"></div>
+      <div class="h-6 surface-hover rounded w-3/4"></div>
+      <div class="h-4 surface-alt rounded w-1/2"></div>
     </div>
-    <p class="text-sm text-gray-400 mt-3 overflow-hidden"><%= article.url %></p>
+    <p class="text-sm text-faint mt-3 overflow-hidden"><%= article.url %></p>
   <% elsif article.failed? %>
-    <h2 class="text-xl font-semibold text-red-700">Failed to process</h2>
-    <p class="text-sm text-red-600"><%= article.url %></p>
+    <h2 class="text-xl font-semibold text-red-700 dark:text-red-400">Failed to process</h2>
+    <p class="text-sm text-red-600 dark:text-red-500"><%= article.url %></p>
   <% else %>
     <% if article.image_url.present? %>
       <%= image_tag article.image_url, class: "h-32 max-w-48 object-contain float-right ml-4" %>
     <% end %>
 
     <div class="space-y-1">
-      <h2 class="text-xl font-semibold">
-        <%= link_to article.title.presence || "Untitled", article, class: "hover:text-blue-600" %>
+      <h2 class="text-xl font-semibold text-heading">
+        <%= link_to article.title.presence || "Untitled", article %>
       </h2>
       <%= render "shared/byline", author: article.author, date: article.published_at %>
     </div>
 
     <% if article.summary.present? %>
-      <p class="text-gray-700 mt-3"><%= render_content(article.summary, current_item: article) %></p>
+      <p class="text-body mt-3"><%= render_content(article.summary, current_item: article) %></p>
     <% end %>
   <% end %>
 </div>

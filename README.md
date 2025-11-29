@@ -26,7 +26,6 @@ apt-get install poppler-utils
 ```
 
 ## TODO
-* dark mode
 * make it easier to configure different LLM providers with env vars
 * specs
 * better UI for ask question -> fetch web results

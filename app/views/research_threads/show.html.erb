@@ -4,9 +4,9 @@
 <div class="w-full max-w-2xl mx-auto space-y-4">
   <%= render partial: "insights/insight", locals: { insight: @thread.insight, suppress_source: false } %>
 
-  <div class="w-full text-left flex items-start gap-3 p-3 border-2 border-blue-300 bg-blue-50 rounded-lg text-lg">
-    <span class="text-blue-500">→</span>
-    <span class="text-gray-700 flex-1"><%= @thread.query %></span>
+  <div class="w-full text-left flex items-start gap-3 p-3 border-2 accent-border accent-bg rounded-lg text-lg">
+    <span class="text-blue-500 dark:text-blue-400">→</span>
+    <span class="text-body flex-1"><%= @thread.query %></span>
   </div>
 
   <%= render "shared/section_heading", title: "Articles" %>

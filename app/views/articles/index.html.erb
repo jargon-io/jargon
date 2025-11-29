@@ -2,7 +2,7 @@
 <%= turbo_stream_from "articles" %>
 
 <div class="w-full max-w-2xl mx-auto">
-  <h1 class="text-3xl font-bold mb-4">Articles</h1>
+  <h1 class="text-3xl font-bold text-heading mb-4">Articles</h1>
   <div id="articles" class="space-y-4">
     <% items = (@articles + @clusters).sort_by(&:created_at).reverse %>
     <% if items.any? %>
@@ -10,7 +10,7 @@
         <%= render item %>
       <% end %>
     <% else %>
-      <div class="text-gray-500">
+      <div class="text-muted">
         <p>No articles yet.</p>
       </div>
     <% end %>

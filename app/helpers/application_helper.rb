@@ -22,7 +22,7 @@ module ApplicationHelper
         link_text
       else
         path = "/#{type.pluralize}/#{slug}"
-        %(<a href="#{path}" class="text-blue-500 hover:text-blue-600">#{link_text}</a>)
+        %(<a href="#{path}" class="text-link">#{link_text}</a>)
       end
     end
 

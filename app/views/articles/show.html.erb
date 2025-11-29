@@ -3,7 +3,7 @@
 
 <div class="w-full max-w-2xl mx-auto space-y-4">
   <div class="space-y-1">
-    <h1 class="text-3xl font-bold"><%= @article.title %></h1>
+    <h1 class="text-3xl font-bold text-heading"><%= @article.title %></h1>
     <%= render "shared/byline", author: @article.author, date: @article.published_at %>
   </div>
 
@@ -22,7 +22,7 @@
   <% end %>
 
   <% if @article.summary.present? %>
-    <p class="text-lg text-gray-700 leading-relaxed"><%= render_content(@article.summary, current_item: @article) %></p>
+    <p class="text-lg text-body leading-relaxed"><%= render_content(@article.summary, current_item: @article) %></p>
   <% end %>
 
   <% unless @article.video? %>
@@ -32,7 +32,7 @@
               @article.url,
               target: "_blank",
               rel: "noopener",
-              class: "text-blue-500 hover:text-blue-600 font-medium" %>
+              class: "text-link font-medium" %>
     </div>
   <% end %>
 

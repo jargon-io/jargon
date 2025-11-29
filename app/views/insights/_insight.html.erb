@@ -1,12 +1,12 @@
 <%# locals: (insight:, suppress_source: false) %>
 
-<div id="<%= dom_id(insight) %>" class="border rounded-lg p-5 transition-colors <%= insight.failed? ? 'border-red-200 bg-red-50' : 'border-gray-200 hover:border-gray-300' %>">
-  <h2 class="text-xl font-semibold mb-2">
-    <%= link_to insight.title || "Untitled", insight, class: "hover:text-blue-600" %>
+<div id="<%= dom_id(insight) %>" class="border rounded-lg p-5 transition-colors <%= insight.failed? ? 'border-red-300 bg-red-50 dark:border-red-800 dark:bg-red-950' : 'border-default hover:border-strong' %>">
+  <h2 class="text-xl font-semibold text-heading">
+    <%= link_to insight.title || "Untitled", insight %>
   </h2>
 
   <% if insight.body.present? %>
-    <p class="text-gray-700 mt-2"><%= render_content(insight.body, current_item: insight) %></p>
+    <p class="text-body mt-2"><%= render_content(insight.body, current_item: insight) %></p>
   <% end %>
 
   <%= render "shared/snippet",

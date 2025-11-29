@@ -1,16 +1,16 @@
-<header class="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
+<header class="fixed top-0 left-0 right-0 surface border-b border-default z-50">
   <div class="container mx-auto px-5 py-4">
     <div class="w-full max-w-2xl mx-auto flex items-center gap-4">
-      <%= link_to root_path, class: "text-xl font-semibold text-gray-900 hover:text-blue-600 flex items-center gap-2" do %>
+      <%= link_to root_path, class: "text-xl font-semibold text-heading flex items-center gap-2" do %>
         <%= image_tag "logo.png", class: "h-6 w-6" %>
         <span>Jargon</span>
       <% end %>
       <%= form_with url: search_path, method: :get, class: "flex-1 flex gap-3" do |f| %>
         <%= f.text_field :q,
             placeholder: "URL, question, or topic...",
-            class: "flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
+            class: "flex-1 px-4 py-2 surface border border-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
         <%= f.submit "Go",
-            class: "px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer" %>
+            class: "px-6 py-2 btn-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer" %>
       <% end %>
     </div>
   </div>

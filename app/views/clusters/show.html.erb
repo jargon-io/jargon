@@ -1,6 +1,6 @@
 <% content_for(:title) { "#{@cluster.name.presence || 'Cluster'} | Jargon" } %>
 <div class="w-full max-w-2xl mx-auto space-y-4">
-  <h1 class="text-3xl font-bold"><%= @cluster.name.presence || "Unnamed Cluster" %></h1>
+  <h1 class="text-3xl font-bold text-heading"><%= @cluster.name.presence || "Unnamed Cluster" %></h1>
 
   <% if @cluster.image_url.present? %>
     <%= image_tag @cluster.image_url, class: "float-right ml-4 mb-4 max-h-48 max-w-64 object-contain rounded" %>
@@ -8,7 +8,7 @@
 
   <% if @cluster.clusterable_type == "Insight" %>
     <% if @cluster.body.present? %>
-      <p class="text-lg text-gray-700 leading-relaxed"><%= render_content(@cluster.body, current_item: @cluster) %></p>
+      <p class="text-lg text-body leading-relaxed"><%= render_content(@cluster.body, current_item: @cluster) %></p>
     <% end %>
 
     <%= render "shared/snippet", text: @cluster.snippet, current_item: @cluster %>
@@ -25,14 +25,14 @@
     <% end %>
   <% else %>
     <% if @cluster.summary.present? %>
-      <p class="text-lg text-gray-700 leading-relaxed"><%= render_content(@cluster.summary, current_item: @cluster) %></p>
+      <p class="text-lg text-body leading-relaxed"><%= render_content(@cluster.summary, current_item: @cluster) %></p>
     <% end %>
 
     <% if @cluster.snippet.present? %>
       <%= render "shared/snippet", text: @cluster.snippet, current_item: @cluster %>
     <% end %>
 
-    <ul class="text-blue-500 text-sm space-y-1 clear-both">
+    <ul class="text-link text-sm space-y-1 clear-both">
       <% @members.each do |article| %>
         <li>
           <%= link_to article.url, article.url, target: "_blank", rel: "noopener", class: "hover:underline break-all" %>

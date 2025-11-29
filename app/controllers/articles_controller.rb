@@ -6,7 +6,7 @@ class ArticlesController < ApplicationController
   end
 
   def show
-    @article = Article.complete.find_by!(nanoid: params[:id])
+    @article = Article.complete.find_by!(slug: params[:id])
 
     @similar_items = SimilarItemsQuery.new(
       embedding: @article.embedding,

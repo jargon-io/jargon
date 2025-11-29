@@ -2,7 +2,7 @@
 
 class ResearchThreadsController < ApplicationController
   def show
-    @thread = ResearchThread.find_by!(nanoid: params[:id])
+    @thread = ResearchThread.by_slug!(params[:id])
     @source_article = @thread.source_article
     @thread_articles = @thread.thread_articles.includes(:article)
 

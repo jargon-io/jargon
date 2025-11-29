@@ -143,9 +143,9 @@ CREATE TABLE public.articles (
     image_url character varying,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    nanoid character varying DEFAULT public.nanoid() NOT NULL,
     status integer DEFAULT 0 NOT NULL,
-    embedding public.vector(1536)
+    embedding public.vector(1536),
+    slug character varying
 );
 
 
@@ -175,14 +175,14 @@ ALTER SEQUENCE public.articles_id_seq OWNED BY public.articles.id;
 CREATE TABLE public.insights (
     id bigint NOT NULL,
     article_id bigint NOT NULL,
-    nanoid character varying DEFAULT public.nanoid() NOT NULL,
     title character varying,
     body text,
     snippet text,
     status integer DEFAULT 0 NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    embedding public.vector(1536)
+    embedding public.vector(1536),
+    slug character varying
 );
 
 
@@ -258,8 +258,8 @@ CREATE TABLE public.threads (
     status integer DEFAULT 0 NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    nanoid character varying DEFAULT public.nanoid() NOT NULL,
-    article_id bigint
+    article_id bigint,
+    slug character varying
 );
 
 
@@ -453,10 +453,10 @@ ALTER TABLE ONLY public.web_searches
 
 
 --
--- Name: index_articles_on_nanoid; Type: INDEX; Schema: public; Owner: -
+-- Name: index_articles_on_slug; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_articles_on_nanoid ON public.articles USING btree (nanoid);
+CREATE UNIQUE INDEX index_articles_on_slug ON public.articles USING btree (slug);
 
 
 --
@@ -474,10 +474,10 @@ CREATE INDEX index_insights_on_article_id ON public.insights USING btree (articl
 
 
 --
--- Name: index_insights_on_nanoid; Type: INDEX; Schema: public; Owner: -
+-- Name: index_insights_on_slug; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_insights_on_nanoid ON public.insights USING btree (nanoid);
+CREATE UNIQUE INDEX index_insights_on_slug ON public.insights USING btree (slug);
 
 
 --
@@ -509,10 +509,10 @@ CREATE INDEX index_threads_on_insight_id ON public.threads USING btree (insight_
 
 
 --
--- Name: index_threads_on_nanoid; Type: INDEX; Schema: public; Owner: -
+-- Name: index_threads_on_slug; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_threads_on_nanoid ON public.threads USING btree (nanoid);
+CREATE UNIQUE INDEX index_threads_on_slug ON public.threads USING btree (slug);
 
 
 --
@@ -592,6 +592,7 @@ ALTER TABLE ONLY public.insights
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251129045418'),
 ('20251129042358'),
 ('20251129042341'),
 ('20251128222601'),

@@ -2,7 +2,7 @@
 
 class InsightsController < ApplicationController
   def show
-    @insight = Insight.find_by!(nanoid: params[:id])
+    @insight = Insight.by_slug!(params[:id])
     @more_from_article = @insight.article.insights.complete.where.not(id: @insight.id)
 
     @similar_items = SimilarItemsQuery.new(

@@ -51,16 +51,32 @@ class IngestArticleJob < ApplicationJob
     video = YoutubeClient.new.fetch(url)
 
     if video&.transcript.present?
-      update_article(text: video.transcript, content_type: :video)
-      @article.update!(title: video.title) if video.title.present?
+      @article.update!(
+        title: video.title,
+        author: extract_speaker_from_title(video.title) || video.channel,
+        published_at: video.published_at,
+        text: video.transcript,
+        summary: generate_summary(video.transcript),
+        content_type: :video,
+        status: :complete
+      )
     else
       @article.update!(
         title: video&.title,
+        author: video&.channel,
+        published_at: video&.published_at,
         content_type: :video,
-        status: :complete,
-        summary:
+        status: :complete
       )
     end
+  end
+
+  def extract_speaker_from_title(title)
+    return nil if title.blank?
+
+    # Match patterns like "Conference: Speaker Name - Talk Title" or "Speaker Name: Talk Title"
+    match = title.match(/:\s*([A-Z][a-z]+ [A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\s*[-–—]/)
+    match&.[](1)
   end
 
   def process_web_content(url)

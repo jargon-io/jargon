@@ -8,7 +8,7 @@ class YoutubeClient
   INNERTUBE_URL = "https://www.youtube.com/youtubei/v1/player?key=#{INNERTUBE_PUBLIC_API_KEY}"
   INNERTUBE_CONTEXT = { "client" => { "clientName" => "WEB", "clientVersion" => "2.20240101.00.00" } }.freeze
 
-  VideoInfo = Struct.new(:title, :transcript, keyword_init: true)
+  VideoInfo = Struct.new(:title, :channel, :published_at, :transcript, keyword_init: true)
 
   def self.youtube_url?(url)
     url.to_s.match?(URL_REGEX)
@@ -22,6 +22,8 @@ class YoutubeClient
 
     VideoInfo.new(
       title: player_data.dig("videoDetails", "title"),
+      channel: player_data.dig("videoDetails", "author"),
+      published_at: parse_publish_date(player_data),
       transcript: extract_transcript(player_data)
     )
   rescue StandardError => e
@@ -33,6 +35,15 @@ class YoutubeClient
 
   def extract_video_id(url)
     url.to_s.match(URL_REGEX)&.[](1)
+  end
+
+  def parse_publish_date(player_data)
+    date_str = player_data.dig("microformat", "playerMicroformatRenderer", "publishDate")
+    return nil if date_str.blank?
+
+    Date.parse(date_str)
+  rescue ArgumentError
+    nil
   end
 
   def fetch_player_data(video_id)

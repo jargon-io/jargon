@@ -17,11 +17,12 @@
   <% end %>
 
   <% if @article.summary.present? %>
-    <p class="text-lg text-gray-700 leading-relaxed"><%= @article.summary %></p>
+    <p class="text-lg text-gray-700 leading-relaxed"><%= @article.summary.html_safe %></p>
   <% end %>
 
   <div>
-    <%= link_to "Read original",
+    <% label = @article.url&.match?(/\.pdf(\?|$)/i) ? "Read original (PDF)" : "Read original" %>
+    <%= link_to label,
             @article.url,
             target: "_blank",
             rel: "noopener",

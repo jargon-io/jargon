@@ -11,13 +11,13 @@
 
   <% if cluster.clusterable_type == "Insight" %>
     <% if cluster.body.present? %>
-      <p class="text-gray-700 mt-2"><%= cluster.body %></p>
+      <p class="text-gray-700 mt-2"><%= cluster.body.html_safe %></p>
     <% end %>
 
     <%= render "shared/snippet", text: cluster.snippet, compact: true %>
   <% else %>
     <% if cluster.summary.present? %>
-      <p class="text-gray-700 mt-2"><%= cluster.summary %></p>
+      <p class="text-gray-700 mt-2"><%= cluster.summary.html_safe %></p>
     <% end %>
   <% end %>
 </div>

@@ -48,9 +48,18 @@ class Cluster < ApplicationRecord
 
     context = article_members.map { |a| format_article_for_metadata(a) }.join("\n\n---\n\n")
 
+    prompt = <<~PROMPT
+      These are the same article from different sources. Generate:
+      - A clean, canonical title (without source names like 'PubMed' or 'Nature')
+      - A summary that states the key idea directly (not "this cluster is about...")
+      - Use <strong> for 1-2 key terms
+
+      #{context}
+    PROMPT
+
     response = RubyLLM.chat
                       .with_schema(ClusterMetadataSchema)
-                      .ask("These are the same article from different sources. Generate a clean, canonical title (without source names like 'PubMed' or 'Nature') and a brief summary:\n\n#{context}")
+                      .ask(prompt)
 
     update!(
       name: response.content["name"]&.titleize,
@@ -81,10 +90,11 @@ class Cluster < ApplicationRecord
     context = insight_members.map { |i| format_insight_for_metadata(i) }.join("\n\n---\n\n")
 
     prompt = <<~PROMPT
-      These are variations of the same insight from different sources. Synthesize them into ONE canonical insight that:
+      These are variations of the same insight from different sources. Synthesize into ONE canonical insight:
       - Captures the core idea directly (not "this cluster is about...")
       - Incorporates nuance and detail from all variations
-      - Reads as a standalone insight, not a summary of a collection
+      - Use <strong> for 1-2 key terms
+      - Snippet may use ellipses (...) to tighten
 
       #{context}
     PROMPT

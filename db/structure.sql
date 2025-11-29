@@ -145,7 +145,7 @@ CREATE TABLE public.articles (
     updated_at timestamp(6) without time zone NOT NULL,
     status integer DEFAULT 0 NOT NULL,
     embedding public.vector(1536),
-    slug character varying
+    slug character varying NOT NULL
 );
 
 
@@ -254,7 +254,7 @@ CREATE TABLE public.insights (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     embedding public.vector(1536),
-    slug character varying
+    slug character varying NOT NULL
 );
 
 
@@ -331,7 +331,7 @@ CREATE TABLE public.threads (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     article_id bigint,
-    slug character varying
+    slug character varying NOT NULL
 );
 
 
@@ -737,6 +737,7 @@ ALTER TABLE ONLY public.insights
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251129160954'),
 ('20251129153217'),
 ('20251129151925'),
 ('20251129144943'),

@@ -1,6 +1,18 @@
 # frozen_string_literal: true
 
 class IngestArticleJob < ApplicationJob
+  SUMMARY_INSTRUCTIONS = <<~PROMPT
+    Distill the article's key idea into a summary.
+
+    Voice:
+    - State the finding/idea directly: "People delegate unethical tasks to AI more readily..."
+    - NOT commentary: "The article discusses how people..."
+    - Use <strong> to emphasize 1-2 key terms or phrases
+    - Preserve nuance; don't oversimplify
+
+    Length: 200-300 characters
+  PROMPT
+
   def perform(url)
     article = Article.find_by!(url:)
 
@@ -42,7 +54,8 @@ class IngestArticleJob < ApplicationJob
   def update_from_exa(article, result)
     article.update!(
       title: result["title"],
-      text: result["text"], summary: result["summary"],
+      text: result["text"],
+      summary: generate_summary(result["text"]),
       author: result["author"],
       image_url: result["image"],
       published_at: result["publishedDate"],
@@ -56,7 +69,7 @@ class IngestArticleJob < ApplicationJob
     article.update!(
       title: metadata["title"],
       text: markdown,
-      summary: metadata["summary"],
+      summary: generate_summary(markdown),
       status: :complete
     )
   end
@@ -64,8 +77,16 @@ class IngestArticleJob < ApplicationJob
   def extract_metadata(markdown)
     RubyLLM.chat
            .with_schema(ArticleMetadataSchema)
-           .ask("Extract the title and write a 200-300 character summary:\n\n#{markdown.truncate(10_000)}")
+           .ask("Extract the title from this article:\n\n#{markdown.truncate(10_000)}")
            .content
+  end
+
+  def generate_summary(text)
+    RubyLLM.chat
+           .with_instructions(SUMMARY_INSTRUCTIONS)
+           .with_schema(ArticleSummarySchema)
+           .ask(text.truncate(10_000))
+           .content["summary"]
   end
 
   def broadcast_update(article)

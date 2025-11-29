@@ -31,7 +31,7 @@
     <% end %>
 
     <% if article.summary.present? %>
-      <p class="text-gray-700"><%= article.summary %></p>
+      <p class="text-gray-700"><%= article.summary.html_safe %></p>
     <% end %>
   <% end %>
 </div>

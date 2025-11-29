@@ -6,7 +6,7 @@
   </h2>
 
   <% if insight.body.present? %>
-    <p class="text-gray-700 mt-2"><%= insight.body %></p>
+    <p class="text-gray-700 mt-2"><%= insight.body.html_safe %></p>
   <% end %>
 
   <%= render "shared/snippet",

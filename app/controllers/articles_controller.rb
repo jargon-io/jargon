@@ -2,7 +2,7 @@
 
 class ArticlesController < ApplicationController
   def index
-    @articles = Article.complete
+    @articles = Article.where(status: %i[pending complete])
                        .where.missing(:cluster_membership)
                        .order(created_at: :desc)
 

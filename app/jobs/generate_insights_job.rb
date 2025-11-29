@@ -7,11 +7,11 @@ class GenerateInsightsJob < ApplicationJob
     article = Article.find(article_id)
 
     prompt = <<~PROMPT
-      Analyze this article and extract key insights. For each insight:
-      - title: A short, memorable name (3-5 words)
-      - body: A 200-300 character insight or observation
-      - snippet: The relevant text from the article that supports this insight
-      - threads: 2-4 research questions that could be explored further
+      Extract key insights from this article. For each:
+      - title: Short, memorable name (3-5 words)
+      - body: 200-300 char insight. Use <strong> for 1-2 key terms. State the idea directly.
+      - snippet: Source excerpt. Use ... to tighten. May bold key phrases with <strong>.
+      - queries: 2-4 research questions to explore further
     PROMPT
 
     response = RubyLLM.chat

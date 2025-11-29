@@ -20,10 +20,12 @@ class SearchController < ApplicationController
   end
 
   def create_article_from_url(url)
-    article = Article.find_by(url:)
-    return article if article
+    return if Article.exists?(url:)
 
-    Article.create!(url:).tap { IngestArticleJob.perform_later(it.url) }
+    Article.create!(url:).tap do |article|
+      article.broadcast_prepend_to("articles", target: "articles")
+      IngestArticleJob.perform_later(article.url)
+    end
   end
 
   def search_library(query)

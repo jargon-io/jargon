@@ -22,6 +22,6 @@ class CreateClusters < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :cluster_memberships, [:clusterable_type, :clusterable_id], unique: true, name: "idx_cluster_memberships_uniqueness"
+    add_index :cluster_memberships, %i[clusterable_type clusterable_id], unique: true, name: "idx_cluster_memberships_uniqueness"
   end
 end

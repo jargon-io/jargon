@@ -61,7 +61,7 @@ module Sluggable
       return
     end
 
-    base.parameterize
+    base.parameterize.first(30)
   end
 
   def resolve_slug_collisions(base_slug)

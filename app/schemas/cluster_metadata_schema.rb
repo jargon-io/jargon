@@ -2,5 +2,5 @@
 
 class ClusterMetadataSchema < RubyLLM::Schema
   string :name, description: "Short, descriptive name for the cluster (3-6 words)"
-  string :summary, description: "A concise but detailed summary of the common theme (100-300 characters)"
+  string :summary, description: "100-300 char summary. Use <strong> for 1-2 key terms. State the theme directly."
 end

@@ -11,32 +11,42 @@
     <% end %>
 
     <%= render "shared/snippet", text: @cluster.snippet %>
+
+    <div class="space-y-4 clear-both">
+      <% @source_items.each do |item| %>
+        <%= render partial: "shared/item", locals: { item: item, article: nil } %>
+      <% end %>
+    </div>
   <% else %>
     <% if @cluster.summary.present? %>
       <p class="text-lg text-gray-700 leading-relaxed mb-6"><%= @cluster.summary.html_safe %></p>
     <% end %>
-  <% end %>
 
-  <div class="space-y-4 clear-both">
-    <% if @cluster.clusterable_type == "Article" %>
-      <ul>
-        <% @members.each do |article| %>
-          <li class="text-gray-600 text-sm ">
-            <%= link_to article.url, article.url, target: "_blank", rel: "noopener", class: "text-blue-600 hover:underline break-all" %>
-          </li>
-        <% end %>
-      </ul>
-    <% else %>
-      <% @source_items.each do |item| %>
-        <%= render partial: "shared/item", locals: { item: item, article: nil } %>
-      <% end %>
+    <% if @cluster.snippet.present? %>
+      <%= render "shared/snippet", text: @cluster.snippet %>
     <% end %>
 
-    <% if @similar_items.any? %>
-      <%= render "shared/section_heading", title: "Related" %>
+    <ul class="text-blue-500 text-sm space-y-1 clear-both mb-6">
+      <% @members.each do |article| %>
+        <li>
+          <%= link_to article.url, article.url, target: "_blank", rel: "noopener", class: "hover:underline break-all" %>
+        </li>
+      <% end %>
+    </ul>
+
+    <div class="space-y-4">
+      <% @insights.each do |item| %>
+        <%= render partial: "shared/item", locals: { item: item, article: nil } %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% if @similar_items.any? %>
+    <%= render "shared/section_heading", title: "Related" %>
+    <div class="space-y-4">
       <% @similar_items.each do |item| %>
         <%= render partial: "shared/item", locals: { item:, article: nil } %>
       <% end %>
-    <% end %>
-  </div>
+    </div>
+  <% end %>
 </div>

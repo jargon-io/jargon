@@ -12,7 +12,17 @@
     <% end %>
   </div>
 
-  <% if @article.image_url.present? %>
+  <% if @article.video? && (video_id = @article.url&.match(YoutubeClient::URL_REGEX)&.[](1)) %>
+    <div class="aspect-video mb-4">
+      <iframe
+        src="https://www.youtube.com/embed/<%= video_id %>"
+        class="w-full h-full rounded-lg"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+  <% elsif @article.image_url.present? %>
     <%= image_tag @article.image_url, class: "max-w-64 max-h-48 object-contain float-right ml-4 mb-4" %>
   <% end %>
 
@@ -20,20 +30,20 @@
     <p class="text-lg text-gray-700 leading-relaxed"><%= @article.summary.html_safe %></p>
   <% end %>
 
-  <div>
-    <% label = @article.url&.match?(/\.pdf(\?|$)/i) ? "Read original (PDF)" : "Read original" %>
-    <%= link_to label,
-            @article.url,
-            target: "_blank",
-            rel: "noopener",
-            class: "text-blue-500 hover:text-blue-600 font-medium" %>
-  </div>
-
-  <%= render "shared/section_heading", title: "Insights", id: "insights" %>
+  <% unless @article.video? %>
+    <div>
+      <% label = @article.url&.match?(/\.pdf(\?|$)/i) ? "Read original (PDF)" : "Read original" %>
+      <%= link_to label,
+              @article.url,
+              target: "_blank",
+              rel: "noopener",
+              class: "text-blue-500 hover:text-blue-600 font-medium" %>
+    </div>
+  <% end %>
 
   <% if @article.insights.complete.any? %>
     <%= render @article.insights.complete, article: @article %>
-  <% else %>
+  <% elsif @article.text.present? %>
     <%= render "shared/loading_placeholder", id: "insights_loading", message: "Generating insights..." %>
   <% end %>
 

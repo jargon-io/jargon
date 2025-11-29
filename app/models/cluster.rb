@@ -3,8 +3,11 @@
 class Cluster < ApplicationRecord
   include Sluggable
   include Embeddable
+  include NormalizesMarkup
 
   slug -> { name.presence || "untitled" }
+
+  normalizes_markup :name, :summary, :body, :snippet
 
   embeddable :embeddable_text
 
@@ -62,7 +65,7 @@ class Cluster < ApplicationRecord
                       .ask(prompt)
 
     update!(
-      name: response.content["name"]&.titleize,
+      name: response.content["name"],
       summary: response.content["summary"],
       image_url: select_best_image(article_members),
       status: :complete

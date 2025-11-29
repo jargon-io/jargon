@@ -14,12 +14,14 @@ crawl4ai-setup  # Downloads browser dependencies
 ```
 
 ## TODO
+* fix search controller ref to embedding service
 * have claude generate a better readme
 * support white papers and articles that require navigating past abstract (eg: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5113355)
-* simplify how queries are generated and retrieve in ResearchThreadJob
 * semantic hooks - topic anchors for related content that is not necessarily directly related to a node, but related to a topic that is relevant
-* filter captcha results and other scraper / search fails, eg: http://localhost:3000/articles/effect-of-ai-performance-perceived-risk-and-trust-on
 * better UI for ask question -> fetch web results
 * make it easier to configure different LLM providers with env vars
 * publish docker image on GH and add compose recipe to readme
 * better responsive styles
+* specs
+* page titles
+* better root page ui (all nodes, no header, search box is in content area instead of floating header)

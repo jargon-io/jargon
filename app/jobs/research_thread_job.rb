@@ -4,43 +4,12 @@ class ResearchThreadJob < ApplicationJob
   def perform(research_thread_id)
     thread = ResearchThread.find(research_thread_id)
 
-    source_article = thread.source_article
-    insight = thread.insight
-
-    instructions = <<~INSTRUCTIONS
-      You will be provided with context about an article and a research question.
-
-      Your task is to search the web for interesting articles related to
-      the research question given the provided context.
-
-      ONLY return HTML web sources - no PDFs or other downloadable files.
-
-      Try to find 2-4 pages that offer different perspectives or insights.
-    INSTRUCTIONS
-
-    prompt = <<~PROMPT
-      Article: #{source_article&.title}
-
-      Article summary: #{source_article&.summary}
-
-      #{"Insight: #{insight.body}" if insight}
-
-      Research question: #{thread.query}
-    PROMPT
-
-    chat = RubyLLM.chat
-                  .with_instructions(instructions)
-                  .with_tool(ExaSearchTool.new)
-
-    chat.ask(prompt)
-
-    articles = chat.with_schema(SelectedArticlesSchema)
-                   .ask("Respond with articles in JSON format.")
-                   .content["articles"] || []
+    query = generate_search_query(thread)
+    results = ExaClient.new.search(query:)["results"] || []
+    articles = filter_results(thread, results)
 
     articles.each do |data|
       url = data["url"]
-
       next if url.blank?
 
       article = Article.find_or_initialize_by(url:) do |a|
@@ -48,7 +17,6 @@ class ResearchThreadJob < ApplicationJob
       end
 
       is_new = article.new_record?
-
       article.save! if is_new
 
       thread.thread_articles.find_or_create_by!(article:) do |ta|
@@ -56,12 +24,10 @@ class ResearchThreadJob < ApplicationJob
       end
 
       IngestArticleJob.perform_later(url) if is_new
-
       broadcast_article(thread, article)
     end
 
     thread.update!(status: :researched)
-
     broadcast_complete(thread)
   rescue StandardError => e
     Rails.logger.error("ResearchThreadJob failed: #{e.message}")
@@ -69,6 +35,44 @@ class ResearchThreadJob < ApplicationJob
   end
 
   private
+
+  def generate_search_query(thread)
+    context = <<~CONTEXT
+      Article: #{thread.source_article&.title}
+      Summary: #{thread.source_article&.summary}
+      #{"Insight: #{thread.insight.body}" if thread.insight}
+      Research question: #{thread.query}
+    CONTEXT
+
+    RubyLLM.chat
+           .with_instructions("Generate a concise search query (5-10 words) to find articles related to the research question. Return only the query, nothing else.")
+           .ask(context)
+           .content
+  end
+
+  def filter_results(thread, results)
+    return [] if results.empty?
+
+    candidates = results.take(10).map do |r|
+      { url: r["url"], title: r["title"] }
+    end
+
+    prompt = <<~PROMPT
+      Research question: #{thread.query}
+
+      Context: #{thread.source_article&.title}
+
+      Candidate articles:
+      #{candidates.map { |c| "- #{c[:title]} (#{c[:url]})" }.join("\n")}
+
+      Select 2-4 articles that offer different perspectives. Exclude PDFs and non-article pages.
+    PROMPT
+
+    RubyLLM.chat
+           .with_schema(SelectedArticlesSchema)
+           .ask(prompt)
+           .content["articles"] || []
+  end
 
   def broadcast_article(thread, article)
     Turbo::StreamsChannel.broadcast_remove_to(

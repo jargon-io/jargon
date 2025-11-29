@@ -4,8 +4,11 @@ class Insight < ApplicationRecord
   include Sluggable
   include Clusterable
   include Embeddable
+  include NormalizesMarkup
 
   slug -> { title.presence || "untitled" }
+
+  normalizes_markup :body, :snippet
 
   embeddable :body
 

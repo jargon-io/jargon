@@ -6,13 +6,9 @@ class GenerateInsightsJob < ApplicationJob
   def perform(article_id)
     article = Article.find(article_id)
 
-    prompt = <<~PROMPT
-      Extract key insights from this article. For each:
-      - title: Short, memorable name (3-5 words)
-      - body: 200-300 char insight. Use <strong> for 1-2 key terms. State the idea directly.
-      - snippet: Source excerpt. Use ... to tighten. May bold key phrases with <strong>.
-      - queries: 2-4 research questions to explore further
-    PROMPT
+    return if article.text.blank?
+
+    prompt = build_prompt(article)
 
     response = RubyLLM.chat
                       .with_model(MODEL)
@@ -45,6 +41,36 @@ class GenerateInsightsJob < ApplicationJob
   end
 
   private
+
+  def build_prompt(article)
+    if article.partial?
+      <<~PROMPT
+        This is partial content (abstract, description, or preview). Infer ONE key insight:
+        - title: Short, memorable name (3-5 words)
+        - body: 200-300 char insight. Use <strong> for 1-2 key terms. State what this is likely about.
+        - snippet: Use available text. May use ... to tighten.
+        - queries: 2-4 research questions to explore the topic further
+      PROMPT
+    elsif article.video? || article.podcast?
+      <<~PROMPT
+        Extract key insights from this transcript. For each:
+        - title: Short, memorable name (3-5 words)
+        - body: 200-300 char insight. Use <strong> for 1-2 key terms. State the idea directly.
+        - snippet: Source excerpt. Use ... to tighten. May bold key phrases with <strong>.
+        - queries: 2-4 research questions to explore further
+
+        Note: This is a transcript, so focus on explicitly stated ideas rather than inferring.
+      PROMPT
+    else
+      <<~PROMPT
+        Extract key insights from this article. For each:
+        - title: Short, memorable name (3-5 words)
+        - body: 200-300 char insight. Use <strong> for 1-2 key terms. State the idea directly.
+        - snippet: Source excerpt. Use ... to tighten. May bold key phrases with <strong>.
+        - queries: 2-4 research questions to explore further
+      PROMPT
+    end
+  end
 
   def broadcast_insight(article, insight)
     Turbo::StreamsChannel.broadcast_remove_to(

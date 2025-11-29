@@ -145,7 +145,8 @@ CREATE TABLE public.articles (
     updated_at timestamp(6) without time zone NOT NULL,
     status integer DEFAULT 0 NOT NULL,
     embedding public.vector(1536),
-    slug character varying NOT NULL
+    slug character varying NOT NULL,
+    content_type integer DEFAULT 0 NOT NULL
 );
 
 
@@ -737,6 +738,7 @@ ALTER TABLE ONLY public.insights
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251129164403'),
 ('20251129160954'),
 ('20251129153217'),
 ('20251129151925'),

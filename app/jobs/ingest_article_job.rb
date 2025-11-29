@@ -82,13 +82,39 @@ class IngestArticleJob < ApplicationJob
 
   def handle_abstract(abstract_text, full_text_url)
     if full_text_url.present?
-      full_text = crawl_content(full_text_url)
-      if full_text.length > abstract_text.length * 2
+      full_text = pdf_url?(full_text_url) ? extract_pdf_text(full_text_url) : crawl_content(full_text_url)
+      if full_text.present? && full_text.length > abstract_text.length * 2
         update_article(text: full_text, content_type: :full)
         return
       end
     end
     update_article(text: abstract_text, content_type: :partial)
+  end
+
+  def pdf_url?(url)
+    url.to_s.match?(/\.pdf(\?|$)/i)
+  end
+
+  def extract_pdf_text(url)
+    require "tempfile"
+    require "open3"
+
+    Tempfile.create(["article", ".pdf"]) do |file|
+      response = HTTPX.plugin(:follow_redirects).get(url)
+      return nil unless response.status == 200
+
+      file.binmode
+      file.write(response.body.to_s)
+      file.flush
+
+      stdout, _stderr, status = Open3.capture3("pdftotext", "-layout", file.path, "-")
+      return nil unless status.success?
+
+      stdout.strip.presence
+    end
+  rescue StandardError => e
+    Rails.logger.warn("PDF extraction failed for #{url}: #{e.message}")
+    nil
   end
 
   def queue_embedded_video(video_url)

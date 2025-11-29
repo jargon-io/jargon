@@ -13,10 +13,21 @@ pip install crawl4ai
 crawl4ai-setup  # Downloads browser dependencies
 ```
 
+### pdftotext
+
+Used for extracting text from PDF documents (academic papers, etc.). Install via poppler:
+
+```bash
+# macOS
+brew install poppler
+
+# Ubuntu/Debian
+apt-get install poppler-utils
+```
+
 ## TODO
 * fix search controller ref to embedding service
 * have claude generate a better readme
-* support white papers and articles that require navigating past abstract (eg: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5113355)
 * semantic hooks - topic anchors for related content that is not necessarily directly related to a node, but related to a topic that is relevant
 * better UI for ask question -> fetch web results
 * make it easier to configure different LLM providers with env vars

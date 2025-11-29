@@ -3,6 +3,12 @@
 <div class="w-full max-w-2xl mx-auto">
   <h1 class="text-3xl font-bold mb-4">Articles</h1>
   <div id="articles" class="space-y-6">
-    <%= render @articles %>
+    <% if @articles.any? %>
+      <%= render @articles %>
+    <% else %>
+      <div class="text-gray-500">
+        <p>No articles yet.</p>
+      </div>
+    <% end %>
   </div>
 </div>

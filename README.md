@@ -15,12 +15,6 @@ Drop in a URL and Jargon will scrape the content, summarize it with an LLM, extr
 
 ## Features
 
-### Article Ingestion
-
-Paste any URL and Jargon scrapes, processes, and indexes the content. Supports web articles, academic papers, and video content.
-
-![Article ingestion screenshot placeholder]
-
 ### PDF Full-Text Extraction
 
 Academic papers and PDFs are automatically downloaded and converted to text using `pdftotext`. Jargon follows "full text" and DOI links from abstracts.
@@ -34,12 +28,6 @@ YouTube URLs are detected and transcripts are fetched directly from YouTube's AP
 
 <img src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/242f599e4307f36da9a2f8a3537658315e13b64b/youtube_dark.png#gh-dark-mode-only" />
 <img src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/242f599e4307f36da9a2f8a3537658315e13b64b/youtube_light.png#gh-light-mode-only" />
-
-### LLM Summaries
-
-Each article gets a concise 200-300 character summary that captures the core idea. Summaries use direct voice ("People delegate unethical tasks...") rather than meta-commentary ("This article discusses...").
-
-![Summary screenshot placeholder]
 
 ### Insight Extraction
 
@@ -59,37 +47,24 @@ Topics aren't follow-up questions—they're conceptual bridges to other fields. 
 
 Articles and insights are embedded using OpenAI's text-embedding-3-small model. Embeddings power similarity search and automatic clustering.
 
-![Embeddings/similarity screenshot placeholder]
-
 ### Automatic Clustering
 
 Similar articles (syndicated content, republished pieces) are automatically grouped using vector similarity and title matching. Similar insights cluster into themes.
-
-![Clustering screenshot placeholder]
 
 ### Research Threads
 
 Each insight can spawn research threads—questions that trigger web searches via Exa to find related articles. Discovered articles are automatically ingested and indexed.
 
-![Research threads screenshot placeholder]
+<img src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/dc277749674b07964cc0829c41c6b2f4c8cb90e8/topic_dark.png#gh-dark-mode-only" />
+<img src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/dc277749674b07964cc0829c41c6b2f4c8cb90e8/topic_light.png#gh-light-mode-only" />
 
 ### Library Search
 
 Ask a question or enter a topic to search your library. Jargon finds relevant insights using semantic similarity and displays them alongside the source articles.
 
-![Library search screenshot placeholder]
-
 ### Web Search
 
 Augment library results with fresh content from the web. Results are fetched via Exa's neural search and automatically ingested into your library.
-
-![Web search screenshot placeholder]
-
-### Real-Time Updates
-
-Everything streams to the UI via Turbo Streams. Watch as articles are scraped, summarized, and insights appear—no page refreshes needed.
-
-![Real-time updates screenshot placeholder]
 
 ## Tech Stack
 

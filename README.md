@@ -128,7 +128,6 @@ docker compose up -d
 The app will be available at http://localhost:3000.
 
 ## TODO
-* better responsive styles
 * have claude generate a better readme
 * use library as RAG and have search box return results but also synthesize and respond with LLM answer
 * export markdown to clipboard

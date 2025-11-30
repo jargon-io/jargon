@@ -18,7 +18,7 @@
       </iframe>
     </div>
   <% elsif @article.image_url.present? %>
-    <%= image_tag @article.image_url, class: "max-w-64 max-h-48 object-contain float-right ml-4 mb-4" %>
+    <%= image_tag @article.image_url, class: "w-full max-h-64 object-contain rounded-lg md:float-right md:w-auto md:max-w-64 md:max-h-48 md:ml-4 md:mb-4" %>
   <% end %>
 
   <% if @article.summary.present? %>

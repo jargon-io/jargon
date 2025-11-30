@@ -11,7 +11,7 @@
     <p class="text-sm text-red-600 dark:text-red-500"><%= article.url %></p>
   <% else %>
     <% if article.image_url.present? %>
-      <%= image_tag article.image_url, class: "h-32 max-w-48 object-contain float-right ml-4" %>
+      <%= image_tag article.image_url, class: "hidden md:block h-32 max-w-48 object-contain float-right ml-4" %>
     <% end %>
 
     <div class="space-y-1">

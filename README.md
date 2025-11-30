@@ -208,3 +208,5 @@ The app will be available at http://localhost:3000.
 ## TODO
 * use library as RAG and have search box return results but also synthesize and respond with LLM answer
 * export markdown to clipboard
+* full text search
+* live search completion when typing in search box

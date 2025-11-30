@@ -11,8 +11,8 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  root "articles#index"
-  resources :articles, only: %i[index show]
+  root "welcome#index"
+  resources :articles, only: [:show]
   get "search", to: "search#show"
   post "web_search", to: "web_searches#create"
   resources :insights, only: [:show]

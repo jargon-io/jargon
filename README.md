@@ -129,7 +129,6 @@ The app will be available at http://localhost:3000.
 
 ## TODO
 * better responsive styles
-* better root page ui (all nodes, no header, search box is in content area instead of floating header, explainer content?)
 * have claude generate a better readme
 * use library as RAG and have search box return results but also synthesize and respond with LLM answer
 * export markdown to clipboard

@@ -1,14 +1,6 @@
 # frozen_string_literal: true
 
 class ArticlesController < ApplicationController
-  def index
-    @articles = Article.where(status: %i[pending complete])
-                       .where.missing(:cluster_membership)
-                       .order(created_at: :desc)
-
-    @clusters = Cluster.for_articles.complete.order(created_at: :desc)
-  end
-
   def show
     @article = Article.complete.find_by!(slug: params[:id])
 

@@ -1,0 +1,47 @@
+<% content_for(:title) { "Jargon" } %>
+<% content_for(:hide_header, true) if @items.empty? %>
+
+<%= turbo_stream_from "articles" %>
+
+<% if @items.empty? %>
+  <div class="w-full max-w-2xl mx-auto flex flex-col items-center justify-center min-h-[60vh]">
+    <div class="text-center mb-8">
+      <%= image_tag "logo.png", class: "h-12 w-12 mx-auto mb-4" %>
+      <h1 class="text-4xl font-bold text-heading mb-2">Jargon</h1>
+    </div>
+
+    <%= form_with url: search_path, method: :get, class: "w-full mb-12" do |f| %>
+      <div class="flex gap-3">
+        <%= f.text_field :q,
+            placeholder: "URL, question, or topic...",
+            autofocus: true,
+            class: "flex-1 px-4 py-3 surface border border-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg" %>
+        <%= f.submit "Go",
+            class: "px-6 py-3 btn-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer text-lg" %>
+      </div>
+    <% end %>
+
+    <div class="text-muted text-base space-y-4">
+      <p>
+        <strong class="text-body">Add content</strong> by pasting URLs to articles, YouTube videos, or academic papers.
+      </p>
+      <p>
+        <strong class="text-body">Extract insights</strong> automatically from each piece of content.
+      </p>
+      <p>
+        <strong class="text-body">Discover connections</strong> as related content is clustered together.
+      </p>
+      <p>
+        <strong class="text-body">Research deeper</strong> with AI-powered exploration threads.
+      </p>
+    </div>
+  </div>
+<% else %>
+  <div class="w-full max-w-2xl mx-auto">
+    <div id="items" class="space-y-4">
+      <% @items.each do |item| %>
+        <%= render item %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

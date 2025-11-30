@@ -25,9 +25,15 @@
   </head>
 
   <body>
-    <main class="container mx-auto mt-28 px-5 flex pb-32">
-      <%= render "layouts/header" %>
-      <%= yield %>
-    </main>
+    <% if content_for?(:hide_header) %>
+      <main class="container mx-auto px-5 flex py-8">
+        <%= yield %>
+      </main>
+    <% else %>
+      <main class="container mx-auto mt-28 px-5 flex pb-32">
+        <%= render "layouts/header" %>
+        <%= yield %>
+      </main>
+    <% end %>
   </body>
 </html>

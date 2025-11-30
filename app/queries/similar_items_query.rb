@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class SimilarItemsQuery
+  THRESHOLD = 0.6
+
   Result = Data.define(:item, :distance)
 
   def initialize(embedding:, limit: 10, exclude: [])
@@ -18,6 +20,7 @@ class SimilarItemsQuery
     results.concat(similar_clusters)
 
     results
+      .select { |r| r.distance < THRESHOLD }
       .sort_by(&:distance)
       .first(@limit)
       .map(&:item)

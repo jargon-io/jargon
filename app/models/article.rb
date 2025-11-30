@@ -5,7 +5,6 @@ class Article < ApplicationRecord
   include Clusterable
   include Embeddable
   include NormalizesMarkup
-  include Topicable
   include Linkable
   include ResearchThreadGeneratable
 
@@ -29,10 +28,6 @@ class Article < ApplicationRecord
 
   def image_url=(value)
     super(url_accessible?(value) ? value : nil)
-  end
-
-  def topic_source_text
-    "#{title}\n\n#{summary}"
   end
 
   def research_thread_context

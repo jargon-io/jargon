@@ -30,8 +30,6 @@ class GenerateInsightsJob < ApplicationJob
       broadcast_insight(article, insight)
     end
 
-    article.generate_topics! if article.topics.empty?
-
     # Queue link generation after delay to allow batch insights to be available as targets
     article.insights.complete.each do |insight|
       AddLinksJob.set(wait: 30.seconds).perform_later("Insight", insight.id)

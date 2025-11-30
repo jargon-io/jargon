@@ -4,7 +4,6 @@ module LLMHelpers
   # Default responses that cover all common schemas
   DEFAULT_LLM_RESPONSE = {
     "queries" => [],
-    "topics" => [],
     "insights" => [],
     "name" => "Default Name",
     "summary" => "Default summary",

@@ -11,8 +11,7 @@ RSpec.describe GenerateInsightsJob do
         { "title" => "Key Finding", "body" => "The main takeaway.", "snippet" => "Original text." },
         { "title" => "Secondary Point", "body" => "Another insight.", "snippet" => "More text." }
       ],
-      "queries" => [],
-      "topics" => []
+      "queries" => []
     }
   end
 

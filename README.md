@@ -5,16 +5,15 @@
 
 A personal research library that ingests articles, extracts insights, and surfaces connections across domains.
 
-Drop in a URL and Jargon will scrape the content, summarize it with an LLM, extract key insights, generate cross-disciplinary topics, and find related articles through semantic search. Or ask a question to pull relevant insights from your library, optionally augmented with web results.
+Drop in a URL and Jargon will scrape the content, summarize it with an LLM, extract key insights, and find related articles through semantic search. Or ask a question to pull relevant insights from your library, optionally augmented with web results.
 
 ## How It Works
 
 1. **Ingest** - Paste a URL or ask a question. URLs get scraped (web pages, PDFs, YouTube transcripts). Questions search your library and the web.
 2. **Summarize** - An LLM distills the core idea into a concise summary.
 3. **Extract Insights** - Key findings are pulled out as standalone, linkable insights.
-4. **Generate Topics** - Cross-disciplinary topic phrases are generated to bridge content to unexpected domains.
-5. **Find Connections** - Embeddings enable semantic similarity search. Related articles cluster automatically.
-6. **Research Threads** - Insights spawn research questions that trigger web searches for related articles.
+4. **Find Connections** - Embeddings enable semantic similarity search. Related articles cluster automatically.
+5. **Research Threads** - Insights spawn research questions that trigger web searches for related articles.
 
 ## Features
 
@@ -38,13 +37,6 @@ Key findings are extracted as standalone insights with titles, explanations, and
 
 <img src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/731970caa6ed87082fbe89eaa88fd78b41a06a18/insight_dark.png#gh-dark-mode-only" />
 <img src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/731970caa6ed87082fbe89eaa88fd78b41a06a18/insight_light.png#gh-light-mode-only" />
-
-### Cross-Disciplinary Topics
-
-Topics aren't follow-up questions—they're conceptual bridges to other fields. An article about LLM architectures might generate topics like "Compression in biological memory" or "Resource allocation in ant colonies."
-
-<img src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/dc277749674b07964cc0829c41c6b2f4c8cb90e8/topic_dark.png#gh-dark-mode-only" />
-<img src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/dc277749674b07964cc0829c41c6b2f4c8cb90e8/topic_light.png#gh-light-mode-only" />
 
 ### Semantic Embeddings
 

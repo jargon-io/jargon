@@ -13,14 +13,5 @@ class ArticlesController < ApplicationController
       limit: 8,
       exclude: exclude_items
     ).call
-
-    @topics_with_items = @article.topics.filter_map do |topic|
-      items = TopicExplorationQuery.new(
-        embedding: topic.embedding,
-        limit: 5,
-        exclude: exclude_items + @similar_items
-      ).call
-      [topic, items] if items.any?
-    end
   end
 end

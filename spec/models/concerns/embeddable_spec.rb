@@ -34,15 +34,5 @@ RSpec.describe Embeddable do
         expect(LLM).to have_received(:embed).with("Insight body text")
       end
     end
-
-    context "with topic" do
-      let(:topic) { create(:topic, phrase: "machine learning") }
-
-      it "uses phrase as embeddable field" do
-        topic.generate_embedding!
-
-        expect(LLM).to have_received(:embed).with("machine learning")
-      end
-    end
   end
 end

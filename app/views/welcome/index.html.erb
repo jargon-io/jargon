@@ -13,7 +13,7 @@
     <%= form_with url: search_path, method: :get, class: "w-full mb-12" do |f| %>
       <div class="flex gap-3">
         <%= f.text_field :q,
-            placeholder: "URL, question, or topic...",
+            placeholder: "URL or question...",
             autofocus: true,
             class: "flex-1 px-4 py-3 surface border border-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg" %>
         <%= f.submit "Go",

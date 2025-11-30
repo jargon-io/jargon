@@ -27,7 +27,7 @@ RSpec.describe IngestArticleJob do
                 when 1 then { "content_type" => "full", "is_academic_paper" => false }
                 when 2 then { "title" => "Article Title", "author" => "John Doe", "published_at" => "2024-01-15" }
                 when 3 then { "summary" => "A concise summary." }
-                else { "queries" => [], "topics" => [] }
+                else { "queries" => [] }
                 end
       instance_double(RubyLLM::Message, content:)
     end

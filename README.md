@@ -45,7 +45,8 @@ Each article gets a concise 200-300 character summary that captures the core ide
 
 Key findings are extracted as standalone insights with titles, explanations, and source snippets. Insights are independently searchable and linkable.
 
-![Insights screenshot placeholder]
+<img src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/731970caa6ed87082fbe89eaa88fd78b41a06a18/insight_dark.png#gh-dark-mode-only" />
+<img src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/731970caa6ed87082fbe89eaa88fd78b41a06a18/insight_light.png#gh-light-mode-only" />
 
 ### Cross-Disciplinary Topics
 

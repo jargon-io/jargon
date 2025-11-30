@@ -114,10 +114,10 @@ Provider must match the API key you're using. OpenRouter model names use `provid
 
 ### Rails Master Key
 
-Set `RAILS_MASTER_KEY` instead of using `config/master.key`:
+Set `SECRET_KEY_BASE` instead of using `config/master.key`:
 
 ```bash
-RAILS_MASTER_KEY=your-master-key
+SECRET_KEY_BASE=secret-key-base
 ```
 
 ## Dependencies
@@ -192,7 +192,7 @@ volumes:
 Create a `.env` file with your secrets:
 
 ```bash
-RAILS_MASTER_KEY=your-master-key
+SECRET_KEY_BASE=secret-key-base
 OPENROUTER_API_KEY=your-openrouter-key
 EXA_API_KEY=your-exa-key
 ```

@@ -1,6 +1,6 @@
 # Jargon
 
-A personal research library that ingests articles, extracts insights, and surfaces connections across domains. Inspired by the Zettelkasten method—the goal is serendipitous discovery through unexpected links between ideas.
+A personal research library that ingests articles, extracts insights, and surfaces connections across domains.
 
 Drop in a URL and Jargon will scrape the content, summarize it with an LLM, extract key insights, generate cross-disciplinary topics, and find related articles through semantic search. Or ask a question to pull relevant insights from your library, optionally augmented with web results.
 
@@ -10,27 +10,14 @@ Drop in a URL and Jargon will scrape the content, summarize it with an LLM, extr
 2. **Summarize** - An LLM distills the core idea into a concise summary.
 3. **Extract Insights** - Key findings are pulled out as standalone, linkable insights.
 4. **Generate Topics** - Cross-disciplinary topic phrases are generated to bridge content to unexpected domains.
-5. **Find Connections** - Embeddings enable semantic similarity search. Related articles and insights cluster automatically.
+5. **Find Connections** - Embeddings enable semantic similarity search. Related articles cluster automatically.
 6. **Research Threads** - Insights spawn research questions that trigger web searches for related articles.
-
-## Tech Stack
-
-- **[Falcon](https://github.com/socketry/falcon)** - Async Ruby application server with fiber-based concurrency
-- **[async-job](https://github.com/socketry/async-job)** - Background job processing without a separate worker process
-- **[RubyLLM](https://github.com/contextco/ruby_llm)** - Unified interface to OpenAI, Anthropic, Gemini, and OpenRouter
-- **[ruby_llm-schema](https://github.com/schoblaska/ruby_llm-schema)** - Structured JSON output from LLMs via schema definitions
-- **[pgvector](https://github.com/pgvector/pgvector)** - Vector similarity search in PostgreSQL
-- **[Exa](https://exa.ai)** - Neural search API for finding related content
-- **[crawl4ai](https://github.com/unclecode/crawl4ai)** - Fallback web scraper with browser rendering
-* **[pdftotext](https://manpages.debian.org/testing/poppler-utils/pdftotext.1.en.html)** - Text extractor for PDF content
-
----
 
 ## Features
 
 ### Article Ingestion
 
-Paste any URL and Jargon scrapes, processes, summarizes, and indexes the content. Supports web articles, academic papers, and video content.
+Paste any URL and Jargon scrapes, processes, and indexes the content. Supports web articles, academic papers, and video content.
 
 ![Article ingestion screenshot placeholder]
 
@@ -45,6 +32,12 @@ Academic papers and PDFs are automatically downloaded and converted to text usin
 YouTube URLs are detected and transcripts are fetched directly from YouTube's API. Speakers are extracted from video titles when available.
 
 ![YouTube transcript screenshot placeholder]
+
+### LLM Summaries
+
+Each article gets a concise 200-300 character summary that captures the core idea. Summaries use direct voice ("People delegate unethical tasks...") rather than meta-commentary ("This article discusses...").
+
+![Summary screenshot placeholder]
 
 ### Insight Extraction
 
@@ -88,7 +81,22 @@ Augment library results with fresh content from the web. Results are fetched via
 
 ![Web search screenshot placeholder]
 
----
+### Real-Time Updates
+
+Everything streams to the UI via Turbo Streams. Watch as articles are scraped, summarized, and insights appear—no page refreshes needed.
+
+![Real-time updates screenshot placeholder]
+
+## Tech Stack
+
+- **[Falcon](https://github.com/socketry/falcon)** - Async Ruby application server with fiber-based concurrency
+- **[async-job](https://github.com/socketry/async-job)** - Background job processing without a separate worker process
+- **[RubyLLM](https://github.com/contextco/ruby_llm)** - Unified interface to OpenAI, Anthropic, Gemini, and OpenRouter
+- **[ruby_llm-schema](https://github.com/schoblaska/ruby_llm-schema)** - Structured JSON output from LLMs via schema definitions
+- **[pgvector](https://github.com/pgvector/pgvector)** - Vector similarity search in PostgreSQL
+- **[Exa](https://exa.ai)** - Neural search API for finding related content
+- **[crawl4ai](https://github.com/unclecode/crawl4ai)** - Fallback web scraper with browser rendering
+* **[pdftotext](https://manpages.debian.org/testing/poppler-utils/pdftotext.1.en.html)** - Text extractor for PDF content
 
 ## Configuration
 
@@ -122,12 +130,12 @@ EMBEDDING_PROVIDER=openrouter                  # Embedding provider (default)
 
 Provider must match the API key you're using. OpenRouter model names use `provider/model` format.
 
-### Secret Key Base
+### Rails Master Key
 
-Set `SECRET_KEY_BASE` for session encryption. Generate one with `openssl rand -hex 64`:
+Set `RAILS_MASTER_KEY` instead of using `config/master.key`:
 
 ```bash
-SECRET_KEY_BASE=your-64-byte-hex-string
+RAILS_MASTER_KEY=your-master-key
 ```
 
 ## Dependencies
@@ -202,7 +210,7 @@ volumes:
 Create a `.env` file with your secrets:
 
 ```bash
-SECRET_KEY_BASE=$(openssl rand -hex 64)
+RAILS_MASTER_KEY=your-master-key
 OPENROUTER_API_KEY=your-openrouter-key
 EXA_API_KEY=your-exa-key
 ```
@@ -214,3 +222,7 @@ docker compose up -d
 ```
 
 The app will be available at http://localhost:3000.
+
+## TODO
+* use library as RAG and have search box return results but also synthesize and respond with LLM answer
+* export markdown to clipboard

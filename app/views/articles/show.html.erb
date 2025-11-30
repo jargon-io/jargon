@@ -38,16 +38,18 @@
 
   <% has_insights = @article.insights.complete.any? %>
   <% generating = @article.text.present? && @article.updated_at > 1.minute.ago %>
-  <div id="insights" class="space-y-4 <%= 'pt-4' if has_insights || generating %>" data-controller="expandable-list" data-expandable-list-limit-value="3">
-    <% if has_insights %>
-      <% @article.insights.complete.each do |insight| %>
-        <div data-expandable-list-target="item">
-          <%= render insight, suppress_source: true %>
-        </div>
+  <div class="<%= 'pt-4' if has_insights || generating %>" data-controller="expandable-list" data-expandable-list-limit-value="3">
+    <div id="insights" class="contents space-y-4">
+      <% if has_insights %>
+        <% @article.insights.complete.each do |insight| %>
+          <div data-expandable-list-target="item">
+            <%= render insight, suppress_source: true %>
+          </div>
+        <% end %>
+      <% elsif generating %>
+        <%= render "shared/loading_placeholder", id: "insights_loading", message: "Generating insights..." %>
       <% end %>
-    <% elsif generating %>
-      <%= render "shared/loading_placeholder", id: "insights_loading", message: "Generating insights..." %>
-    <% end %>
+    </div>
     <%= render "shared/expandable_toggle" %>
   </div>
 

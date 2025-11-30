@@ -5,7 +5,7 @@ module Clusterable
 
   THRESHOLDS = {
     "Article" => 0.15,  # Looser - syndicated content varies slightly
-    "Insight" => 0.20   # Topical similarity
+    "Insight" => 0.25   # Topical similarity
   }.freeze
 
   TITLE_SIMILARITY_THRESHOLD = 0.8

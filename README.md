@@ -31,7 +31,8 @@ Academic papers and PDFs are automatically downloaded and converted to text usin
 
 YouTube URLs are detected and transcripts are fetched directly from YouTube's API. Speakers are extracted from video titles when available.
 
-![YouTube transcript screenshot placeholder]
+<img src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/242f599e4307f36da9a2f8a3537658315e13b64b/youtube_dark.png#gh-dark-mode-only" />
+<img src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/242f599e4307f36da9a2f8a3537658315e13b64b/youtube_light.png#gh-light-mode-only" />
 
 ### LLM Summaries
 

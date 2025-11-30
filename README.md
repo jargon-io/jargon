@@ -1,4 +1,7 @@
-# Jargon
+<div align="center">
+  <img width="400px" src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/7c490e758c9a7108a7372affa62a9878f9999239/jargon_dark.png#gh-dark-mode-only" />
+  <img width="400px" src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/7c490e758c9a7108a7372affa62a9878f9999239/jargon_light.png#gh-light-mode-only" />
+</div>
 
 A personal research library that ingests articles, extracts insights, and surfaces connections across domains.
 

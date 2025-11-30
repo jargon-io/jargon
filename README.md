@@ -52,7 +52,8 @@ Key findings are extracted as standalone insights with titles, explanations, and
 
 Topics aren't follow-up questions—they're conceptual bridges to other fields. An article about LLM architectures might generate topics like "Compression in biological memory" or "Resource allocation in ant colonies."
 
-![Topics screenshot placeholder]
+<img src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/dc277749674b07964cc0829c41c6b2f4c8cb90e8/topic_dark.png#gh-dark-mode-only" />
+<img src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/dc277749674b07964cc0829c41c6b2f4c8cb90e8/topic_light.png#gh-light-mode-only" />
 
 ### Semantic Embeddings
 

@@ -2,6 +2,12 @@
 
 class Insight
   class ParentSynthesizer
+    class Schema < RubyLLM::Schema
+      string :title, description: "The canonical insight as a concise title (5-10 words)"
+      string :body, description: "Distilled insight (2-4 sentences). Use <strong> for emphasis. State directly."
+      string :snippet, description: "Synthesized quote (1-2 sentences). May use <strong> and ellipses."
+    end
+
     PROMPT = <<~PROMPT
       These are variations of the same insight from different sources. Synthesize into ONE canonical insight:
       - Captures the core idea directly (not "this cluster is about...")
@@ -18,7 +24,7 @@ class Insight
       context = @children.map { |i| format(i) }.join("\n\n---\n\n")
 
       response = LLM.chat
-                    .with_schema(InsightClusterSchema)
+                    .with_schema(Schema)
                     .ask("#{PROMPT}\n\n#{context}")
 
       {

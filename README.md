@@ -25,7 +25,8 @@ Paste any URL and Jargon scrapes, processes, and indexes the content. Supports w
 
 Academic papers and PDFs are automatically downloaded and converted to text using `pdftotext`. Jargon follows "full text" and DOI links from abstracts.
 
-![PDF extraction screenshot placeholder]
+<img src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/ec06277e2fd84db17fdcaa3d76a836505d596ee2/paper_dark.png#gh-dark-mode-only" />
+<img src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/ec06277e2fd84db17fdcaa3d76a836505d596ee2/paper_light.png#gh-light-mode-only" />
 
 ### YouTube Transcripts
 

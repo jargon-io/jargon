@@ -135,7 +135,7 @@ CREATE TABLE public.ar_internal_metadata (
 CREATE TABLE public.articles (
     id bigint NOT NULL,
     title character varying,
-    url character varying NOT NULL,
+    url character varying,
     author character varying,
     published_at timestamp(6) without time zone,
     summary text,
@@ -146,7 +146,8 @@ CREATE TABLE public.articles (
     status integer DEFAULT 0 NOT NULL,
     embedding public.vector(1536),
     slug character varying NOT NULL,
-    content_type integer DEFAULT 0 NOT NULL
+    content_type integer DEFAULT 0 NOT NULL,
+    parent_id bigint
 );
 
 
@@ -170,78 +171,6 @@ ALTER SEQUENCE public.articles_id_seq OWNED BY public.articles.id;
 
 
 --
--- Name: cluster_memberships; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.cluster_memberships (
-    id bigint NOT NULL,
-    cluster_id bigint NOT NULL,
-    clusterable_type character varying NOT NULL,
-    clusterable_id bigint NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: cluster_memberships_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.cluster_memberships_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: cluster_memberships_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.cluster_memberships_id_seq OWNED BY public.cluster_memberships.id;
-
-
---
--- Name: clusters; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.clusters (
-    id bigint NOT NULL,
-    clusterable_type character varying NOT NULL,
-    name character varying,
-    slug character varying NOT NULL,
-    summary text,
-    status integer DEFAULT 0 NOT NULL,
-    embedding public.vector(1536),
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL,
-    image_url character varying,
-    body text,
-    snippet text
-);
-
-
---
--- Name: clusters_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.clusters_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: clusters_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.clusters_id_seq OWNED BY public.clusters.id;
-
-
---
 -- Name: insights; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -255,7 +184,8 @@ CREATE TABLE public.insights (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     embedding public.vector(1536),
-    slug character varying NOT NULL
+    slug character varying NOT NULL,
+    parent_id bigint
 );
 
 
@@ -427,20 +357,6 @@ ALTER TABLE ONLY public.articles ALTER COLUMN id SET DEFAULT nextval('public.art
 
 
 --
--- Name: cluster_memberships id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.cluster_memberships ALTER COLUMN id SET DEFAULT nextval('public.cluster_memberships_id_seq'::regclass);
-
-
---
--- Name: clusters id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.clusters ALTER COLUMN id SET DEFAULT nextval('public.clusters_id_seq'::regclass);
-
-
---
 -- Name: insights id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -492,22 +408,6 @@ ALTER TABLE ONLY public.articles
 
 
 --
--- Name: cluster_memberships cluster_memberships_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.cluster_memberships
-    ADD CONSTRAINT cluster_memberships_pkey PRIMARY KEY (id);
-
-
---
--- Name: clusters clusters_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.clusters
-    ADD CONSTRAINT clusters_pkey PRIMARY KEY (id);
-
-
---
 -- Name: insights insights_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -556,10 +456,10 @@ ALTER TABLE ONLY public.web_searches
 
 
 --
--- Name: idx_cluster_memberships_uniqueness; Type: INDEX; Schema: public; Owner: -
+-- Name: index_articles_on_parent_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX idx_cluster_memberships_uniqueness ON public.cluster_memberships USING btree (clusterable_type, clusterable_id);
+CREATE INDEX index_articles_on_parent_id ON public.articles USING btree (parent_id);
 
 
 --
@@ -577,38 +477,17 @@ CREATE UNIQUE INDEX index_articles_on_url ON public.articles USING btree (url);
 
 
 --
--- Name: index_cluster_memberships_on_cluster_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_cluster_memberships_on_cluster_id ON public.cluster_memberships USING btree (cluster_id);
-
-
---
--- Name: index_cluster_memberships_on_clusterable; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_cluster_memberships_on_clusterable ON public.cluster_memberships USING btree (clusterable_type, clusterable_id);
-
-
---
--- Name: index_clusters_on_clusterable_type; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_clusters_on_clusterable_type ON public.clusters USING btree (clusterable_type);
-
-
---
--- Name: index_clusters_on_slug; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_clusters_on_slug ON public.clusters USING btree (slug);
-
-
---
 -- Name: index_insights_on_article_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_insights_on_article_id ON public.insights USING btree (article_id);
+
+
+--
+-- Name: index_insights_on_parent_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_insights_on_parent_id ON public.insights USING btree (parent_id);
 
 
 --
@@ -692,6 +571,14 @@ ALTER TABLE ONLY public.thread_articles
 
 
 --
+-- Name: insights fk_rails_5dd65deb05; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.insights
+    ADD CONSTRAINT fk_rails_5dd65deb05 FOREIGN KEY (parent_id) REFERENCES public.insights(id);
+
+
+--
 -- Name: web_search_articles fk_rails_711ba9ba8c; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -700,11 +587,11 @@ ALTER TABLE ONLY public.web_search_articles
 
 
 --
--- Name: cluster_memberships fk_rails_83c1a6a50e; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: articles fk_rails_d8ed45d2e9; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.cluster_memberships
-    ADD CONSTRAINT fk_rails_83c1a6a50e FOREIGN KEY (cluster_id) REFERENCES public.clusters(id);
+ALTER TABLE ONLY public.articles
+    ADD CONSTRAINT fk_rails_d8ed45d2e9 FOREIGN KEY (parent_id) REFERENCES public.articles(id);
 
 
 --
@@ -722,6 +609,8 @@ ALTER TABLE ONLY public.insights
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251130165333'),
+('20251130165254'),
 ('20251130163534'),
 ('20251129221540'),
 ('20251129192004'),

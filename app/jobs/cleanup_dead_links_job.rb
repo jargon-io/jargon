@@ -6,8 +6,7 @@ class CleanupDeadLinksJob < ApplicationJob
   # Fields that may contain internal links (only insights are link targets)
   LINKABLE_FIELDS = {
     "Article" => [:summary],
-    "Insight" => %i[body snippet],
-    "Cluster" => %i[summary body snippet]
+    "Insight" => %i[body snippet]
   }.freeze
 
   def perform(slug)

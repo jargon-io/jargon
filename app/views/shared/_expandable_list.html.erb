@@ -1,9 +1,0 @@
-<%# locals: (items:, partial:, limit: 3, as: :item, locals: {}) %>
-<div data-controller="expandable-list" data-expandable-list-limit-value="<%= limit %>">
-  <% items.each do |item| %>
-    <div data-expandable-list-target="item">
-      <%= render partial:, locals: locals.merge(as => item) %>
-    </div>
-  <% end %>
-  <%= render "shared/expandable_toggle" %>
-</div>

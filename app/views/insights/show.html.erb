@@ -8,9 +8,19 @@
 
   <%= render "shared/snippet", text: @insight.snippet, current_item: @insight %>
 
-  <div class="pt-4">
+  <% if @insight.parent? && @source_articles.present? %>
+    <%= render "shared/section_heading", title: "Sources" %>
+    <div class="space-y-4" data-controller="expandable-list">
+      <% @source_articles.each do |article| %>
+        <div data-expandable-list-target="item">
+          <%= render "articles/article", article: article %>
+        </div>
+      <% end %>
+      <%= render "shared/expandable_toggle" %>
+    </div>
+  <% elsif @insight.article.present? %>
     <%= render partial: "articles/article", locals: { article: @insight.article } %>
-  </div>
+  <% end %>
 
   <%= render "shared/section_heading", title: "Explore", id: "insights" %>
 
@@ -26,11 +36,11 @@
         class: "px-4 py-2 btn-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer" %>
   <% end %>
 
-  <% if @more_from_article.any? %>
-    <% source_label = @insight.article.video? ? "video" : (@insight.article.paper? ? "paper" : "article") %>
-    <%= render "shared/section_heading", title: "More from the #{source_label}" %>
-    <div class="space-y-4" data-controller="expandable-list" data-expandable-list-limit-value="3">
-      <% @more_from_article.each do |item| %>
+  <% sibling_insights = @insight.sibling_insights %>
+  <% if sibling_insights.any? %>
+    <%= render "shared/section_heading", title: "Siblings" %>
+    <div class="space-y-4" data-controller="expandable-list">
+      <% sibling_insights.each do |item| %>
         <div data-expandable-list-target="item">
           <%= render "shared/item", item: item, suppress_source: true %>
         </div>
@@ -41,7 +51,7 @@
 
   <% if @similar_items.any? %>
     <%= render "shared/section_heading", title: "Related" %>
-    <div class="space-y-4" data-controller="expandable-list" data-expandable-list-limit-value="3">
+    <div class="space-y-4" data-controller="expandable-list">
       <% @similar_items.each do |item| %>
         <div data-expandable-list-target="item">
           <%= render "shared/item", item: item %>

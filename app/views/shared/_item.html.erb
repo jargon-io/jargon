@@ -4,6 +4,4 @@
   <%= render "articles/article", article: item %>
 <% when Insight %>
   <%= render "insights/insight", insight: item, suppress_source: %>
-<% when Cluster %>
-  <%= render "clusters/cluster", cluster: item %>
 <% end %>

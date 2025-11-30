@@ -7,14 +7,14 @@ class AddLinksJob < ApplicationJob
 
   FIELDS = {
     "Article" => [:summary],
-    "Insight" => %i[body snippet],
-    "Cluster" => %i[summary body snippet]
+    "Insight" => %i[body snippet]
   }.freeze
 
   def perform(record_type, record_id)
     @record = record_type.constantize.find(record_id)
     @fields = FIELDS[record_type]
-    @valid_keys = @record.valid_link_keys
+    @linkable_insights = @record.linkable_insights
+    @valid_keys = @linkable_insights.to_set(&:slug_with_class)
 
     return if @fields.blank? || @valid_keys.empty?
 
@@ -43,7 +43,7 @@ class AddLinksJob < ApplicationJob
       - Return the content with links added, or unchanged if no links fit
 
       Available link targets:
-      #{@record.linkable_insights_prompt}
+      #{@linkable_insights.map { |i| "- [insight:#{i.slug}] #{i.title}" }.join("\n")}
 
       Content to process:
       #{content}

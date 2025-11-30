@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ResearchThreadsController < ApplicationController
-  ALLOWED_SUBJECT_TYPES = %w[Article Insight Cluster].freeze
+  ALLOWED_SUBJECT_TYPES = %w[Article Insight].freeze
 
   def show
     @thread = ResearchThread.by_slug!(params[:id])

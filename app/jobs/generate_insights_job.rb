@@ -24,7 +24,7 @@ class GenerateInsightsJob < ApplicationJob
       )
 
       insight.generate_embedding!
-      insight.cluster_if_similar!
+      insight.find_similar_and_absorb!
       insight.generate_research_threads!
 
       broadcast_insight(article, insight)
@@ -54,9 +54,10 @@ class GenerateInsightsJob < ApplicationJob
         Extract key insights from this transcript. For each:
         - title: Short, memorable name (3-5 words)
         - body: 200-300 char insight. Use <strong> for 1-2 key terms. State the idea directly.
-        - snippet: Source excerpt. Use ... to tighten. May bold key phrases with <strong>.
+        - snippet: Edit the source text for clarity and readability. Fix grammar, punctuation, and
+          remove filler words (um, uh, like, you know). Use ... to tighten. May bold key phrases with <strong>.
 
-        Note: This is a transcript, so focus on explicitly stated ideas rather than inferring.
+        Note: This is a transcript, so focus on explicitly stated ideas. Clean up speech artifacts.
       PROMPT
     else
       <<~PROMPT

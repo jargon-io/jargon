@@ -78,25 +78,46 @@ RSpec.describe IngestArticleJob do
     let(:youtube_article) { create(:article, :pending, url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ") }
 
     before do
-      stub_llm
+      stub_llm_chat(default: {
+                      "title" => "Extracted Title",
+                      "author" => "Extracted Author",
+                      "published_at" => "2024-06-15",
+                      "summary" => "Extracted summary"
+                    })
+      stub_llm_embed
 
-      video = Struct.new(:title, :channel, :published_at, :transcript, keyword_init: true).new(
+      video = YoutubeClient::VideoInfo.new(
         title: "Video Title",
         channel: "Channel Name",
         published_at: Date.new(2024, 1, 1),
+        description: "Video description here.",
         transcript: "This is the video transcript."
       )
       allow_any_instance_of(YoutubeClient).to receive(:fetch).and_return(video)
       allow(GenerateInsightsJob).to receive(:perform_later)
     end
 
-    it "processes as video content" do
+    it "processes as video content with LLM-extracted metadata" do
       described_class.perform_now(youtube_article.url)
 
       youtube_article.reload
       expect(youtube_article.content_type).to eq("video")
+      expect(youtube_article.title).to eq("Extracted Title")
+      expect(youtube_article.author).to eq("Extracted Author")
+      expect(youtube_article.published_at).to eq(Date.new(2024, 6, 15))
+      expect(youtube_article.summary).to eq("Extracted summary")
+      expect(youtube_article.text).to eq("Video description here.\n\n---\n\nThis is the video transcript.")
+    end
+
+    it "falls back to video metadata when LLM returns blank" do
+      stub_llm_chat(default: { "title" => "", "author" => "", "published_at" => "" })
+
+      described_class.perform_now(youtube_article.url)
+
+      youtube_article.reload
       expect(youtube_article.title).to eq("Video Title")
-      expect(youtube_article.text).to eq("This is the video transcript.")
+      expect(youtube_article.author).to eq("Channel Name")
+      expect(youtube_article.published_at).to eq(Date.new(2024, 1, 1))
     end
   end
 end

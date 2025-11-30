@@ -22,7 +22,6 @@ class ResearchThread < ApplicationRecord
     case subject
     when Article then subject
     when Insight then subject.article
-    when Cluster then subject.articles.first
     end
   end
 end

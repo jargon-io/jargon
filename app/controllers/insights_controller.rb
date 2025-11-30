@@ -4,11 +4,18 @@ class InsightsController < ApplicationController
   def show
     @insight = Insight.by_slug!(params[:id])
 
-    return redirect_to @insight.cluster, status: :moved_permanently if @insight.clustered?
+    return redirect_to @insight.parent, status: :moved_permanently if @insight.child?
 
-    @more_from_article = @insight.article.insights.complete.where.not(id: @insight.id)
+    if @insight.parent?
+      @source_articles = @insight.children
+                                 .includes(:article)
+                                 .filter_map { |i| i.article&.parent || i.article }
+                                 .uniq
 
-    exclude_items = [@insight, @insight.article] + @more_from_article.to_a
+      exclude_items = [@insight] + @source_articles + @insight.sibling_insights
+    else
+      exclude_items = [@insight, @insight.article].compact + @insight.sibling_insights
+    end
 
     @similar_items = SimilarItemsQuery.new(
       embedding: @insight.embedding,

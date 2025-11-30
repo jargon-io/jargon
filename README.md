@@ -202,3 +202,6 @@ The app will be available at http://localhost:3000.
 * export markdown to clipboard
 * full text search
 * live search completion when typing in search box
+* refactor IngestArticleJob
+* refactor regenerate_metadata and prompt-building concern out of models
+* use gid instead of passing record id and class to jobs

@@ -25,7 +25,14 @@
     <p class="text-lg text-body leading-relaxed"><%= render_content(@article.summary, current_item: @article) %></p>
   <% end %>
 
-  <% unless @article.video? %>
+  <% if @article.parent? %>
+    <ul>
+      <% @article.children.each do |child| %>
+        <% next if child.url.blank? %>
+        <li><%= link_to child.url, child.url, class: "text-link" %></li>
+      <% end %>
+    </ul>
+  <% elsif @article.url.present? && !@article.video? %>
     <div>
       <% label = @article.paper? ? "Read original paper" : "Read original" %>
       <%= link_to label,
@@ -36,12 +43,13 @@
     </div>
   <% end %>
 
-  <% has_insights = @article.insights.complete.any? %>
+  <% rolled_up = @article.rolled_up_insights %>
   <% generating = @article.text.present? && @article.updated_at > 1.minute.ago %>
-  <div class="<%= 'pt-4' if has_insights || generating %>" data-controller="expandable-list" data-expandable-list-limit-value="3">
+
+  <div class="<%= 'pt-4' if rolled_up.any? || generating %>" data-controller="expandable-list">
     <div id="insights" class="contents space-y-4">
-      <% if has_insights %>
-        <% @article.insights.complete.each do |insight| %>
+      <% if rolled_up.any? %>
+        <% rolled_up.each do |insight| %>
           <div data-expandable-list-target="item">
             <%= render insight, suppress_source: true %>
           </div>
@@ -50,6 +58,7 @@
         <%= render "shared/loading_placeholder", id: "insights_loading", message: "Generating insights..." %>
       <% end %>
     </div>
+
     <%= render "shared/expandable_toggle" %>
   </div>
 
@@ -69,7 +78,7 @@
 
   <% if @similar_items.any? %>
     <%= render "shared/section_heading", title: "Related" %>
-    <div class="space-y-4" data-controller="expandable-list" data-expandable-list-limit-value="3">
+    <div class="space-y-4" data-controller="expandable-list">
       <% @similar_items.each do |item| %>
         <div data-expandable-list-target="item">
           <%= render "shared/item", item: item %>

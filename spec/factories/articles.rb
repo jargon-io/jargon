@@ -25,5 +25,12 @@ FactoryBot.define do
     trait :partial do
       content_type { :partial }
     end
+
+    trait :parent do
+      url { nil }
+      after(:create) do |article|
+        create_list(:article, 2, parent: article)
+      end
+    end
   end
 end

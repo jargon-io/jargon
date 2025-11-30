@@ -22,7 +22,7 @@
   </div>
 
   <%= render "shared/section_heading", title: "Related" %>
-  <div class="space-y-4" data-controller="expandable-list" data-expandable-list-limit-value="3">
+  <div class="space-y-4" data-controller="expandable-list">
     <% @related_items.each do |item| %>
       <div data-expandable-list-target="item">
         <%= render "shared/item", item: item %>

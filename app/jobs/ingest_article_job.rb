@@ -49,34 +49,49 @@ class IngestArticleJob < ApplicationJob
 
   def process_youtube(url)
     video = YoutubeClient.new.fetch(url)
+    return @article.update!(status: :failed) unless video
 
-    if video&.transcript.present?
-      @article.update!(
-        title: video.title,
-        author: extract_speaker_from_title(video.title) || video.channel,
-        published_at: video.published_at,
-        text: video.transcript,
-        summary: generate_summary(video.transcript),
-        content_type: :video,
-        status: :complete
-      )
-    else
-      @article.update!(
-        title: video&.title,
-        author: video&.channel,
-        published_at: video&.published_at,
-        content_type: :video,
-        status: :complete
-      )
-    end
+    text = build_video_text(video)
+    metadata = extract_video_metadata(video)
+
+    @article.update!(
+      title: metadata["title"].presence || video.title,
+      author: metadata["author"].presence || video.channel,
+      published_at: parse_date(metadata["published_at"]) || video.published_at,
+      text:,
+      summary: metadata["summary"],
+      content_type: :video,
+      status: :complete
+    )
   end
 
-  def extract_speaker_from_title(title)
-    return nil if title.blank?
+  def build_video_text(video)
+    parts = []
+    parts << video.description if video.description.present?
+    parts << video.transcript if video.transcript.present?
+    parts.join("\n\n---\n\n")
+  end
 
-    # Match patterns like "Conference: Speaker Name - Talk Title" or "Speaker Name: Talk Title"
-    match = title.match(/:\s*([A-Z][a-z]+ [A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\s*[-–—]/)
-    match&.[](1)
+  def extract_video_metadata(video)
+    prompt = <<~PROMPT
+      Extract metadata from this YouTube video. The speaker/author should be the person featured
+      in the video (guest, presenter, lecturer), NOT the channel or interviewer.
+
+      Channel: #{video.channel}
+      Title: #{video.title}
+      Published: #{video.published_at}
+
+      Description:
+      #{video.description.to_s.truncate(2000)}
+
+      Transcript excerpt:
+      #{video.transcript.to_s.truncate(8000)}
+    PROMPT
+
+    LLM.chat
+       .with_schema(VideoMetadataSchema)
+       .ask(prompt)
+       .content
   end
 
   def process_web_content(url)
@@ -213,7 +228,7 @@ class IngestArticleJob < ApplicationJob
     return unless @article.complete?
 
     @article.generate_embedding!
-    @article.cluster_if_similar!
+    @article.find_similar_and_absorb!
     @article.generate_research_threads!
     broadcast_update
 

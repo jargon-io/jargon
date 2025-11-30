@@ -78,7 +78,7 @@ Augment library results with fresh content from the web. Results are fetched via
 - **[pgvector](https://github.com/pgvector/pgvector)** - Vector similarity search in PostgreSQL
 - **[Exa](https://exa.ai)** - Neural search API for finding related content
 - **[crawl4ai](https://github.com/unclecode/crawl4ai)** - Fallback web scraper with browser rendering
-* **[pdftotext](https://manpages.debian.org/testing/poppler-utils/pdftotext.1.en.html)** - Text extractor for PDF content
+- **[pdftotext](https://manpages.debian.org/testing/poppler-utils/pdftotext.1.en.html)** - Text extractor for PDF content
 
 ## Configuration
 

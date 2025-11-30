@@ -55,7 +55,7 @@ RSpec.describe IngestArticleJob do
   it "queues insight generation" do
     described_class.perform_now(article.url)
 
-    expect(GenerateInsightsJob).to have_received(:perform_later).with(article.id)
+    expect(GenerateInsightsJob).to have_received(:perform_later).with(article)
   end
 
   context "when content is blocked" do

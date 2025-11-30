@@ -6,13 +6,13 @@ class AddLinksJob < ApplicationJob
   LINK_PATTERN = ApplicationHelper::INTERNAL_LINK_PATTERN
 
   FIELDS = {
-    "Article" => [:summary],
-    "Insight" => %i[body snippet]
+    Article => [:summary],
+    Insight => %i[body snippet]
   }.freeze
 
-  def perform(record_type, record_id)
-    @record = record_type.constantize.find(record_id)
-    @fields = FIELDS[record_type]
+  def perform(record)
+    @record = record
+    @fields = FIELDS[record.class]
     @linkable_insights = @record.linkable_insights
     @valid_keys = @linkable_insights.to_set(&:slug_with_class)
 

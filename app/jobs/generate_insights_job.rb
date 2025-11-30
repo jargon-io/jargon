@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 class GenerateInsightsJob < ApplicationJob
-  def perform(article_id)
-    article = Article.find(article_id)
-
+  def perform(article)
     return if article.text.blank?
 
     prompt = build_prompt(article)
@@ -32,7 +30,7 @@ class GenerateInsightsJob < ApplicationJob
 
     # Queue link generation after delay to allow batch insights to be available as targets
     article.insights.complete.each do |insight|
-      AddLinksJob.set(wait: 30.seconds).perform_later("Insight", insight.id)
+      AddLinksJob.set(wait: 30.seconds).perform_later(insight)
     end
   rescue StandardError => e
     Rails.logger.error("GenerateInsightsJob failed: #{e.message}")

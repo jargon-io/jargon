@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 class ResearchThreadJob < ApplicationJob
-  def perform(research_thread_id)
-    thread = ResearchThread.find(research_thread_id)
-
+  def perform(thread)
     query = generate_search_query(thread)
     results = ExaClient.new.search(query:)["results"] || []
     articles = filter_results(thread, results)

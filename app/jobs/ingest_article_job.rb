@@ -232,7 +232,7 @@ class IngestArticleJob < ApplicationJob
     @article.generate_research_threads!
     broadcast_update
 
-    GenerateInsightsJob.perform_later(@article.id)
+    GenerateInsightsJob.perform_later(@article)
   end
 
   def extract_metadata(text)

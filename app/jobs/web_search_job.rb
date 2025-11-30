@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 class WebSearchJob < ApplicationJob
-  def perform(web_search_id)
-    web_search = WebSearch.find(web_search_id)
-
+  def perform(web_search)
     results = ExaClient.new.search(query: web_search.query)
     urls = results["results"].pluck("url").first(5)
 

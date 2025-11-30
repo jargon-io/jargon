@@ -64,7 +64,7 @@ class Insight < ApplicationRecord
     generate_embedding!
     generate_research_threads!
 
-    AddLinksJob.set(wait: 30.seconds).perform_later("Insight", id)
+    AddLinksJob.set(wait: 30.seconds).perform_later(self)
   rescue StandardError => e
     Rails.logger.error("Insight parent metadata generation failed: #{e.message}")
   end

@@ -13,7 +13,7 @@ class ResearchThreadsController < ApplicationController
 
   def create
     @thread = find_or_create_thread
-    ResearchThreadJob.perform_later(@thread.id) if @thread.pending?
+    ResearchThreadJob.perform_later(@thread) if @thread.pending?
     redirect_to @thread
   end
 

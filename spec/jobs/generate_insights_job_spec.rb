@@ -21,12 +21,12 @@ RSpec.describe GenerateInsightsJob do
   end
 
   it "creates insights from article text" do
-    expect { described_class.perform_now(article.id) }
+    expect { described_class.perform_now(article) }
       .to change { article.insights.count }.by(2)
   end
 
   it "sets insight attributes from LLM response" do
-    described_class.perform_now(article.id)
+    described_class.perform_now(article)
 
     insight = article.insights.find_by(title: "Key Finding")
     expect(insight.body).to eq("The main takeaway.")
@@ -36,7 +36,7 @@ RSpec.describe GenerateInsightsJob do
   it "skips articles without text" do
     article.update!(text: nil)
 
-    expect { described_class.perform_now(article.id) }
+    expect { described_class.perform_now(article) }
       .not_to(change { Insight.count })
   end
 end

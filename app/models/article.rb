@@ -52,7 +52,7 @@ class Article < ApplicationRecord
     generate_embedding!
     generate_research_threads!
 
-    AddLinksJob.set(wait: 30.seconds).perform_later("Article", id)
+    AddLinksJob.set(wait: 30.seconds).perform_later(self)
   end
 
   private

@@ -6,7 +6,7 @@ class WebSearchesController < ApplicationController
     return head :bad_request if query.blank?
 
     @web_search = WebSearch.create!(query:)
-    WebSearchJob.perform_later(@web_search.id)
+    WebSearchJob.perform_later(@web_search)
 
     respond_to do |format|
       format.turbo_stream

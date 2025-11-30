@@ -55,8 +55,8 @@ Similar articles (syndicated content, republished pieces) are automatically grou
 
 Each insight can spawn research threads—questions that trigger web searches via Exa to find related articles. Discovered articles are automatically ingested and indexed.
 
-<img src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/dc277749674b07964cc0829c41c6b2f4c8cb90e8/topic_dark.png#gh-dark-mode-only" />
-<img src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/dc277749674b07964cc0829c41c6b2f4c8cb90e8/topic_light.png#gh-light-mode-only" />
+<img src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/e85846f6b623c1bdbd8db09931dacf9c862b83c8/threads_dark.png#gh-dark-mode-only" />
+<img src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/e85846f6b623c1bdbd8db09931dacf9c862b83c8/threads_light.png#gh-light-mode-only" />
 
 ### Library Search
 

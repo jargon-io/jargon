@@ -46,50 +46,16 @@ class Article < ApplicationRecord
   end
 
   def regenerate_metadata!
-    return unless parent?
+    return unless parent? && children.any?
 
-    child_articles = children.to_a
-    return if child_articles.empty?
-
-    context = child_articles.map { |a| format_for_synthesis(a) }.join("\n\n---\n\n")
-
-    prompt = <<~PROMPT
-      These are the same article from different sources. Generate:
-      - A clean, canonical title (without source names like 'PubMed' or 'Nature')
-      - A summary that states the key idea directly (not "this cluster is about...")
-      - Use <strong> for 1-2 key terms
-
-      #{context}
-    PROMPT
-
-    response = LLM.chat
-                  .with_schema(ClusterMetadataSchema)
-                  .ask(prompt)
-
-    update!(
-      title: response.content["name"],
-      summary: response.content["summary"],
-      image_url: select_best_image(child_articles)
-    )
-
+    update!(ParentSynthesizer.new(children).synthesize)
     generate_embedding!
     generate_research_threads!
+
     AddLinksJob.set(wait: 30.seconds).perform_later("Article", id)
   end
 
   private
-
-  def format_for_synthesis(article)
-    <<~ARTICLE
-      Title: #{article.title}
-      Summary: #{article.summary}
-      Author: #{article.author.presence || 'N/A'}
-    ARTICLE
-  end
-
-  def select_best_image(articles)
-    articles.find { |a| a.image_url.present? }&.image_url
-  end
 
   def url_accessible?(url)
     return false if url.blank?

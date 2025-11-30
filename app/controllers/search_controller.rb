@@ -3,11 +3,11 @@
 class SearchController < ApplicationController
   def show
     @query = params[:q].to_s.strip
-    return redirect_to articles_path if @query.blank?
+    return redirect_to root_path if @query.blank?
 
     if url?(@query)
       create_article_from_url(@query)
-      redirect_to articles_path
+      redirect_to root_path
     else
       @results = search_library(@query)
     end

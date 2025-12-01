@@ -3,17 +3,17 @@
   <img width="400px" src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/8db84d442bcd12f4176b2918140df8656298907d/jargon_light.png#gh-light-mode-only" />
 </div>
 
-A personal research library that ingests articles, extracts insights, and surfaces connections across domains.
+A research tool that builds understanding through connected insights.
 
-Drop in a URL and Jargon will scrape the content, summarize it with an LLM, extract key insights, and find related articles through semantic search. Or ask a question to pull relevant insights from your library, optionally augmented with web results.
+Jargon extracts key ideas from articles, finds connections between them, and generates research questions that pull in related content from the web. Each piece you add enriches the whole—insights link to insights, questions lead to new articles, and your library grows into a web of interconnected knowledge.
 
-## How It Works
+## Core Loop
 
-1. **Ingest** - Paste a URL or ask a question. URLs get scraped (web pages, PDFs, YouTube transcripts). Questions search your library and the web.
-2. **Summarize** - An LLM distills the core idea into a concise summary.
-3. **Extract Insights** - Key findings are pulled out as standalone, linkable insights.
-4. **Find Connections** - Embeddings enable semantic similarity search. Related articles cluster automatically.
-5. **Research Threads** - Insights spawn research questions that trigger web searches for related articles.
+1. **Add content** — Paste a URL (article, PDF, YouTube video) or ask a question
+2. **Extract insights** — LLM distills key findings into standalone, linkable ideas
+3. **Find connections** — Semantic search surfaces related insights across your library
+4. **Generate questions** — Each piece spawns research threads that search the web
+5. **Expand automatically** — Discovered articles get ingested, and the cycle continues
 
 ## Features
 

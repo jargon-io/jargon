@@ -3,8 +3,6 @@
   <img width="400px" src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/8db84d442bcd12f4176b2918140df8656298907d/jargon_light.png#gh-light-mode-only" />
 </div>
 
-An AI-managed zettelkasten.
-
 Jargon is an AI-managed zettelkasten that parses articles, papers, and videos into index card-sized key ideas. It summarizing sources, extracts ideas, links related concepts, and collapses duplicates. Semantic embeddings surface connections across the library.
 
 Each source is parsed in context of existing cards, generating new insights that link back to the original material. The result is a knowledge base of interlinked ideas that can be explored directly or used as a RAG to answer questions. Questions also pull results from the web, which flow through the same extract/summarize/link pipeline before being synthesized with library content.

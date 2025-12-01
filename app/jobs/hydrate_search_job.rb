@@ -11,7 +11,13 @@ class HydrateSearchJob < ApplicationJob
   PROMPT
 
   def perform(search)
-    return if search.complete?
+    return if search.complete? || search.failed?
+
+    if search.all_articles_failed?
+      search.update!(status: :failed)
+      broadcast_failed(search)
+      return
+    end
 
     content = aggregate_content(search)
     result = generate_summary(content)
@@ -112,6 +118,20 @@ class HydrateSearchJob < ApplicationJob
       target: "search_explore",
       partial: "searches/explore",
       locals: { source: search, searches: search.searches }
+    )
+  end
+
+  def broadcast_failed(search)
+    Turbo::StreamsChannel.broadcast_remove_to(
+      "search_#{search.id}",
+      target: "summary_loading"
+    )
+
+    Turbo::StreamsChannel.broadcast_replace_to(
+      "search_#{search.id}",
+      target: "search_summary",
+      partial: "searches/failed",
+      locals: { search: }
     )
   end
 end

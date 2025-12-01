@@ -88,7 +88,7 @@ class GenerateInsightsJob < ApplicationJob
       search = sa.search
       next unless search.searching?
 
-      HydrateSearchJob.perform_later(search) if search.all_insights_ready?
+      HydrateSearchJob.perform_later(search) if search.ready_to_hydrate?
     end
   end
 end

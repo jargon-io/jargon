@@ -23,24 +23,26 @@ class Search < ApplicationRecord
   has_many :search_articles, dependent: :destroy
   has_many :articles, through: :search_articles
 
-  enum :status, { pending: 0, searching: 1, complete: 2 }
+  enum :status, { pending: 0, searching: 1, complete: 2, failed: 3 }
 
   scope :not_pending, -> { where.not(status: :pending) }
 
   validates :query, presence: true
 
-  def pending_articles_count
-    articles.pending.count
+  def all_articles_resolved?
+    articles.any? && articles.pending.none?
   end
 
-  def all_articles_ready?
-    articles.any? && pending_articles_count.zero?
+  def viable_content?
+    articles.complete.any? { |a| a.insights.complete.any? }
   end
 
-  def all_insights_ready?
-    return false unless all_articles_ready?
+  def all_articles_failed?
+    all_articles_resolved? && articles.complete.none?
+  end
 
-    articles.all? { |a| a.insights.complete.any? }
+  def ready_to_hydrate?
+    all_articles_resolved? && (viable_content? || all_articles_failed?)
   end
 
   def generate_search_query_embedding!

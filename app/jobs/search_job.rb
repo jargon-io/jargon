@@ -27,7 +27,7 @@ class SearchJob < ApplicationJob
       broadcast_article(search, article)
     end
 
-    HydrateSearchJob.perform_later(search) if search.all_insights_ready?
+    HydrateSearchJob.perform_later(search) if search.ready_to_hydrate?
   rescue StandardError => e
     Rails.logger.error("SearchJob failed: #{e.message}")
     raise e

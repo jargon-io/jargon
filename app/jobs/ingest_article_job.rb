@@ -43,6 +43,7 @@ class IngestArticleJob < ApplicationJob
     Rails.logger.error("IngestArticleJob failed: #{e.message}")
     @article&.update!(status: :failed)
     broadcast_update
+    notify_searches_of_resolution
     raise e
   end
 
@@ -302,5 +303,13 @@ class IngestArticleJob < ApplicationJob
       limit: 8,
       exclude: exclude_items
     ).call
+  end
+
+  def notify_searches_of_resolution
+    return unless @article
+
+    @article.searches.searching.find_each do |search|
+      HydrateSearchJob.perform_later(search) if search.ready_to_hydrate?
+    end
   end
 end

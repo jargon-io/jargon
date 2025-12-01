@@ -3,17 +3,19 @@
   <img width="400px" src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/8db84d442bcd12f4176b2918140df8656298907d/jargon_light.png#gh-light-mode-only" />
 </div>
 
-A research tool that builds understanding through connected insights.
+An AI-managed zettelkasten.
 
-Jargon extracts key ideas from articles, finds connections between them, and generates research questions that pull in related content from the web. Each piece you add enriches the whole—insights link to insights, questions lead to new articles, and your library grows into a web of interconnected knowledge.
+Jargon parses articles into index card-sized insights that are stored independently and cross-referenced. LLMs handle the work traditionally done by hand—summarizing sources, extracting ideas, linking related concepts, and collapsing duplicates. Semantic embeddings surface connections across the library.
+
+Each source is parsed in context of existing cards, generating new insights that link back to the original material. The result is a knowledge base of interlinked ideas that can be explored directly or used as a RAG to answer questions. Questions also pull results from the web, which flow through the same extract/summarize/link pipeline before being synthesized with library content. Every node gets pre-generated research threads to pull on.
 
 ## Core Loop
 
-1. **Add content** — Paste a URL (article, PDF, YouTube video) or ask a question
-2. **Extract insights** — LLM distills key findings into standalone, linkable ideas
-3. **Find connections** — Semantic search surfaces related insights across your library
-4. **Generate questions** — Each piece spawns research threads that search the web
-5. **Expand automatically** — Discovered articles get ingested, and the cycle continues
+1. **Ingest** — Articles, PDFs, and YouTube videos are scraped and parsed
+2. **Summarize** — LLM distills each source into a concise summary
+3. **Extract** — Key ideas become standalone insight cards with source links
+4. **Connect** — Embeddings find related insights; duplicates collapse automatically
+5. **Thread** — Each node gets research questions that search the web for more sources
 
 ## Features
 

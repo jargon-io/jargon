@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   root "welcome#index"
+  get "autocomplete", to: "autocomplete#index"
   resources :articles, only: [:show]
   resources :insights, only: [:show]
   resources :searches, only: %i[show update]

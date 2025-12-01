@@ -89,8 +89,10 @@ class SearchJob < ApplicationJob
 
   def format_source_for_prompt(source)
     case source
-    when Article, Insight
+    when Article
       "#{source.title}: #{source.summary}"
+    when Insight
+      "#{source.title}: #{source.body}"
     when Search
       "#{source.search_query}: #{source.summary}"
     end

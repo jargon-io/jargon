@@ -6,9 +6,11 @@ export default class extends Controller {
 
   connect() {
     this.expanded = false;
+
     if (this.hasToggleTarget) {
       this.toggleTemplate = this.toggleTarget.textContent.trim();
     }
+
     this.update();
   }
 
@@ -29,10 +31,13 @@ export default class extends Controller {
       item.hidden = !this.expanded && hasMore && index >= limit;
     });
 
-    if (this.hasToggleTarget) {
+    if (this.hasToggleTarget && this.toggleTemplate) {
       this.toggleTarget.hidden = this.expanded || !hasMore;
       const count = items.length - limit;
-      this.toggleTarget.textContent = this.toggleTemplate.replace("{count}", count);
+      this.toggleTarget.textContent = this.toggleTemplate.replace(
+        "{count}",
+        count
+      );
     }
   }
 

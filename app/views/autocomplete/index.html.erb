@@ -1,0 +1,14 @@
+<%= turbo_frame_tag "autocomplete-results" do %>
+  <% if @results&.any? %>
+    <ul class="absolute top-full left-0 right-0 mt-1 surface border border-strong rounded-lg shadow-lg overflow-hidden z-50">
+      <% @results.each do |result| %>
+        <li>
+          <%= link_to polymorphic_path(result), class: "block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700", data: { turbo_frame: "_top" } do %>
+            <span class="text-xs text-muted"><%= result.class.name %></span>
+            <div class="text-heading"><%= result.title %></div>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+<% end %>

@@ -199,7 +199,6 @@ docker compose up -d
 The app will be available at http://localhost:3000.
 
 ## TODO
-* live search completion when typing in search box
 * replace Exa with Brave search and use crawl4ai to ingest
   * do parallel searches across multiple LLM-generated queries?
 * refactor IngestArticleJob

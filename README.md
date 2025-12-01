@@ -205,3 +205,5 @@ The app will be available at http://localhost:3000.
 * define schemas inline where they're used
 * export markdown to clipboard
 * full text search
+* generate search query async
+* don't show superseded insights in autocomplete

@@ -30,8 +30,8 @@
         <%= yield %>
       </main>
     <% else %>
-      <main class="container mx-auto sm:mt-28 mt-32 px-5 flex pb-32">
-        <%= render "layouts/header" %>
+      <%= render "layouts/header" %>
+      <main class="container mx-auto mt-4 sm:mt-28 px-5 flex pb-32">
         <%= yield %>
       </main>
     <% end %>

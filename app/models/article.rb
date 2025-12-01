@@ -22,7 +22,7 @@ class Article < ApplicationRecord
 
   has_many :insights, dependent: :destroy
   has_many :search_articles, dependent: :destroy
-  has_many :searches, through: :search_articles
+  has_many :containing_searches, through: :search_articles, source: :search
 
   enum :status, { pending: 0, complete: 1, failed: 2 }
   enum :content_type, { full: 0, partial: 1, video: 2, podcast: 3, paper: 4 }

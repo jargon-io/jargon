@@ -308,7 +308,7 @@ class IngestArticleJob < ApplicationJob
   def notify_searches_of_resolution
     return unless @article
 
-    @article.searches.searching.find_each do |search|
+    @article.containing_searches.searching.find_each do |search|
       HydrateSearchJob.perform_later(search) if search.ready_to_hydrate?
     end
   end

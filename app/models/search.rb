@@ -25,6 +25,8 @@ class Search < ApplicationRecord
 
   enum :status, { pending: 0, searching: 1, complete: 2 }
 
+  scope :not_pending, -> { where.not(status: :pending) }
+
   validates :query, presence: true
 
   def pending_articles_count

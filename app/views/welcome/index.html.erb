@@ -39,8 +39,8 @@
 <% else %>
   <div class="w-full max-w-2xl mx-auto">
     <div id="items" class="space-y-4">
-      <% @items.each do |item| %>
-        <%= render item %>
+      <% @items.each do |feed_item| %>
+        <%= render "welcome/feed_item", feed_item: feed_item %>
       <% end %>
     </div>
   </div>

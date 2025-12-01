@@ -1,0 +1,6 @@
+<%# locals: (feed_item:) %>
+<% if feed_item.subject.is_a?(Search) %>
+  <%= render feed_item.subject %>
+<% else %>
+  <%= render feed_item.subject, show_searches: feed_item.show_searches %>
+<% end %>

@@ -19,6 +19,7 @@ class SearchJob < ApplicationJob
 
       article = Article.find_or_create_by!(url:) do |a|
         a.title = data["title"]
+        a.origin = :discovered
       end
 
       search.search_articles.find_or_create_by!(article:)

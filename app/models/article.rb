@@ -25,6 +25,7 @@ class Article < ApplicationRecord
 
   enum :status, { pending: 0, complete: 1, failed: 2 }
   enum :content_type, { full: 0, partial: 1, video: 2, podcast: 3, paper: 4 }
+  enum :origin, { manual: 0, discovered: 1 }
 
   validates :url, uniqueness: { allow_nil: true }
   validates :url, presence: true, unless: :parent?

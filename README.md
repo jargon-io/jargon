@@ -206,4 +206,3 @@ The app will be available at http://localhost:3000.
 * define schemas inline where they're used
 * export markdown to clipboard
 * full text search
-* homepage shows directly-imported articles and completed searches

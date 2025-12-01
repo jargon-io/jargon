@@ -147,7 +147,8 @@ CREATE TABLE public.articles (
     embedding public.vector(1536),
     slug character varying NOT NULL,
     content_type integer DEFAULT 0 NOT NULL,
-    parent_id bigint
+    parent_id bigint,
+    origin integer DEFAULT 0 NOT NULL
 );
 
 
@@ -416,6 +417,13 @@ ALTER TABLE ONLY public.threads
 
 
 --
+-- Name: index_articles_on_origin; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_articles_on_origin ON public.articles USING btree (origin);
+
+
+--
 -- Name: index_articles_on_parent_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -560,6 +568,7 @@ ALTER TABLE ONLY public.insights
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251201022215'),
 ('20251201014802'),
 ('20251130224542'),
 ('20251130223634'),

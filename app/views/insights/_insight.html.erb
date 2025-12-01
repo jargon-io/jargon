@@ -1,12 +1,12 @@
-<%# locals: (insight:, suppress_source: false) %>
+<%# locals: (insight:, suppress_source: false, show_searches: false) %>
 
-<div id="<%= dom_id(insight) %>" class="border rounded-lg p-5 transition-colors <%= insight.failed? ? 'border-red-300 bg-red-50 dark:border-red-800 dark:bg-red-950' : 'border-default hover:border-strong' %>">
+<div id="<%= dom_id(insight) %>" class="border rounded-lg p-5 transition-colors <%= insight.failed? ? 'border-red-300 bg-red-50 dark:border-red-800 dark:bg-red-950' : 'border-default hover:border-strong space-y-3' %>">
   <h2 class="text-xl font-semibold text-heading">
     <%= link_to insight.title || "Untitled", insight %>
   </h2>
 
   <% if insight.body.present? %>
-    <p class="text-body mt-2"><%= render_content(insight.body, current_item: insight) %></p>
+    <p class="text-body"><%= render_content(insight.body, current_item: insight) %></p>
   <% end %>
 
   <%= render "shared/snippet",
@@ -14,4 +14,12 @@
              source: suppress_source ? nil : insight.article,
              compact: true,
              current_item: insight %>
+
+  <% if show_searches && insight.searches.not_pending.any? %>
+    <div class="mt-5 space-y-2">
+      <% insight.searches.not_pending.each do |search| %>
+        <%= render search %>
+      <% end %>
+    </div>
+  <% end %>
 </div>

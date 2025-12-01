@@ -1,4 +1,4 @@
-<%# locals: (article:) %>
+<%# locals: (article:, show_searches: false) %>
 <div id="<%= dom_id(article) %>" class="border rounded-lg p-5 transition-colors <%= article.failed? ? 'border-red-300 bg-red-50 dark:border-red-800 dark:bg-red-950' : 'border-default hover:border-strong' %>">
   <% if article.pending? %>
     <div class="animate-pulse space-y-3">
@@ -25,6 +25,14 @@
 
     <% if article.summary.present? %>
       <p class="text-body mt-3"><%= render_content(article.summary, current_item: article) %></p>
+    <% end %>
+
+    <% if show_searches && article.searches.not_pending.any? %>
+      <div class="mt-4 space-y-2">
+        <% article.searches.not_pending.each do |search| %>
+          <%= render search %>
+        <% end %>
+      </div>
     <% end %>
   <% end %>
 </div>

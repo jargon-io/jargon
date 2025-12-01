@@ -1,14 +1,14 @@
 {
   "ignored_warnings": [
     {
-      "fingerprint": "3a3f89f22e197120ddeedc398f36eba7b7d53bc2df56092195e3da63ff020cd4",
+      "fingerprint": "3cfe8f50b30e1632bc3ac1ad4139cbaf590cb70ebf0a5206db303c4c5648fdcd",
       "note": "Snippet content is sanitized via render_content() which uses Rails sanitize()"
     },
     {
-      "fingerprint": "3cfe8f50b30e1632bc3ac1ad4139cbaf590cb70ebf0a5206db303c4c5648fdcd",
-      "note": "Snippet content is sanitized via render_content() which uses Rails sanitize()"
+      "fingerprint": "527c568f6181a60dc56a748204fa3170440285eb461ed709874c93f30a6a8a05",
+      "note": "source_type is validated against whitelist before constantize"
     }
   ],
-  "updated": "2025-11-29",
+  "updated": "2025-12-01",
   "brakeman_version": "7.1.1"
 }

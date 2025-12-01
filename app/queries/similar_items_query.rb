@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SimilarItemsQuery
-  THRESHOLD = 0.6
+  THRESHOLD = 0.5
 
   Result = Data.define(:item, :distance)
 

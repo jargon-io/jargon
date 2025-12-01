@@ -28,13 +28,14 @@ class IngestArticleJob < ApplicationJob
     If this is an abstract, look for a "full text", "PDF", or "DOI" link.
   PROMPT
 
-  def perform(url)
-    @article = Article.find_by!(url:)
+  def perform(article)
+    @article = article
+    @old_slug = article.slug
 
-    if YoutubeClient.youtube_url?(url)
-      process_youtube(url)
+    if YoutubeClient.youtube_url?(article.url)
+      process_youtube(article.url)
     else
-      process_web_content(url)
+      process_web_content(article.url)
     end
 
     finalize_article
@@ -157,8 +158,7 @@ class IngestArticleJob < ApplicationJob
     return if normalized_url.blank?
     return if Article.exists?(url: normalized_url)
 
-    article = Article.create!(url: normalized_url)
-    IngestArticleJob.perform_later(article.url)
+    Article.create!(url: normalized_url)
   end
 
   def crawl_content(url)
@@ -229,7 +229,7 @@ class IngestArticleJob < ApplicationJob
 
     @article.generate_embedding!
     @article.find_similar_and_absorb!
-    @article.generate_research_threads!
+    @article.generate_searches!
     broadcast_update
 
     GenerateInsightsJob.perform_later(@article)
@@ -260,6 +260,23 @@ class IngestArticleJob < ApplicationJob
   end
 
   def broadcast_update
+    similar_items = @article.complete? ? build_similar_items : []
+
+    if @old_slug.present? && @article.slug != @old_slug
+      new_path = Rails.application.routes.url_helpers.article_path(@article)
+      Turbo::StreamsChannel.broadcast_stream_to(
+        "article_#{@article.id}",
+        content: "<turbo-stream action=\"redirect\" url=\"#{new_path}\"></turbo-stream>"
+      )
+    end
+
+    Turbo::StreamsChannel.broadcast_replace_to(
+      "article_#{@article.id}",
+      target: "article_content",
+      partial: "articles/content",
+      locals: { article: @article, similar_items: }
+    )
+
     Turbo::StreamsChannel.broadcast_replace_to(
       "articles",
       target: @article,
@@ -267,13 +284,23 @@ class IngestArticleJob < ApplicationJob
       locals: { article: @article }
     )
 
-    @article.thread_articles.includes(:research_thread).find_each do |ta|
+    @article.search_articles.includes(:search).find_each do |sa|
       Turbo::StreamsChannel.broadcast_replace_to(
-        "research_thread_#{ta.research_thread_id}",
+        "search_#{sa.search_id}",
         target: @article,
         partial: "articles/article",
         locals: { article: @article }
       )
     end
+  end
+
+  def build_similar_items
+    exclude_items = [@article] + @article.insights.to_a
+
+    SimilarItemsQuery.new(
+      embedding: @article.embedding,
+      limit: 8,
+      exclude: exclude_items
+    ).call
   end
 end

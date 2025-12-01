@@ -1,0 +1,79 @@
+<%# locals: (article:, similar_items: []) %>
+
+<div class="space-y-4">
+  <div class="space-y-1">
+    <h1 class="text-3xl font-bold text-heading"><%= article.title %></h1>
+    <%= render "shared/byline", author: article.author, date: article.published_at %>
+  </div>
+
+  <% if article.video? && (video_id = article.url&.match(YoutubeClient::URL_REGEX)&.[](1)) %>
+    <div class="aspect-video mt-4">
+      <iframe
+      src="https://www.youtube.com/embed/<%= video_id %>"
+      class="w-full h-full rounded-lg"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+      </iframe>
+    </div>
+  <% elsif article.image_url.present? %>
+    <%= image_tag article.image_url, class: "w-full max-h-64 object-contain rounded-lg md:float-right md:w-auto md:max-w-64 md:max-h-48 md:ml-4 md:mb-4 mt-4" %>
+  <% end %>
+
+  <% if article.summary.present? %>
+    <p class="text-lg text-body leading-relaxed mt-4"><%= render_content(article.summary, current_item: article) %></p>
+  <% end %>
+
+  <% if article.parent? %>
+    <ul class="mt-4">
+      <% article.children.each do |child| %>
+        <% next if child.url.blank? %>
+        <li><%= link_to child.url, child.url, class: "text-link" %></li>
+      <% end %>
+    </ul>
+  <% elsif article.url.present? && !article.video? %>
+    <div class="mt-4">
+      <% label = article.paper? ? "Read original paper" : "Read original" %>
+      <%= link_to label,
+            article.url,
+            target: "_blank",
+            rel: "noopener",
+            class: "text-link font-medium" %>
+    </div>
+  <% end %>
+
+  <% rolled_up = article.rolled_up_insights %>
+  <% generating = article.text.present? && article.updated_at > 1.minute.ago %>
+
+  <div class="<%= 'pt-4' if rolled_up.any? || generating %>" data-controller="expandable-list">
+    <div id="insights" class="contents space-y-4">
+      <% if rolled_up.any? %>
+        <% rolled_up.each do |insight| %>
+          <div data-expandable-list-target="item">
+            <%= render insight, suppress_source: true %>
+          </div>
+        <% end %>
+      <% elsif generating %>
+        <%= render "shared/loading_placeholder", id: "insights_loading", message: "Generating insights..." %>
+      <% end %>
+    </div>
+
+    <%= render "shared/expandable_toggle" %>
+  </div>
+
+  <%= render "shared/section_heading", title: "Explore" %>
+
+  <%= render "searches/explore", source: article, searches: article.searches %>
+
+  <% if similar_items.any? %>
+    <%= render "shared/section_heading", title: "Related" %>
+    <div class="space-y-4" data-controller="expandable-list">
+      <% similar_items.each do |item| %>
+        <div data-expandable-list-target="item">
+          <%= render "shared/item", item: item %>
+        </div>
+      <% end %>
+      <%= render "shared/expandable_toggle" %>
+    </div>
+  <% end %>
+</div>

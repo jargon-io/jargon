@@ -1,0 +1,17 @@
+<%# locals: (source:, searches: []) %>
+
+<div class="space-y-2">
+  <% searches.each do |s| %>
+    <%= render "searches/search", search: s %>
+  <% end %>
+
+  <%= form_with url: queries_path, method: :post, class: "flex gap-2 mt-3" do |f| %>
+    <%= f.hidden_field :source_type, value: source.class.name %>
+    <%= f.hidden_field :source_id, value: source.id %>
+    <%= f.text_field :q,
+        required: true,
+        class: "flex-1 py-3 px-5 surface border border-strong rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-300 focus:border-transparent" %>
+    <%= f.submit "→",
+        class: "px-4 py-2 btn-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer" %>
+  <% end %>
+</div>

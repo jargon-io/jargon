@@ -6,21 +6,22 @@ class Article < ApplicationRecord
   include Embeddable
   include NormalizesMarkup
   include Linkable
-  include ResearchThreadGeneratable
+  include SearchGeneratable
 
   slug -> { title.presence || "untitled" }
+
   synthesized_parent_attributes ->(_) { { url: nil, status: :complete } }
 
   normalizes_markup :summary
 
   embeddable :summary
 
+  search_context -> { "Title: #{title}\nSummary: #{summary}" }
+
   has_neighbors :embedding
 
   has_many :insights, dependent: :destroy
-  has_many :thread_articles, dependent: :destroy
-  has_many :discovered_research_threads, through: :thread_articles, source: :research_thread
-  has_many :web_search_articles, dependent: :destroy
+  has_many :search_articles, dependent: :destroy
 
   enum :status, { pending: 0, complete: 1, failed: 2 }
   enum :content_type, { full: 0, partial: 1, video: 2, podcast: 3, paper: 4 }
@@ -28,12 +29,10 @@ class Article < ApplicationRecord
   validates :url, uniqueness: { allow_nil: true }
   validates :url, presence: true, unless: :parent?
 
+  after_create_commit -> { IngestArticleJob.perform_later(self) }
+
   def image_url=(value)
     super(url_accessible?(value) ? value : nil)
-  end
-
-  def research_thread_context
-    "Title: #{title}\nSummary: #{summary}"
   end
 
   def rolled_up_insights
@@ -49,8 +48,9 @@ class Article < ApplicationRecord
     return unless parent? && children.any?
 
     update!(ParentSynthesizer.new(children).synthesize)
+
     generate_embedding!
-    generate_research_threads!
+    generate_searches!
 
     AddLinksJob.set(wait: 30.seconds).perform_later(self)
   end

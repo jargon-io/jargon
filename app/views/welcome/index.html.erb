@@ -10,7 +10,7 @@
       <h1 class="text-4xl font-bold text-heading mb-2">Jargon</h1>
     </div>
 
-    <%= form_with url: search_path, method: :get, class: "w-full mb-12" do |f| %>
+    <%= form_with url: queries_path, method: :post, class: "w-full mb-12" do |f| %>
       <div class="flex gap-3">
         <%= f.text_field :q,
             placeholder: "URL or question...",

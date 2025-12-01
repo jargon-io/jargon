@@ -13,8 +13,7 @@ Rails.application.routes.draw do
 
   root "welcome#index"
   resources :articles, only: [:show]
-  get "search", to: "search#show"
-  post "web_search", to: "web_searches#create"
   resources :insights, only: [:show]
-  resources :research_threads, only: %i[show create], path: "threads"
+  resources :searches, only: %i[show update]
+  resources :queries, only: [:create]
 end

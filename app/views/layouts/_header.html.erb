@@ -5,7 +5,7 @@
         <%= image_tag "logo.png", class: "h-6 w-6" %>
         <span>Jargon</span>
       <% end %>
-      <%= form_with url: search_path, method: :get, class: "flex-1 flex gap-3" do |f| %>
+      <%= form_with url: queries_path, method: :post, class: "flex-1 flex gap-3" do |f| %>
         <%= f.text_field :q,
             placeholder: "URL or question...",
             class: "flex-1 px-4 py-2 surface border border-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>

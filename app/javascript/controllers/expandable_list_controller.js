@@ -5,10 +5,18 @@ export default class extends Controller {
   static values = { limit: { type: Number, default: 2 } };
 
   connect() {
+    this.expanded = false;
+    if (this.hasToggleTarget) {
+      this.toggleTemplate = this.toggleTarget.textContent.trim();
+    }
     this.update();
   }
 
   itemTargetConnected() {
+    this.update();
+  }
+
+  itemTargetDisconnected() {
     this.update();
   }
 
@@ -18,19 +26,18 @@ export default class extends Controller {
     const hasMore = items.length > limit;
 
     items.forEach((item, index) => {
-      item.hidden = hasMore && index >= limit;
+      item.hidden = !this.expanded && hasMore && index >= limit;
     });
 
     if (this.hasToggleTarget) {
-      this.toggleTarget.hidden = !hasMore;
-      this.toggleTarget.textContent = `Show ${items.length - limit} more`;
+      this.toggleTarget.hidden = this.expanded || !hasMore;
+      const count = items.length - limit;
+      this.toggleTarget.textContent = this.toggleTemplate.replace("{count}", count);
     }
   }
 
   toggle() {
-    this.itemTargets.forEach((item) => (item.hidden = false));
-    if (this.hasToggleTarget) {
-      this.toggleTarget.hidden = true;
-    }
+    this.expanded = true;
+    this.update();
   }
 }

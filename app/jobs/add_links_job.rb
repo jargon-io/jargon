@@ -6,8 +6,9 @@ class AddLinksJob < ApplicationJob
   LINK_PATTERN = ApplicationHelper::INTERNAL_LINK_PATTERN
 
   FIELDS = {
-    Article => [:summary],
-    Insight => %i[body snippet]
+    Article => %i[summary],
+    Insight => %i[body snippet],
+    Search => %i[summary snippet]
   }.freeze
 
   def perform(record)
@@ -58,13 +59,11 @@ class AddLinksJob < ApplicationJob
   end
 
   def valid_linked_content?(original, linked)
-    # Strip links from both and compare plaintext
     original_plain = strip_links(original)
     linked_plain = strip_links(linked)
 
     return false unless original_plain == linked_plain
 
-    # Validate all links point to valid targets
     linked.scan(LINK_PATTERN).all? do |match|
       key = "#{match[1]}:#{match[2]}"
       @valid_keys.include?(key)

@@ -38,7 +38,7 @@ RSpec.describe IngestArticleJob do
   before { stub_web_ingestion }
 
   it "ingests article content from URL" do
-    described_class.perform_now(article.url)
+    described_class.perform_now(article)
 
     article.reload
     expect(article.status).to eq("complete")
@@ -47,13 +47,13 @@ RSpec.describe IngestArticleJob do
   end
 
   it "generates summary" do
-    described_class.perform_now(article.url)
+    described_class.perform_now(article)
 
     expect(article.reload.summary).to eq("A concise summary.")
   end
 
   it "queues insight generation" do
-    described_class.perform_now(article.url)
+    described_class.perform_now(article)
 
     expect(GenerateInsightsJob).to have_received(:perform_later).with(article)
   end
@@ -68,7 +68,7 @@ RSpec.describe IngestArticleJob do
     end
 
     it "marks article as failed" do
-      described_class.perform_now(article.url)
+      described_class.perform_now(article)
 
       expect(article.reload.status).to eq("failed")
     end
@@ -98,7 +98,7 @@ RSpec.describe IngestArticleJob do
     end
 
     it "processes as video content with LLM-extracted metadata" do
-      described_class.perform_now(youtube_article.url)
+      described_class.perform_now(youtube_article)
 
       youtube_article.reload
       expect(youtube_article.content_type).to eq("video")
@@ -112,7 +112,7 @@ RSpec.describe IngestArticleJob do
     it "falls back to video metadata when LLM returns blank" do
       stub_llm_chat(default: { "title" => "", "author" => "", "published_at" => "" })
 
-      described_class.perform_now(youtube_article.url)
+      described_class.perform_now(youtube_article)
 
       youtube_article.reload
       expect(youtube_article.title).to eq("Video Title")

@@ -199,8 +199,11 @@ docker compose up -d
 The app will be available at http://localhost:3000.
 
 ## TODO
-* use library as RAG and have search box return results but also synthesize and respond with LLM answer
+* live search completion when typing in search box
+* replace Exa with Brave search and use crawl4ai to ingest
+  * do parallel searches across multiple LLM-generated queries?
+* refactor IngestArticleJob
+* define schemas inline where they're used
 * export markdown to clipboard
 * full text search
-* live search completion when typing in search box
-* refactor IngestArticleJob
+* homepage shows directly-imported articles and completed searches

@@ -4,4 +4,6 @@
   <%= render "articles/article", article: item %>
 <% when Insight %>
   <%= render "insights/insight", insight: item, suppress_source: %>
+<% when Search %>
+  <%= render "searches/search", search: item %>
 <% end %>

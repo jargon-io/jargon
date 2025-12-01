@@ -6,7 +6,7 @@ class Insight < ApplicationRecord
   include Embeddable
   include NormalizesMarkup
   include Linkable
-  include ResearchThreadGeneratable
+  include SearchGeneratable
 
   slug -> { title.presence || "untitled" }
 
@@ -16,6 +16,8 @@ class Insight < ApplicationRecord
 
   embeddable :body
 
+  search_context -> { "Title: #{title}\nBody: #{body}\nSnippet: #{snippet}" }
+
   has_neighbors :embedding
 
   belongs_to :article, optional: true
@@ -24,10 +26,6 @@ class Insight < ApplicationRecord
   enum :status, { pending: 0, complete: 1, failed: 2 }
 
   after_destroy_commit -> { CleanupDeadLinksJob.perform_later(slug) }
-
-  def research_thread_context
-    "Title: #{title}\nBody: #{body}\nSnippet: #{snippet}"
-  end
 
   def sibling_insights
     return [] if embedding.blank?
@@ -62,7 +60,7 @@ class Insight < ApplicationRecord
 
     update!(ParentSynthesizer.new(children).synthesize)
     generate_embedding!
-    generate_research_threads!
+    generate_searches!
 
     AddLinksJob.set(wait: 30.seconds).perform_later(self)
   rescue StandardError => e

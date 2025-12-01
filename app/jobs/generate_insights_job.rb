@@ -23,7 +23,7 @@ class GenerateInsightsJob < ApplicationJob
 
       insight.generate_embedding!
       insight.find_similar_and_absorb!
-      insight.generate_research_threads!
+      insight.generate_searches!
 
       broadcast_insight(article, insight)
     end
@@ -32,6 +32,8 @@ class GenerateInsightsJob < ApplicationJob
     article.insights.complete.each do |insight|
       AddLinksJob.set(wait: 30.seconds).perform_later(insight)
     end
+
+    notify_pending_searches(article)
   rescue StandardError => e
     Rails.logger.error("GenerateInsightsJob failed: #{e.message}")
     raise e
@@ -79,5 +81,14 @@ class GenerateInsightsJob < ApplicationJob
       partial: "insights/broadcast_insight",
       locals: { insight: }
     )
+  end
+
+  def notify_pending_searches(article)
+    SearchArticle.where(article:).includes(:search).find_each do |sa|
+      search = sa.search
+      next unless search.searching?
+
+      HydrateSearchJob.perform_later(search) if search.all_insights_ready?
+    end
   end
 end

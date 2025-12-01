@@ -10,6 +10,8 @@ class Article < ApplicationRecord
 
   slug -> { title.presence || "untitled" }
 
+  before_validation :normalize_youtube_url
+
   synthesized_parent_attributes ->(_) { { url: nil, status: :complete } }
 
   normalizes_markup :summary
@@ -58,6 +60,12 @@ class Article < ApplicationRecord
   end
 
   private
+
+  def normalize_youtube_url
+    return unless url.present? && YoutubeClient.youtube_url?(url)
+
+    self.url = YoutubeClient.normalize_url(url)
+  end
 
   def url_accessible?(url)
     return false if url.blank?

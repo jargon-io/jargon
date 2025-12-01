@@ -8,7 +8,7 @@ module Parentable
     "Insight" => 0.25   # Topical similarity
   }.freeze
 
-  TITLE_SIMILARITY_THRESHOLD = 0.8
+  TITLE_SIMILARITY_THRESHOLD = 0.7
 
   included do
     belongs_to :parent, class_name: name, optional: true
@@ -116,13 +116,17 @@ module Parentable
     return false unless match
     return false unless match.neighbor_distance < threshold
 
-    return articles_same_content?(match) if is_a?(Article)
+    return articles_same_content?(match, match.neighbor_distance) if is_a?(Article)
 
     true
   end
 
-  def articles_same_content?(other)
-    return false unless title_similarity(title, other.title) >= TITLE_SIMILARITY_THRESHOLD
+  def articles_same_content?(other, embedding_distance)
+    title_sim = title_similarity(title, other.title)
+
+    effective_threshold = embedding_distance < 0.05 ? 0.5 : TITLE_SIMILARITY_THRESHOLD
+
+    return false unless title_sim >= effective_threshold
 
     llm_confirms_same_article?(other)
   end

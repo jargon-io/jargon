@@ -5,9 +5,9 @@
 
 An AI-managed zettelkasten.
 
-Jargon parses articles into index card-sized insights that are stored independently and cross-referenced. LLMs handle the work traditionally done by hand—summarizing sources, extracting ideas, linking related concepts, and collapsing duplicates. Semantic embeddings surface connections across the library.
+Jargon is an AI-managed zettelkasten that parses articles, papers, and videos into index card-sized key ideas. It summarizing sources, extracts ideas, links related concepts, and collapses duplicates. Semantic embeddings surface connections across the library.
 
-Each source is parsed in context of existing cards, generating new insights that link back to the original material. The result is a knowledge base of interlinked ideas that can be explored directly or used as a RAG to answer questions. Questions also pull results from the web, which flow through the same extract/summarize/link pipeline before being synthesized with library content. Every node gets pre-generated research threads to pull on.
+Each source is parsed in context of existing cards, generating new insights that link back to the original material. The result is a knowledge base of interlinked ideas that can be explored directly or used as a RAG to answer questions. Questions also pull results from the web, which flow through the same extract/summarize/link pipeline before being synthesized with library content.
 
 ## Core Loop
 
@@ -209,3 +209,5 @@ The app will be available at http://localhost:3000.
 * full text search
 * generate search query async
 * don't show superseded insights in autocomplete
+* youtube thumbnails as article image
+* visual distinction between articles and ideas

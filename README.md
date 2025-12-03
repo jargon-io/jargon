@@ -204,8 +204,12 @@ The app will be available at http://localhost:3000.
 * refactor IngestArticleJob
 * define schemas inline where they're used
 * export markdown to clipboard
-* full text search
-* generate search query async
+* rework searches
+  * full text search
+  * generate search query async
+  * make it optional to generate a summary of library results; also optional to fetch new web results
 * don't show superseded insights in autocomplete
 * youtube thumbnails as article image
 * visual distinction between articles and ideas
+* store chats in DB and associate with article or search. use to compute costs and to audit prompts and tool calls
+* page-cached share links (just the top-level summary and links to sources)

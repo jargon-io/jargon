@@ -1,6 +1,6 @@
 <div align="center">
-  <img width="400px" src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/8db84d442bcd12f4176b2918140df8656298907d/jargon_dark.png#gh-dark-mode-only" />
-  <img width="400px" src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/8db84d442bcd12f4176b2918140df8656298907d/jargon_light.png#gh-light-mode-only" />
+  <img width="400px" src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/78d2c74267d611b0a99716a83fc9c3e088c33ebb/jargon-dark.png#gh-dark-mode-only" />
+  <img width="400px" src="https://gist.githubusercontent.com/schoblaska/fd570fee9180de09e3c4fd57d26283b9/raw/78d2c74267d611b0a99716a83fc9c3e088c33ebb/jargon-light.png#gh-light-mode-only" />
 </div>
 
 Jargon is an AI-managed zettelkasten that parses articles, papers, and videos into index card-sized key ideas. It summarizing sources, extracts ideas, links related concepts, and collapses duplicates. Semantic embeddings surface connections across the library.
@@ -206,10 +206,10 @@ The app will be available at http://localhost:3000.
 * export markdown to clipboard
 * rework searches
   * full text search
-  * generate search query async
   * make it optional to generate a summary of library results; also optional to fetch new web results
 * don't show superseded insights in autocomplete
 * youtube thumbnails as article image
 * visual distinction between articles and ideas
 * store chats in DB and associate with article or search. use to compute costs and to audit prompts and tool calls
 * page-cached share links (just the top-level summary and links to sources)
+* ability to bookmark nodes

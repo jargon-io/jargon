@@ -6,8 +6,8 @@
 <% if @items.empty? %>
   <div class="w-full max-w-2xl mx-auto flex flex-col items-center justify-center min-h-[60vh]">
     <div class="text-center mb-8">
-      <%= image_tag "logo.png", class: "h-12 w-12 mx-auto mb-4" %>
-      <h1 class="text-4xl font-bold text-heading mb-2">Jargon</h1>
+      <%= image_tag "jargon.png", class: "h-12 w-12 mx-auto mb-4" %>
+      <h1 class="text-4xl font-semibold text-heading mb-2">Jargon</h1>
     </div>
 
     <%= form_with url: queries_path, method: :post, class: "w-full mb-12" do |f| %>

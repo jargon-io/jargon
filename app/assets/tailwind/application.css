@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: "Atkinson Hyperlegible Next", ui-sans-serif, system-ui, sans-serif;
+}
+
 body {
   @apply bg-white text-gray-700 dark:bg-gray-950 dark:text-gray-300;
 }

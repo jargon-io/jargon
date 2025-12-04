@@ -1,6 +1,6 @@
 <%# locals: (search:) %>
 
-<% result_articles = search.articles.includes(:insights) %>
+<% result_articles = search.articles.includes(:insights, :children) %>
 <% result_insights = result_articles.flat_map(&:rolled_up_insights).uniq.first(6) %>
 <% related_items = search.find_related_items %>
 

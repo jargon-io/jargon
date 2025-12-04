@@ -19,7 +19,7 @@ class HomeFeedQuery
   def subjects_with_searches
     searches = Search.not_pending
                      .where(source_type: %w[Article Insight])
-                     .includes(source: %i[article searches])
+                     .includes(source: %i[article searches children])
                      .to_a
 
     subjects = searches.filter_map(&:source).uniq
@@ -30,6 +30,7 @@ class HomeFeedQuery
     Article.complete
            .roots
            .manual
+           .includes(:children)
            .where.not(id: article_subject_ids)
            .order(created_at: :desc)
            .limit(@limit)

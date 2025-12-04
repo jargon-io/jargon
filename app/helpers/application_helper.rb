@@ -28,4 +28,33 @@ module ApplicationHelper
 
     sanitize(processed, tags: %w[strong a], attributes: %w[href class])
   end
+
+  def icon_name_for(item)
+    case item
+    when Article
+      if item.has_children?
+        "articles"
+      elsif item.paper?
+        "paper"
+      elsif item.video?
+        "video"
+      else
+        "article"
+      end
+    when Insight
+      "insight"
+    when Search
+      "search"
+    end
+  end
+
+  def page_icon(item)
+    icon = icon_name_for(item)
+    image_tag("#{icon}.png", class: "w-20 h-20 float-left mr-4 mb-2 mt-1", alt: "")
+  end
+
+  def card_icon(item)
+    icon = icon_name_for(item)
+    image_tag("#{icon}.png", class: "w-10 h-10 float-left mr-2 mb-1 mt-1", alt: "")
+  end
 end

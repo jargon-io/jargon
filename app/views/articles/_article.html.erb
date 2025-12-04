@@ -28,10 +28,9 @@
       </div>
     <% end %>
 
+    <%= card_icon(article) %>
     <div class="space-y-1">
-      <h2 class="text-xl font-semibold text-heading">
-        <%= link_to article.title.presence || "Untitled", article %>
-      </h2>
+      <h2 class="text-xl font-semibold text-heading"><%= link_to article.title.presence || "Untitled", article %></h2>
       <%= render "shared/byline", author: article.author, date: article.published_at %>
     </div>
 

@@ -31,6 +31,7 @@
     </div>
   <% else %>
     <div class="space-y-4">
+      <%= page_icon(article) %>
       <div class="space-y-1">
         <h1 class="text-3xl font-bold text-heading"><%= article.title %></h1>
         <%= render "shared/byline", author: article.author, date: article.published_at %>

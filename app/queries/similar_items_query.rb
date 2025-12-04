@@ -28,7 +28,7 @@ class SimilarItemsQuery
   private
 
   def similar_articles
-    scope = Article.complete.roots
+    scope = Article.complete.roots.includes(:children)
     scope = exclude_from_scope(scope, Article)
 
     scope

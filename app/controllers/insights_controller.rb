@@ -10,7 +10,7 @@ class InsightsController < ApplicationController
 
     if @insight.has_children?
       @source_articles = @insight.children
-                                 .includes(:article)
+                                 .includes(article: [{ parent: :children }, :children])
                                  .filter_map { |i| i.article&.parent || i.article }
                                  .uniq
 

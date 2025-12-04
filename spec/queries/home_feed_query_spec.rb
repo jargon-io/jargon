@@ -24,6 +24,22 @@ RSpec.describe HomeFeedQuery do
           item.subject.searches.select(&:complete?)
         end
       end
+
+      it "preloads children for article sources without N+1" do
+        # Create articles with searches pointing to them
+        articles = create_list(:article, 2)
+        articles.each { |article| create(:search, source: article) }
+
+        items = described_class.new(limit: 25).call
+
+        # Verify children association is loaded for icon_name_for helper
+        article_items = items.select { |i| i.subject.is_a?(Article) }
+        expect(article_items).not_to be_empty
+
+        article_items.each do |item|
+          expect(item.subject.association(:children)).to be_loaded
+        end
+      end
     end
 
     context "with standalone_articles" do
@@ -35,6 +51,21 @@ RSpec.describe HomeFeedQuery do
         items = described_class.new(limit: 25).call
 
         expect(items).not_to be_empty
+      end
+
+      it "preloads children for icon_for helper without N+1" do
+        # Create standalone articles
+        create_list(:article, 2, origin: :manual)
+
+        items = described_class.new(limit: 25).call
+
+        # Verify children association is loaded to avoid N+1 when calling has_children?
+        article_items = items.select { |i| i.subject.is_a?(Article) }
+        expect(article_items).not_to be_empty
+
+        article_items.each do |item|
+          expect(item.subject.association(:children)).to be_loaded
+        end
       end
     end
 

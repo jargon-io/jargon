@@ -4,8 +4,10 @@
       <% @results.each do |result| %>
         <li>
           <%= link_to polymorphic_path(result), class: "block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700", data: { turbo_frame: "_top" } do %>
-            <span class="text-xs text-muted"><%= result.class.name %></span>
-            <div class="text-heading"><%= result.title %></div>
+            <div class="flex items-start gap-2 text-heading">
+              <%= image_tag "#{icon_name_for(result)}.png", class: "w-5 h-5 mt-[3px]", alt: "" %>
+              <span><%= result.title %></span>
+            </div>
           <% end %>
         </li>
       <% end %>

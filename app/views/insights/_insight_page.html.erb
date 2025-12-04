@@ -20,11 +20,13 @@
 %>
 
 <div id="insight_<%= insight.id %>_page" class="w-full max-w-2xl mx-auto space-y-4">
-  <h1 class="text-3xl font-bold text-heading"><%= insight.title %></h1>
-
-  <% if insight.body.present? %>
-    <p class="text-lg text-body leading-relaxed"><%= render_content(insight.body, current_item: insight) %></p>
-  <% end %>
+  <div>
+    <%= page_icon(insight) %>
+    <h1 class="text-3xl font-bold text-heading"><%= insight.title %></h1>
+    <% if insight.body.present? %>
+      <p class="text-lg text-body leading-relaxed mt-2"><%= render_content(insight.body, current_item: insight) %></p>
+    <% end %>
+  </div>
 
   <%= render "shared/snippet", text: insight.snippet, current_item: insight %>
 

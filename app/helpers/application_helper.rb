@@ -50,11 +50,11 @@ module ApplicationHelper
 
   def page_icon(item)
     icon = icon_name_for(item)
-    image_tag("#{icon}.png", class: "w-20 h-20 float-left mr-4 mb-2 mt-1", alt: "")
+    image_tag("#{icon}.png", class: "w-20 h-20 float-left mr-4 mb-2", alt: "")
   end
 
   def card_icon(item)
     icon = icon_name_for(item)
-    image_tag("#{icon}.png", class: "w-10 h-10 float-left mr-2 mb-1 mt-1", alt: "")
+    image_tag("#{icon}.png", class: "w-10 h-10 float-left mr-2 mb-1", alt: "")
   end
 end

@@ -125,6 +125,14 @@ Prevent "fat models" with:
 
 ## Testing
 
+### Spec First for Bugs
+When fixing a bug or error found in the browser, write a failing spec first. If you find an N+1, broken behavior, or edge case that the existing specs don't catch, that's a gap in test coverage—fill it before fixing.
+
+**Always verify the spec fails before applying the fix.** A spec that passes without the fix proves nothing.
+
+### Measure of a Good Spec
+Ask: "Would a failure tell me something useful?" If the spec tests implementation details (like whether an association is preloaded) rather than behavior, a failure just means the implementation changed—not that something is broken. Prefer specs that test observable behavior.
+
 ### RSpec Patterns
 - One behavior per test
 - AAA structure (Arrange-Act-Assert) with whitespace

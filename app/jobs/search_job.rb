@@ -2,9 +2,8 @@
 
 class SearchJob < ApplicationJob
   def perform(search)
-    return unless search.pending? || search.searching?
+    return unless claim_job?(search)
 
-    search.update!(status: :searching)
     search.generate_search_query_and_embedding! if search.search_query.blank?
 
     results = ExaClient.new.search(query: search.search_query)["results"] || []
@@ -63,5 +62,14 @@ class SearchJob < ApplicationJob
     when Search
       "#{source.search_query}: #{source.summary}"
     end
+  end
+
+  def claim_job?(search)
+    updated = Search.where(id: search.id, status: %i[pending searching])
+                    .update_all(status: :searching) # rubocop:disable Rails/SkipsModelValidations
+    return false if updated.zero?
+
+    search.reload
+    true
   end
 end

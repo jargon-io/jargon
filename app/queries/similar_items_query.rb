@@ -43,7 +43,6 @@ class SimilarItemsQuery
 
     scope
       .nearest_neighbors(:embedding, @embedding, distance: "cosine")
-      .includes(:article)
       .limit(@limit)
       .map { |i| Result.new(item: i, distance: i.neighbor_distance) }
   end

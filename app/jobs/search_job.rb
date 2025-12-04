@@ -2,13 +2,10 @@
 
 class SearchJob < ApplicationJob
   def perform(search)
-    search.update!(status: :searching) unless search.searching?
+    return unless search.pending? || search.searching?
 
-    if search.search_query.blank?
-      query = generate_search_query(search)
-      search.update!(search_query: query)
-      search.generate_search_query_embedding!
-    end
+    search.update!(status: :searching)
+    search.generate_search_query_and_embedding! if search.search_query.blank?
 
     results = ExaClient.new.search(query: search.search_query)["results"] || []
     articles = filter_results(search, results)
@@ -23,45 +20,15 @@ class SearchJob < ApplicationJob
       end
 
       search.search_articles.find_or_create_by!(article:)
-
-      broadcast_article(search, article)
     end
 
-    HydrateSearchJob.perform_later(search) if search.ready_to_hydrate?
+    SummarizeSearchJob.perform_later(search) if search.ready_to_summarize?
   rescue StandardError => e
     Rails.logger.error("SearchJob failed: #{e.message}")
     raise e
   end
 
   private
-
-  def generate_search_query(search)
-    context = build_context(search)
-
-    LLM.chat
-       .with_instructions("Generate a concise search query (5-10 words) to find articles related to the research question. Return only the query, nothing else.")
-       .ask(context)
-       .content
-  end
-
-  def build_context(search)
-    parts = ["Research question: #{search.query}"]
-
-    case search.source
-    when Article
-      parts << "Article: #{search.source.title}"
-      parts << "Summary: #{search.source.summary}"
-    when Insight
-      parts << "Article: #{search.source.article&.title}"
-      parts << "Summary: #{search.source.article&.summary}"
-      parts << "Insight: #{search.source.body}"
-    when Search
-      parts << "Previous query: #{search.source.query}"
-      parts << "Previous summary: #{search.source.summary}"
-    end
-
-    parts.join("\n")
-  end
 
   def filter_results(search, results)
     return [] if results.empty?
@@ -96,19 +63,5 @@ class SearchJob < ApplicationJob
     when Search
       "#{source.search_query}: #{source.summary}"
     end
-  end
-
-  def broadcast_article(search, article)
-    Turbo::StreamsChannel.broadcast_remove_to(
-      "search_#{search.id}",
-      target: "results_loading"
-    )
-
-    Turbo::StreamsChannel.broadcast_append_to(
-      "search_#{search.id}",
-      target: "search_results",
-      partial: "articles/article",
-      locals: { article: }
-    )
   end
 end

@@ -18,6 +18,8 @@ module Parentable
     validate :parent_cannot_have_parent
     validate :children_cannot_have_children
 
+    after_save :reparent_references, if: -> { saved_change_to_parent_id? && parent_id.present? }
+
     scope :roots, -> { where(parent_id: nil) }
     scope :children, -> { where.not(parent_id: nil) }
     scope :parents_only, -> { roots.joins(:children).distinct }
@@ -35,7 +37,7 @@ module Parentable
     parent_id.present?
   end
 
-  def parent?
+  def has_children?
     children.any?
   end
 
@@ -54,7 +56,7 @@ module Parentable
 
     return unless match
 
-    if match.parent?
+    if match.has_children?
       become_child_of!(match)
     elsif match.child?
       become_child_of!(match.parent)
@@ -207,5 +209,10 @@ module Parentable
     return unless parent_id.present? && children.exists?
 
     errors.add(:base, "children cannot have children")
+  end
+
+  def reparent_references
+    Search.where(source: self).update_all(source_id: parent_id)
+    SearchArticle.where(article_id: id).update_all(article_id: parent_id) if is_a?(Article)
   end
 end

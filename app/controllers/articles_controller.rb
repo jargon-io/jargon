@@ -2,19 +2,10 @@
 
 class ArticlesController < ApplicationController
   def show
-    @article = Article.find_by!(slug: params[:id])
+    @article = Article.resolve_identifier!(params[:id])
 
     return redirect_to @article.parent, status: :moved_permanently if @article.child?
 
-    @similar_items =
-      if @article.complete?
-        SimilarItemsQuery.new(
-          embedding: @article.embedding,
-          limit: 8,
-          exclude: [@article] + @article.insights.to_a
-        ).call
-      else
-        []
-      end
+    redirect_to @article, status: :moved_permanently if @article.slug.present? && @article.slug != params[:id]
   end
 end

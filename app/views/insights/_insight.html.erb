@@ -15,9 +15,9 @@
              compact: true,
              current_item: insight %>
 
-  <% if show_searches && insight.searches.not_pending.any? %>
+  <% if show_searches && (visible_searches = insight.searches.select(&:complete?)).any? %>
     <div class="mt-5 space-y-2">
-      <% insight.searches.not_pending.each do |search| %>
+      <% visible_searches.each do |search| %>
         <%= render search %>
       <% end %>
     </div>

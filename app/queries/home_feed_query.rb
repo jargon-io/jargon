@@ -17,14 +17,13 @@ class HomeFeedQuery
   private
 
   def subjects_with_searches
-    subject_ids = Search.not_pending
-                        .where(source_type: %w[Article Insight])
-                        .includes(source: :parent)
-                        .map { |s| s.source&.parent || s.source }
-                        .compact
-                        .uniq
+    searches = Search.not_pending
+                     .where(source_type: %w[Article Insight])
+                     .includes(source: %i[article searches])
+                     .to_a
 
-    subject_ids.map { |subject| FeedItem.new(subject:, show_searches: true) }
+    subjects = searches.filter_map(&:source).uniq
+    subjects.map { |subject| FeedItem.new(subject:, show_searches: true) }
   end
 
   def standalone_articles
@@ -32,7 +31,6 @@ class HomeFeedQuery
            .roots
            .manual
            .where.not(id: article_subject_ids)
-           .includes(:parent)
            .order(created_at: :desc)
            .limit(@limit)
            .map { |a| FeedItem.new(subject: a, show_searches: false) }

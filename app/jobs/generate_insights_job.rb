@@ -24,8 +24,6 @@ class GenerateInsightsJob < ApplicationJob
       insight.generate_embedding!
       insight.find_similar_and_absorb!
       insight.generate_searches!
-
-      broadcast_insight(article, insight)
     end
 
     # Queue link generation after delay to allow batch insights to be available as targets
@@ -69,26 +67,12 @@ class GenerateInsightsJob < ApplicationJob
     end
   end
 
-  def broadcast_insight(article, insight)
-    Turbo::StreamsChannel.broadcast_remove_to(
-      "article_#{article.id}_insights",
-      target: "insights_loading"
-    )
-
-    Turbo::StreamsChannel.broadcast_append_to(
-      "article_#{article.id}_insights",
-      target: "insights",
-      partial: "insights/broadcast_insight",
-      locals: { insight: }
-    )
-  end
-
   def notify_pending_searches(article)
     SearchArticle.where(article:).includes(:search).find_each do |sa|
       search = sa.search
       next unless search.searching?
 
-      HydrateSearchJob.perform_later(search) if search.ready_to_hydrate?
+      SummarizeSearchJob.perform_later(search) if search.ready_to_summarize?
     end
   end
 end

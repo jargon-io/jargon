@@ -7,8 +7,9 @@ class Insight < ApplicationRecord
   include NormalizesMarkup
   include Linkable
   include SearchGeneratable
+  include Broadcastable
 
-  slug -> { title.presence || "untitled" }
+  slug -> { title }
 
   synthesized_parent_attributes ->(_) { { article: nil, status: :complete } }
 
@@ -21,7 +22,7 @@ class Insight < ApplicationRecord
   has_neighbors :embedding
 
   belongs_to :article, optional: true
-  validates :article, presence: true, unless: :parent?
+  validates :article, presence: true, unless: :has_children?
 
   enum :status, { pending: 0, complete: 1, failed: 2 }
 
@@ -30,7 +31,7 @@ class Insight < ApplicationRecord
   def sibling_insights
     return [] if embedding.blank?
 
-    if parent?
+    if has_children?
       article_ids = children.includes(:article)
                             .flat_map { |c| [c.article&.id, c.article&.parent_id] }
                             .compact
@@ -56,7 +57,7 @@ class Insight < ApplicationRecord
   end
 
   def regenerate_metadata!
-    return unless parent? && children.any?
+    return unless has_children?
 
     update!(ParentSynthesizer.new(children).synthesize)
     generate_embedding!
@@ -65,5 +66,9 @@ class Insight < ApplicationRecord
     AddLinksJob.set(wait: 30.seconds).perform_later(self)
   rescue StandardError => e
     Rails.logger.error("Insight parent metadata generation failed: #{e.message}")
+  end
+
+  def broadcast_to_parents
+    article&.broadcast_self
   end
 end

@@ -25,18 +25,18 @@ RSpec.describe Parentable do
     end
   end
 
-  describe "#parent?" do
+  describe "#has_children?" do
     it "returns true when article has children" do
       parent = create(:article)
       create(:article, parent:)
 
-      expect(parent.parent?).to be true
+      expect(parent.has_children?).to be true
     end
 
     it "returns false when article has no children" do
       article = create(:article)
 
-      expect(article.parent?).to be false
+      expect(article.has_children?).to be false
     end
 
     it "returns true for unsaved parent with assigned children" do
@@ -45,7 +45,7 @@ RSpec.describe Parentable do
       parent = Article.new(status: :complete)
       parent.children = [child1, child2]
 
-      expect(parent.parent?).to be true
+      expect(parent.has_children?).to be true
     end
   end
 
@@ -117,7 +117,7 @@ RSpec.describe Parentable do
 
       expect(article1.parent).to eq(article2.parent)
       expect(article1.parent).to be_present
-      expect(article1.parent.parent?).to be true
+      expect(article1.parent.has_children?).to be true
     end
 
     it "creates parent without URL" do

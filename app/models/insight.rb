@@ -13,6 +13,15 @@ class Insight < ApplicationRecord
 
   synthesized_parent_attributes ->(_) { { article: nil, status: :complete } }
 
+  parent_matching threshold: 0.25
+
+  # Don't group insights from the same article
+  peer_scope do |scope|
+    scope.where.not(article_id:)
+  end
+
+  reparents Search, foreign_key: :source_id
+
   normalizes_markup :body, :snippet
 
   embeddable :body

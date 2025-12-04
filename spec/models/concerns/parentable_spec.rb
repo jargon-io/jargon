@@ -143,38 +143,4 @@ RSpec.describe Parentable do
       expect(child.reload.parent).to eq(parent)
     end
   end
-
-  describe "title_similarity" do
-    let(:article) { create(:article) }
-
-    it "returns 1.0 for identical titles" do
-      similarity = article.send(:title_similarity, "Hello World", "Hello World")
-
-      expect(similarity).to eq(1.0)
-    end
-
-    it "returns 1.0 for case-insensitive matches" do
-      similarity = article.send(:title_similarity, "Hello World", "hello world")
-
-      expect(similarity).to eq(1.0)
-    end
-
-    it "returns high similarity for minor differences" do
-      similarity = article.send(:title_similarity, "As We May Think", "As We May Think!")
-
-      expect(similarity).to be > 0.9
-    end
-
-    it "returns low similarity for different titles" do
-      similarity = article.send(:title_similarity, "Hello World", "Goodbye Universe")
-
-      expect(similarity).to be < 0.5
-    end
-
-    it "returns 0 for blank titles" do
-      expect(article.send(:title_similarity, "", "Hello")).to eq(0.0)
-      expect(article.send(:title_similarity, "Hello", "")).to eq(0.0)
-      expect(article.send(:title_similarity, nil, "Hello")).to eq(0.0)
-    end
-  end
 end

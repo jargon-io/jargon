@@ -15,6 +15,14 @@ class Article < ApplicationRecord
 
   synthesized_parent_attributes ->(_) { { url: nil, status: :complete } }
 
+  parent_matching threshold: 0.3 do |candidate, distance|
+    SamenessCheck.new(self, candidate, embedding_distance: distance).same?
+  end
+
+  reparents Search, foreign_key: :source_id
+  reparents Insight, foreign_key: :article_id
+  reparents SearchArticle, foreign_key: :article_id
+
   normalizes_markup :summary
 
   embeddable :summary

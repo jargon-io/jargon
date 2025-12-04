@@ -37,7 +37,7 @@ module Parentable
     parent_id.present?
   end
 
-  def has_children?
+  def has_children? # rubocop:disable Naming/PredicatePrefix
     children.any?
   end
 
@@ -212,7 +212,7 @@ module Parentable
   end
 
   def reparent_references
-    Search.where(source: self).update_all(source_id: parent_id)
-    SearchArticle.where(article_id: id).update_all(article_id: parent_id) if is_a?(Article)
+    Search.where(source: self).update_all(source_id: parent_id) # rubocop:disable Rails/SkipsModelValidations
+    SearchArticle.where(article_id: id).update_all(article_id: parent_id) if is_a?(Article) # rubocop:disable Rails/SkipsModelValidations
   end
 end

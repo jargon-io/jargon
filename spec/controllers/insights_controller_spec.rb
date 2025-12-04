@@ -6,7 +6,7 @@ RSpec.describe InsightsController do
   describe "GET #show" do
     it "loads insight page without N+1 queries" do
       article = create(:article)
-      insight = create(:insight, article: article)
+      insight = create(:insight, article:)
       create_list(:search, 3, source: insight)
 
       get :show, params: { id: insight.slug }
@@ -20,7 +20,7 @@ RSpec.describe InsightsController do
         3.times { create(:insight, :parent) }
 
         article = create(:article)
-        parent_insight = create(:insight, :parent, article: article)
+        parent_insight = create(:insight, :parent, article:)
 
         get :show, params: { id: parent_insight.slug }
 

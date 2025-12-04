@@ -4,7 +4,7 @@ class InsightsController < ApplicationController
   def show
     @insight = Insight.resolve_identifier!(params[:id])
 
-    return redirect_to @insight.parent, status: :moved_permanently if @insight.child?
+    return redirect_to @insight.parent, status: :moved_permanently if @insight.has_parent?
 
     redirect_to @insight, status: :moved_permanently if @insight.slug.present? && @insight.slug != params[:id]
 

@@ -33,7 +33,7 @@ module Parentable
     end
   end
 
-  def child?
+  def has_parent? # rubocop:disable Naming/PredicatePrefix
     parent_id.present?
   end
 
@@ -49,7 +49,7 @@ module Parentable
 
   def find_similar_and_absorb!
     return if embedding.blank?
-    return if child?
+    return if has_parent?
 
     threshold = THRESHOLDS.fetch(self.class.name)
     match = find_parent_match(threshold) || find_peer_match(threshold)
@@ -58,7 +58,7 @@ module Parentable
 
     if match.has_children?
       become_child_of!(match)
-    elsif match.child?
+    elsif match.has_parent?
       become_child_of!(match.parent)
     else
       create_parent_with!(match)

@@ -49,18 +49,18 @@ RSpec.describe Parentable do
     end
   end
 
-  describe "#child?" do
+  describe "#has_parent?" do
     it "returns true when article has a parent" do
       parent = create(:article)
       child = create(:article, parent:)
 
-      expect(child.child?).to be true
+      expect(child.has_parent?).to be true
     end
 
     it "returns false when article has no parent" do
       article = create(:article)
 
-      expect(article.child?).to be false
+      expect(article.has_parent?).to be false
     end
   end
 

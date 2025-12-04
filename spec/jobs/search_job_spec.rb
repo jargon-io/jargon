@@ -48,7 +48,7 @@ RSpec.describe SearchJob do
       search = create(:search, status: :pending)
 
       # Simulate another process claiming the job first
-      Search.where(id: search.id).update_all(status: :complete)
+      Search.where(id: search.id).update_all(status: :complete) # rubocop:disable Rails/SkipsModelValidations
 
       job = described_class.new
       result = job.send(:claim_job?, search)

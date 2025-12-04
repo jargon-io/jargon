@@ -32,8 +32,12 @@ class QueriesController < ApplicationController
   end
 
   def find_source
-    return nil unless params[:source_type].in?(%w[Article Insight Search])
+    klass = case params[:source_type]
+            when "Article" then Article
+            when "Insight" then Insight
+            when "Search" then Search
+            end
 
-    params[:source_type].constantize.find_by(id: params[:source_id])
+    klass&.find_by(id: params[:source_id])
   end
 end

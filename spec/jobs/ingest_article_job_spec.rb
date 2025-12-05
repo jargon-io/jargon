@@ -24,7 +24,14 @@ RSpec.describe IngestArticleJob do
     allow(chat).to receive(:ask) do
       call_count += 1
       content = case call_count
-                when 1 then { "content_type" => "full", "is_academic_paper" => false }
+                when 1 then {
+                  "content_type" => "full",
+                  "reason" => "Complete article",
+                  "full_text_url" => "",
+                  "embedded_video_url" => "",
+                  "has_meaningful_content" => true,
+                  "is_academic_paper" => false
+                }
                 when 2 then { "title" => "Article Title", "author" => "John Doe", "published_at" => "2024-01-15" }
                 when 3 then { "summary" => "A concise summary." }
                 else { "queries" => [] }
@@ -63,7 +70,16 @@ RSpec.describe IngestArticleJob do
       # Re-stub chat to return blocked content type
       chat = stub_llm_chat
       allow(chat).to receive(:ask).and_return(
-        instance_double(RubyLLM::Message, content: { "content_type" => "blocked" })
+        instance_double(
+          RubyLLM::Message, content: {
+            "content_type" => "blocked",
+            "reason" => "Captcha detected",
+            "full_text_url" => "",
+            "embedded_video_url" => "",
+            "has_meaningful_content" => false,
+            "is_academic_paper" => false
+          }
+        )
       )
     end
 
@@ -78,12 +94,10 @@ RSpec.describe IngestArticleJob do
     let(:youtube_article) { create(:article, :pending, url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ") }
 
     before do
-      stub_llm_chat(default: {
-                      "title" => "Extracted Title",
-                      "author" => "Extracted Author",
-                      "published_at" => "2024-06-15",
-                      "summary" => "Extracted summary"
-                    })
+      stub_llm_chat_sequence(
+        { "title" => "Extracted Title", "author" => "Extracted Author", "published_at" => "2024-06-15", "summary" => "Extracted summary" },
+        { "queries" => [] }
+      )
       stub_llm_embed
 
       video = YoutubeClient::VideoInfo.new(
@@ -110,7 +124,10 @@ RSpec.describe IngestArticleJob do
     end
 
     it "falls back to video metadata when LLM returns blank" do
-      stub_llm_chat(default: { "title" => "", "author" => "", "published_at" => "" })
+      stub_llm_chat_sequence(
+        { "title" => "", "author" => "", "published_at" => "", "summary" => "" },
+        { "queries" => [] }
+      )
 
       described_class.perform_now(youtube_article)
 

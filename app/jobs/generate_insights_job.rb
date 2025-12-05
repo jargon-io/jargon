@@ -4,14 +4,12 @@ class GenerateInsightsJob < ApplicationJob
   def perform(article)
     return if article.text.blank?
 
-    prompt = build_prompt(article)
+    chat = StructuredChat.new(
+      InsightsSchema,
+      instructions: build_prompt(article)
+    )
 
-    response = LLM.chat
-                  .with_instructions(prompt)
-                  .with_schema(InsightsSchema)
-                  .ask(article.text)
-
-    insights_data = response.content["insights"]
+    insights_data = chat.ask(article.text)["insights"]
 
     insights_data.each do |data|
       insight = article.insights.create!(

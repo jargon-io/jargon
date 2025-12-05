@@ -139,3 +139,6 @@ Ask: "Would a failure tell me something useful?" If the spec tests implementatio
 - Minimal factories with traits
 - Flat structure, max 2 nesting levels
 - `stub_llm` for LLM calls in tests
+
+### Running Ad-hoc Scripts
+For multi-line Rails runner scripts, write to `tmp/script.rb` first, then run with `rails runner tmp/script.rb`. Don't try to inline multi-line Ruby in the shell—it fails on escaping.

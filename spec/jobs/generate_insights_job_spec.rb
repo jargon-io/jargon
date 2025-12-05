@@ -10,14 +10,15 @@ RSpec.describe GenerateInsightsJob do
       "insights" => [
         { "title" => "Key Finding", "body" => "The main takeaway.", "snippet" => "Original text." },
         { "title" => "Secondary Point", "body" => "Another insight.", "snippet" => "More text." }
-      ],
-      "queries" => []
+      ]
     }
   end
 
+  let(:queries_response) { { "queries" => [] } }
+
   before do
     stub_llm_embed
-    stub_llm_chat(default: insights_response)
+    stub_llm_chat_sequence(insights_response, queries_response, queries_response)
   end
 
   it "creates insights from article text" do

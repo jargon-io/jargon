@@ -88,10 +88,7 @@ class IngestArticleJob < ApplicationJob
       #{video.transcript.to_s.truncate(8000)}
     PROMPT
 
-    LLM.chat
-       .with_schema(VideoMetadataSchema)
-       .ask(prompt)
-       .content
+    StructuredChat.new(VideoMetadataSchema).ask(prompt)
   end
 
   def process_web_content(url)
@@ -188,11 +185,10 @@ class IngestArticleJob < ApplicationJob
   def evaluate_content(text, url)
     prompt = "URL: #{url}\n\nContent:\n#{text.truncate(5000)}"
 
-    LLM.chat
-       .with_instructions(CONTENT_EVALUATION_INSTRUCTIONS)
-       .with_schema(ContentEvaluationSchema)
-       .ask(prompt)
-       .content
+    StructuredChat.new(
+      ContentEvaluationSchema,
+      instructions: CONTENT_EVALUATION_INSTRUCTIONS
+    ).ask(prompt)
   end
 
   def update_article(text:, content_type:)
@@ -244,18 +240,14 @@ class IngestArticleJob < ApplicationJob
       #{text.truncate(10_000)}
     PROMPT
 
-    LLM.chat
-       .with_schema(ArticleMetadataSchema)
-       .ask(prompt)
-       .content
+    StructuredChat.new(ArticleMetadataSchema).ask(prompt)
   end
 
   def generate_summary(text)
-    LLM.chat
-       .with_instructions(SUMMARY_INSTRUCTIONS)
-       .with_schema(ArticleSummarySchema)
-       .ask(text.truncate(10_000))
-       .content["summary"]
+    StructuredChat.new(
+      ArticleSummarySchema,
+      instructions: SUMMARY_INSTRUCTIONS
+    ).ask(text.truncate(10_000))["summary"]
   end
 
   def notify_searches_of_resolution

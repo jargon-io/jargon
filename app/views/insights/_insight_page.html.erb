@@ -20,16 +20,19 @@
 %>
 
 <div id="insight_<%= insight.id %>_page" class="w-full max-w-2xl mx-auto space-y-4">
-  <div class="flex items-start gap-2">
+  <div class="float-left mr-2 mb-1">
     <%= page_icon(insight) %>
-    <h1 class="text-3xl font-bold text-heading"><%= insight.title %></h1>
   </div>
 
+  <h1 class="text-3xl font-bold text-heading"><%= insight.title %></h1>
+
   <% if insight.body.present? %>
-    <p class="text-lg text-body leading-relaxed mt-2"><%= render_content(insight.body, current_item: insight) %></p>
+    <p class="text-lg text-body leading-relaxed"><%= render_content(insight.body, current_item: insight) %></p>
   <% end %>
 
-  <%= render "shared/snippet", text: insight.snippet, current_item: insight %>
+  <div class="clear-both">
+    <%= render "shared/snippet", text: insight.snippet, current_item: insight %>
+  </div>
 
   <% if insight.has_children? && source_articles.present? %>
     <%= render "shared/section_heading", title: "Sources" %>

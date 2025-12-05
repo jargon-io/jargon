@@ -40,7 +40,7 @@
       </div>
 
       <% if article.video? && (video_id = article.url&.match(YoutubeClient::URL_REGEX)&.[](1)) %>
-        <div class="aspect-video mt-4">
+        <div class="aspect-video mt-4 clear-both">
           <iframe
             src="https://www.youtube.com/embed/<%= video_id %>"
             class="w-full h-full rounded-lg"
@@ -50,7 +50,7 @@
           </iframe>
         </div>
       <% elsif article.image_url.present? %>
-        <%= image_tag article.image_url, class: "w-full max-h-64 object-contain rounded-lg md:float-right md:w-auto md:max-w-64 md:max-h-48 md:ml-4 md:mb-4" %>
+        <%= image_tag article.image_url, class: "w-full max-h-64 object-contain rounded-lg md:float-right md:w-auto md:max-w-64 md:max-h-48 md:ml-4 md:mb-4 md:mt-2" %>
       <% end %>
 
       <% if article.summary.present? %>

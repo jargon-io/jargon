@@ -41,6 +41,7 @@
     <% end %>
 
     <% if show_searches && (visible_searches = article.searches.select(&:complete?)).any? %>
+      <div class="clear-both"></div>
       <div class="mt-4 space-y-2">
         <% visible_searches.each do |search| %>
           <%= render search %>

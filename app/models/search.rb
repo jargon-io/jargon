@@ -6,6 +6,7 @@ class Search < ApplicationRecord
   include Linkable
   include NormalizesMarkup
   include SearchGeneratable
+  include Broadcastable
 
   slug :query
 
@@ -41,7 +42,7 @@ class Search < ApplicationRecord
     all_articles_resolved? && articles.complete.none?
   end
 
-  def ready_to_hydrate?
+  def ready_to_summarize?
     all_articles_resolved? && (viable_content? || all_articles_failed?)
   end
 
@@ -67,6 +68,17 @@ class Search < ApplicationRecord
        .with_instructions("Generate a concise search query (5-10 words) to find articles related to the research question. Return only the query, nothing else.")
        .ask(context)
        .content
+  end
+
+  def find_related_items
+    search_embedding = embedding.presence || search_query_embedding
+    return [] if search_embedding.blank?
+
+    result_articles = articles.includes(:insights)
+    result_insights = result_articles.flat_map(&:rolled_up_insights)
+    exclude = [source] + result_articles.to_a + result_insights.to_a
+
+    SimilarItemsQuery.new(embedding: search_embedding, limit: 6, exclude: exclude.compact).call
   end
 
   private

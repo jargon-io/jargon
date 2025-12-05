@@ -25,18 +25,18 @@ RSpec.describe Parentable do
     end
   end
 
-  describe "#parent?" do
+  describe "#has_children?" do
     it "returns true when article has children" do
       parent = create(:article)
       create(:article, parent:)
 
-      expect(parent.parent?).to be true
+      expect(parent.has_children?).to be true
     end
 
     it "returns false when article has no children" do
       article = create(:article)
 
-      expect(article.parent?).to be false
+      expect(article.has_children?).to be false
     end
 
     it "returns true for unsaved parent with assigned children" do
@@ -45,22 +45,22 @@ RSpec.describe Parentable do
       parent = Article.new(status: :complete)
       parent.children = [child1, child2]
 
-      expect(parent.parent?).to be true
+      expect(parent.has_children?).to be true
     end
   end
 
-  describe "#child?" do
+  describe "#has_parent?" do
     it "returns true when article has a parent" do
       parent = create(:article)
       child = create(:article, parent:)
 
-      expect(child.child?).to be true
+      expect(child.has_parent?).to be true
     end
 
     it "returns false when article has no parent" do
       article = create(:article)
 
-      expect(article.child?).to be false
+      expect(article.has_parent?).to be false
     end
   end
 
@@ -117,7 +117,7 @@ RSpec.describe Parentable do
 
       expect(article1.parent).to eq(article2.parent)
       expect(article1.parent).to be_present
-      expect(article1.parent.parent?).to be true
+      expect(article1.parent.has_children?).to be true
     end
 
     it "creates parent without URL" do
@@ -141,40 +141,6 @@ RSpec.describe Parentable do
       child.become_child_of!(parent)
 
       expect(child.reload.parent).to eq(parent)
-    end
-  end
-
-  describe "title_similarity" do
-    let(:article) { create(:article) }
-
-    it "returns 1.0 for identical titles" do
-      similarity = article.send(:title_similarity, "Hello World", "Hello World")
-
-      expect(similarity).to eq(1.0)
-    end
-
-    it "returns 1.0 for case-insensitive matches" do
-      similarity = article.send(:title_similarity, "Hello World", "hello world")
-
-      expect(similarity).to eq(1.0)
-    end
-
-    it "returns high similarity for minor differences" do
-      similarity = article.send(:title_similarity, "As We May Think", "As We May Think!")
-
-      expect(similarity).to be > 0.9
-    end
-
-    it "returns low similarity for different titles" do
-      similarity = article.send(:title_similarity, "Hello World", "Goodbye Universe")
-
-      expect(similarity).to be < 0.5
-    end
-
-    it "returns 0 for blank titles" do
-      expect(article.send(:title_similarity, "", "Hello")).to eq(0.0)
-      expect(article.send(:title_similarity, "Hello", "")).to eq(0.0)
-      expect(article.send(:title_similarity, nil, "Hello")).to eq(0.0)
     end
   end
 end

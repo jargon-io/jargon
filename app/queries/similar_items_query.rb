@@ -38,12 +38,11 @@ class SimilarItemsQuery
   end
 
   def similar_insights
-    scope = Insight.complete.roots
+    scope = Insight.complete.roots.includes(:article)
     scope = exclude_from_scope(scope, Insight)
 
     scope
       .nearest_neighbors(:embedding, @embedding, distance: "cosine")
-      .includes(:article)
       .limit(@limit)
       .map { |i| Result.new(item: i, distance: i.neighbor_distance) }
   end

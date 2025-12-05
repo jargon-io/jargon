@@ -2,11 +2,13 @@
 
 class InsightsController < ApplicationController
   def show
-    @insight = Insight.by_slug!(params[:id])
+    @insight = Insight.resolve_identifier!(params[:id])
 
-    return redirect_to @insight.parent, status: :moved_permanently if @insight.child?
+    return redirect_to @insight.parent, status: :moved_permanently if @insight.has_parent?
 
-    if @insight.parent?
+    redirect_to @insight, status: :moved_permanently if @insight.slug.present? && @insight.slug != params[:id]
+
+    if @insight.has_children?
       @source_articles = @insight.children
                                  .includes(:article)
                                  .filter_map { |i| i.article&.parent || i.article }

@@ -3,13 +3,6 @@
 module Parentable
   extend ActiveSupport::Concern
 
-  THRESHOLDS = {
-    "Article" => 0.3,   # Looser threshold, but requires title match + LLM confirmation
-    "Insight" => 0.25   # Topical similarity
-  }.freeze
-
-  TITLE_SIMILARITY_THRESHOLD = 0.7
-
   included do
     belongs_to :parent, class_name: name, optional: true
 
@@ -18,24 +11,64 @@ module Parentable
     validate :parent_cannot_have_parent
     validate :children_cannot_have_children
 
+    after_save :reparent_references, if: -> { saved_change_to_parent_id? && parent_id.present? }
+
     scope :roots, -> { where(parent_id: nil) }
     scope :children, -> { where.not(parent_id: nil) }
     scope :parents_only, -> { roots.joins(:children).distinct }
 
     class_attribute :_synthesized_parent_attributes_proc
+    class_attribute :_parent_matching_threshold
+    class_attribute :_parent_matching_check
+    class_attribute :_peer_scope_proc
+    class_attribute :_reparentable_references, default: []
   end
 
   class_methods do
+    # DSL: Configure how parent/peer matching works
+    #
+    #   parent_matching threshold: 0.3 do |candidate, distance|
+    #     same_content?(candidate)
+    #   end
+    #
+    def parent_matching(threshold:, &block)
+      self._parent_matching_threshold = threshold
+      self._parent_matching_check = block
+    end
+
+    # DSL: Configure peer search scope filtering
+    #
+    #   peer_scope do |scope|
+    #     scope.where.not(article_id: article_id)
+    #   end
+    #
+    def peer_scope(&block)
+      self._peer_scope_proc = block
+    end
+
+    # DSL: Configure what references to reparent when becoming a child
+    #
+    #   reparents Insight, foreign_key: :article_id
+    #   reparents SearchArticle, foreign_key: :article_id
+    #
+    def reparents(model_class, foreign_key:)
+      self._reparentable_references += [{ model_class:, foreign_key: }]
+    end
+
+    # DSL: Configure attributes for synthesized parent records
+    #
+    #   synthesized_parent_attributes -> { { url: nil, status: :complete } }
+    #
     def synthesized_parent_attributes(proc = nil, &block)
       self._synthesized_parent_attributes_proc = proc || block
     end
   end
 
-  def child?
+  def has_parent? # rubocop:disable Naming/PredicatePrefix
     parent_id.present?
   end
 
-  def parent?
+  def has_children? # rubocop:disable Naming/PredicatePrefix
     children.any?
   end
 
@@ -47,16 +80,15 @@ module Parentable
 
   def find_similar_and_absorb!
     return if embedding.blank?
-    return if child?
+    return if has_parent?
 
-    threshold = THRESHOLDS.fetch(self.class.name)
-    match = find_parent_match(threshold) || find_peer_match(threshold)
+    match = find_parent_match || find_peer_match
 
     return unless match
 
-    if match.parent?
+    if match.has_children?
       become_child_of!(match)
-    elsif match.child?
+    elsif match.has_parent?
       become_child_of!(match.parent)
     else
       create_parent_with!(match)
@@ -88,113 +120,49 @@ module Parentable
 
   private
 
-  def find_parent_match(threshold)
+  def find_parent_match
+    threshold = self.class._parent_matching_threshold
+    return nil unless threshold
+
     self.class
         .parents_only
         .where.not(id:)
         .where.not(embedding: nil)
         .nearest_neighbors(:embedding, embedding, distance: "cosine")
         .first
-        &.then { |p| similar_enough?(p, threshold) ? p : nil }
+        &.then { |p| similar_enough?(p) ? p : nil }
   end
 
-  def find_peer_match(threshold)
+  def find_peer_match
+    threshold = self.class._parent_matching_threshold
+    return nil unless threshold
+
     scope = self.class
                 .roots
                 .where.not(id:)
                 .where.not(embedding: nil)
 
-    # Don't group insights from the same article
-    scope = scope.where.not(article_id:) if is_a?(Insight)
+    # Apply model-specific peer scope filtering
+    scope = instance_exec(scope, &self.class._peer_scope_proc) if self.class._peer_scope_proc
 
     scope.nearest_neighbors(:embedding, embedding, distance: "cosine")
          .first
-         &.then { |i| similar_enough?(i, threshold) ? i : nil }
+         &.then { |p| similar_enough?(p) ? p : nil }
   end
 
-  def similar_enough?(match, threshold)
-    return false unless match
-    return false unless match.neighbor_distance < threshold
+  def similar_enough?(candidate)
+    return false unless candidate
 
-    return articles_same_content?(match, match.neighbor_distance) if is_a?(Article)
+    threshold = self.class._parent_matching_threshold
+    distance = candidate.neighbor_distance
 
-    true
-  end
+    return false unless distance < threshold
 
-  def articles_same_content?(other, embedding_distance)
-    title_sim = title_similarity(title, other.title)
+    # If model provides additional matching check, run it
+    check = self.class._parent_matching_check
+    return true unless check
 
-    effective_threshold = embedding_distance < 0.05 ? 0.5 : TITLE_SIMILARITY_THRESHOLD
-
-    return false unless title_sim >= effective_threshold
-
-    llm_confirms_same_article?(other)
-  end
-
-  def llm_confirms_same_article?(other)
-    prompt = <<~PROMPT
-      Are these two articles about the SAME specific content (same paper, same news story, same essay)?
-      Not just the same topic - they must be the same underlying work, possibly from different sources.
-
-      Article 1:
-      - Title: #{title}
-      - Author: #{respond_to?(:author) ? author.presence || 'Unknown' : 'Unknown'}
-      - Summary: #{summary.to_s.truncate(500) if respond_to?(:summary)}
-
-      Article 2:
-      - Title: #{other.title}
-      - Author: #{other.respond_to?(:author) ? other.author.presence || 'Unknown' : 'Unknown'}
-      - Summary: #{other.summary.to_s.truncate(500) if other.respond_to?(:summary)}
-    PROMPT
-
-    response = LLM.chat
-                  .with_schema(ArticleSamenessSchema)
-                  .ask(prompt)
-
-    response.content["same_article"] == true
-  rescue StandardError => e
-    Rails.logger.error("LLM article comparison failed: #{e.message}")
-    false
-  end
-
-  def title_similarity(a, b)
-    return 0.0 if a.blank? || b.blank?
-
-    a_normalized = a.downcase.gsub(/[^\w\s]/, "")
-    b_normalized = b.downcase.gsub(/[^\w\s]/, "")
-
-    return 1.0 if a_normalized == b_normalized
-
-    longer = [a_normalized.length, b_normalized.length].max.to_f
-    return 0.0 if longer.zero?
-
-    distance = levenshtein_distance(a_normalized, b_normalized)
-    1.0 - (distance / longer)
-  end
-
-  def levenshtein_distance(s, t)
-    m = s.length
-    n = t.length
-
-    return n if m.zero?
-    return m if n.zero?
-
-    d = Array.new(m + 1) { |i| i }
-    x = nil
-
-    (1..n).each do |j|
-      x = Array.new(m + 1)
-      x[0] = j
-
-      (1..m).each do |i|
-        cost = s[i - 1] == t[j - 1] ? 0 : 1
-        x[i] = [x[i - 1] + 1, d[i] + 1, d[i - 1] + cost].min
-      end
-
-      d = x
-    end
-
-    x[m]
+    instance_exec(candidate, distance, &check)
   end
 
   def parent_cannot_have_parent
@@ -207,5 +175,13 @@ module Parentable
     return unless parent_id.present? && children.exists?
 
     errors.add(:base, "children cannot have children")
+  end
+
+  def reparent_references
+    self.class._reparentable_references.each do |ref|
+      ref[:model_class]
+        .where(ref[:foreign_key] => id)
+        .update_all(ref[:foreign_key] => parent_id) # rubocop:disable Rails/SkipsModelValidations
+    end
   end
 end

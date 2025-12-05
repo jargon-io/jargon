@@ -1,22 +1,3 @@
 <% content_for(:title) { "#{@article.title.presence || @article.url.truncate(50)} | Jargon" } %>
-<%= turbo_stream_from "article_#{@article.id}" %>
-<%= turbo_stream_from "article_#{@article.id}_insights" %>
-
-<div class="w-full max-w-2xl mx-auto">
-  <div id="article_content">
-    <% if @article.pending? %>
-      <div class="space-y-2">
-        <p class="text-sm text-faint break-all"><%= @article.url %></p>
-        <%= render "shared/loading_placeholder", id: "article_loading", message: "Loading article..." %>
-      </div>
-    <% elsif @article.failed? %>
-      <div class="space-y-2">
-        <p class="text-sm text-faint break-all"><%= @article.url %></p>
-        <p class="text-body">Failed to load article.</p>
-        <%= link_to "Read original →", @article.url, rel: "noopener", class: "text-link" %>
-      </div>
-    <% else %>
-      <%= render "articles/content", article: @article, similar_items: @similar_items %>
-    <% end %>
-  </div>
-</div>
+<%= subscribe_to(@article) %>
+<%= render "articles/article_page", article: @article %>

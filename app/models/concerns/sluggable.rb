@@ -17,35 +17,36 @@ module Sluggable
     def by_slug!(slug)
       find_by!(slug: slug.split(":").last)
     end
+
+    def resolve_identifier(identifier)
+      find_by(slug: identifier) || find_by(nanoid: identifier)
+    end
+
+    def resolve_identifier!(identifier)
+      resolve_identifier(identifier) || raise(ActiveRecord::RecordNotFound)
+    end
   end
 
   included do
     before_validation :generate_slug
-    validates :slug, presence: true, uniqueness: true
+    validates :slug, uniqueness: true, allow_nil: true
   end
 
   def to_param
-    slug
+    slug || nanoid
   end
 
   def slug_with_class
-    "#{self.class.name.underscore}:#{slug}"
+    "#{self.class.name.underscore}:#{slug || nanoid}"
   end
 
   private
 
   def generate_slug
-    return if slug.present? && !should_regenerate_slug?
+    return if slug.present?
 
     base_slug = compute_base_slug
     self.slug = resolve_slug_collisions(base_slug) if base_slug
-  end
-
-  def should_regenerate_slug?
-    return false unless slug&.start_with?("untitled")
-
-    base = compute_base_slug
-    base.present? && !base.start_with?("untitled")
   end
 
   def compute_base_slug
@@ -56,10 +57,7 @@ module Sluggable
         send(self.class.slug_method)
       end
 
-    unless base
-      Rails.logger.info("Unable to generate slug for #{self.class}")
-      return
-    end
+    return nil unless base
 
     base.parameterize.first(50)
   end

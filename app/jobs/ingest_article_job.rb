@@ -30,7 +30,6 @@ class IngestArticleJob < ApplicationJob
 
   def perform(article)
     @article = article
-    @old_slug = article.slug
 
     if YoutubeClient.youtube_url?(article.url)
       process_youtube(article.url)
@@ -41,8 +40,7 @@ class IngestArticleJob < ApplicationJob
     finalize_article
   rescue StandardError => e
     Rails.logger.error("IngestArticleJob failed: #{e.message}")
-    @article&.update!(status: :failed)
-    broadcast_update
+    @article&.record_error!(e)
     notify_searches_of_resolution
     raise e
   end
@@ -110,7 +108,8 @@ class IngestArticleJob < ApplicationJob
       update_article(text:, content_type: :partial)
       queue_embedded_video(evaluation["embedded_video_url"])
     when "paywall", "blocked"
-      @article.update!(status: :failed)
+      reason = evaluation["reason"].presence || "Content classified as #{evaluation['content_type']}"
+      @article.record_error!(StandardError.new(reason))
     end
   end
 
@@ -231,7 +230,6 @@ class IngestArticleJob < ApplicationJob
     @article.generate_embedding!
     @article.find_similar_and_absorb!
     @article.generate_searches!
-    broadcast_update
 
     GenerateInsightsJob.perform_later(@article)
   end
@@ -260,56 +258,11 @@ class IngestArticleJob < ApplicationJob
        .content["summary"]
   end
 
-  def broadcast_update
-    similar_items = @article.complete? ? build_similar_items : []
-
-    if @old_slug.present? && @article.slug != @old_slug
-      new_path = Rails.application.routes.url_helpers.article_path(@article)
-      Turbo::StreamsChannel.broadcast_stream_to(
-        "article_#{@article.id}",
-        content: "<turbo-stream action=\"redirect\" url=\"#{new_path}\"></turbo-stream>"
-      )
-    end
-
-    Turbo::StreamsChannel.broadcast_replace_to(
-      "article_#{@article.id}",
-      target: "article_content",
-      partial: "articles/content",
-      locals: { article: @article, similar_items: }
-    )
-
-    Turbo::StreamsChannel.broadcast_replace_to(
-      "articles",
-      target: @article,
-      partial: "articles/article",
-      locals: { article: @article }
-    )
-
-    @article.search_articles.includes(:search).find_each do |sa|
-      Turbo::StreamsChannel.broadcast_replace_to(
-        "search_#{sa.search_id}",
-        target: @article,
-        partial: "articles/article",
-        locals: { article: @article }
-      )
-    end
-  end
-
-  def build_similar_items
-    exclude_items = [@article] + @article.insights.to_a
-
-    SimilarItemsQuery.new(
-      embedding: @article.embedding,
-      limit: 8,
-      exclude: exclude_items
-    ).call
-  end
-
   def notify_searches_of_resolution
     return unless @article
 
     @article.containing_searches.searching.find_each do |search|
-      HydrateSearchJob.perform_later(search) if search.ready_to_hydrate?
+      SummarizeSearchJob.perform_later(search) if search.ready_to_summarize?
     end
   end
 end

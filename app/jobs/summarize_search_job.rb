@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class HydrateSearchJob < ApplicationJob
+class SummarizeSearchJob < ApplicationJob
   INSTRUCTIONS = <<~PROMPT
     Synthesize the search results into a coherent response to the user's question.
 
@@ -15,7 +15,6 @@ class HydrateSearchJob < ApplicationJob
 
     if search.all_articles_failed?
       search.update!(status: :failed)
-      broadcast_failed(search)
       return
     end
 
@@ -33,8 +32,6 @@ class HydrateSearchJob < ApplicationJob
     create_followup_searches(search, result["followup_queries"])
 
     AddLinksJob.perform_now(search)
-
-    broadcast_complete(search)
   end
 
   private
@@ -82,7 +79,7 @@ class HydrateSearchJob < ApplicationJob
   def generate_summary(content)
     LLM.chat
        .with_instructions(INSTRUCTIONS)
-       .with_schema(HydrateSearchSchema)
+       .with_schema(SummarizeSearchSchema)
        .ask(content)
        .content
   end
@@ -93,45 +90,5 @@ class HydrateSearchJob < ApplicationJob
     queries.each do |query|
       search.searches.create!(query:, source: search.source)
     end
-  end
-
-  def broadcast_complete(search)
-    Turbo::StreamsChannel.broadcast_remove_to(
-      "search_#{search.id}",
-      target: "summary_loading"
-    )
-
-    Turbo::StreamsChannel.broadcast_replace_to(
-      "search_#{search.id}",
-      target: "search_summary",
-      partial: "searches/summary",
-      locals: { search: }
-    )
-
-    Turbo::StreamsChannel.broadcast_remove_to(
-      "search_#{search.id}",
-      target: "explore_loading"
-    )
-
-    Turbo::StreamsChannel.broadcast_replace_to(
-      "search_#{search.id}",
-      target: "search_explore",
-      partial: "searches/explore",
-      locals: { source: search, searches: search.searches }
-    )
-  end
-
-  def broadcast_failed(search)
-    Turbo::StreamsChannel.broadcast_remove_to(
-      "search_#{search.id}",
-      target: "summary_loading"
-    )
-
-    Turbo::StreamsChannel.broadcast_replace_to(
-      "search_#{search.id}",
-      target: "search_summary",
-      partial: "searches/failed",
-      locals: { search: }
-    )
   end
 end

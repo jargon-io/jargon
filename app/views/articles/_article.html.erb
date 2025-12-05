@@ -8,7 +8,19 @@
     <p class="text-sm text-faint mt-3 overflow-hidden"><%= article.url %></p>
   <% elsif article.failed? %>
     <h2 class="text-xl font-semibold text-red-700 dark:text-red-400">Failed to process</h2>
-    <p class="text-sm text-red-600 dark:text-red-500"><%= article.url %></p>
+    <p class="text-sm text-red-600 dark:text-red-500 mt-1"><%= article.user_friendly_error_message %></p>
+    <p class="text-sm text-faint mt-2 truncate"><%= article.url %></p>
+    <% if article.parsed_error %>
+      <details class="mt-2">
+        <summary class="text-xs text-faint cursor-pointer">Technical details</summary>
+        <div class="mt-1 text-xs text-faint font-mono">
+          <p><%= article.parsed_error[:class] %>: <%= article.parsed_error[:message] %></p>
+          <% if article.parsed_error[:occurred_at] %>
+            <p class="mt-1">Failed: <%= Time.parse(article.parsed_error[:occurred_at]).strftime("%b %d, %Y %H:%M") %></p>
+          <% end %>
+        </div>
+      </details>
+    <% end %>
   <% else %>
     <% if article.image_url.present? %>
       <div class="hidden md:block h-32 w-48 float-right ml-4 rounded-lg overflow-hidden bg-black/5 dark:bg-white/5">
@@ -16,10 +28,9 @@
       </div>
     <% end %>
 
+    <%= card_icon(article) %>
     <div class="space-y-1">
-      <h2 class="text-xl font-semibold text-heading">
-        <%= link_to article.title.presence || "Untitled", article %>
-      </h2>
+      <h2 class="text-xl font-semibold text-heading"><%= link_to article.title.presence || "Untitled", article %></h2>
       <%= render "shared/byline", author: article.author, date: article.published_at %>
     </div>
 
@@ -27,9 +38,9 @@
       <p class="text-body mt-3"><%= render_content(article.summary, current_item: article) %></p>
     <% end %>
 
-    <% if show_searches && article.searches.not_pending.any? %>
+    <% if show_searches && (visible_searches = article.searches.select(&:complete?)).any? %>
       <div class="mt-4 space-y-2">
-        <% article.searches.not_pending.each do |search| %>
+        <% visible_searches.each do |search| %>
           <%= render search %>
         <% end %>
       </div>

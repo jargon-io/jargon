@@ -7,12 +7,21 @@ class Article < ApplicationRecord
   include NormalizesMarkup
   include Linkable
   include SearchGeneratable
+  include Broadcastable
 
-  slug -> { title.presence || "untitled" }
+  slug -> { title }
 
   before_validation :normalize_youtube_url
 
   synthesized_parent_attributes ->(_) { { url: nil, status: :complete } }
+
+  parent_matching threshold: 0.3 do |candidate, distance|
+    SamenessCheck.new(self, candidate, embedding_distance: distance).same?
+  end
+
+  reparents Search, foreign_key: :source_id
+  reparents Insight, foreign_key: :article_id
+  reparents SearchArticle, foreign_key: :article_id
 
   normalizes_markup :summary
 
@@ -31,7 +40,7 @@ class Article < ApplicationRecord
   enum :origin, { manual: 0, discovered: 1 }
 
   validates :url, uniqueness: { allow_nil: true }
-  validates :url, presence: true, unless: :parent?
+  validates :url, presence: true, unless: :has_children?
 
   after_create_commit -> { IngestArticleJob.perform_later(self) }
 
@@ -40,16 +49,16 @@ class Article < ApplicationRecord
   end
 
   def rolled_up_insights
-    source_articles = parent? ? [self] + children.to_a : [self]
+    source_articles = has_children? ? [self] + children.to_a : [self]
 
     root_ids = Insight.complete.roots.where(article: source_articles).pluck(:id)
     parent_ids = Insight.complete.children.where(article: source_articles).pluck(:parent_id)
 
-    Insight.where(id: (root_ids + parent_ids).uniq)
+    Insight.where(id: (root_ids + parent_ids).uniq).includes(:article)
   end
 
   def regenerate_metadata!
-    return unless parent? && children.any?
+    return unless has_children?
 
     update!(ParentSynthesizer.new(children).synthesize)
 
@@ -57,6 +66,54 @@ class Article < ApplicationRecord
     generate_searches!
 
     AddLinksJob.set(wait: 30.seconds).perform_later(self)
+  end
+
+  def find_related_items
+    return [] if embedding.blank?
+
+    SimilarItemsQuery.new(embedding:, limit: 8, exclude: [self] + insights.to_a).call
+  end
+
+  def record_error!(exception)
+    update!(
+      status: :failed,
+      last_error: {
+        class: exception.class.name,
+        message: exception.message.truncate(500),
+        occurred_at: Time.current.iso8601
+      }.to_json
+    )
+  end
+
+  def parsed_error
+    return nil if last_error.blank?
+
+    JSON.parse(last_error).with_indifferent_access
+  rescue JSON::ParserError
+    { class: "Unknown", message: last_error }
+  end
+
+  def error_category
+    return nil unless failed? && parsed_error
+
+    case parsed_error[:class]
+    when /Timeout|Net::|Socket|Errno::/ then :network
+    when /Paywall|Forbidden/ then :paywall
+    when /Blocked|Captcha|RateLimit/ then :blocked
+    else :unknown
+    end
+  end
+
+  def user_friendly_error_message
+    {
+      network: "Could not reach the website.",
+      paywall: "Content is behind a paywall.",
+      blocked: "Access was blocked by the website."
+    }[error_category] || "An unexpected error occurred."
+  end
+
+  def broadcast_to_parents
+    containing_searches.find_each(&:broadcast_self)
   end
 
   private

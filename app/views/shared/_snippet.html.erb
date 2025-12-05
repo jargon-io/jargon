@@ -1,7 +1,7 @@
 <%# locals: (text:, source: nil, compact: false, current_item: nil) %>
 
 <% if text.present? %>
-  <div class="<%= compact ? 'text-base p-3 mt-4 border-l-3' : 'text-lg p-4 mb-6 border-l-4' %> accent-border accent-bg text-body">
+  <div class="<%= compact ? 'text-base py-3 px-4 mt-4 border-l-3' : 'text-lg py-4 px-5 mb-6 border-l-4' %> accent-border accent-bg text-body clear-both">
     <%= render_content(text, current_item: current_item) %>
     <% if source.present? %>
       <div class="mt-4 text-base leading-tight">

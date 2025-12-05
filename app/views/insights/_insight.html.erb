@@ -1,9 +1,8 @@
 <%# locals: (insight:, suppress_source: false, show_searches: false) %>
 
 <div id="<%= dom_id(insight) %>" class="border rounded-lg p-5 transition-colors <%= insight.failed? ? 'border-red-300 bg-red-50 dark:border-red-800 dark:bg-red-950' : 'border-default hover:border-strong space-y-3' %>">
-  <h2 class="text-xl font-semibold text-heading">
-    <%= link_to insight.title || "Untitled", insight %>
-  </h2>
+  <%= card_icon(insight) %>
+  <h2 class="text-xl font-semibold text-heading"><%= link_to insight.title || "Untitled", insight %></h2>
 
   <% if insight.body.present? %>
     <p class="text-body"><%= render_content(insight.body, current_item: insight) %></p>
@@ -15,9 +14,9 @@
              compact: true,
              current_item: insight %>
 
-  <% if show_searches && insight.searches.not_pending.any? %>
+  <% if show_searches && (visible_searches = insight.searches.select(&:complete?)).any? %>
     <div class="mt-5 space-y-2">
-      <% insight.searches.not_pending.each do |search| %>
+      <% visible_searches.each do |search| %>
         <%= render search %>
       <% end %>
     </div>

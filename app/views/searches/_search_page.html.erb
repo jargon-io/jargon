@@ -1,0 +1,62 @@
+<%# locals: (search:) %>
+
+<% result_articles = search.articles.includes(:insights, :children) %>
+<% result_insights = result_articles.flat_map(&:rolled_up_insights).uniq.first(6) %>
+<% related_items = search.find_related_items %>
+
+<div id="search_<%= search.id %>_page" class="w-full max-w-2xl mx-auto space-y-4">
+  <%= render "searches/search", search: search, hero: true %>
+
+  <% if search.pending? %>
+    <%= render "shared/loading_placeholder", message: "Generating query..." %>
+  <% else %>
+    <div id="search_summary">
+      <% if search.summary.present? %>
+        <%= render "searches/summary", search: search %>
+      <% else %>
+        <%= render "shared/loading_placeholder", message: "Gathering insights..." %>
+      <% end %>
+    </div>
+
+    <% if search.source %>
+      <%= render "shared/section_heading", title: "Source" %>
+      <%= render "shared/item", item: search.source %>
+    <% end %>
+
+    <%= render "shared/section_heading", title: "Results" %>
+    <div id="search_results" class="space-y-4">
+      <% result_articles.each do |article| %>
+        <%= render "articles/article", article: article %>
+      <% end %>
+      <% if search.searching? && result_articles.empty? %>
+        <%= render "shared/loading_placeholder", message: "Searching..." %>
+      <% elsif search.complete? && result_articles.empty? %>
+        <p class="text-muted">No results found.</p>
+      <% end %>
+    </div>
+
+    <% if search.complete? && result_insights.any? %>
+      <div class="mt-4">
+        <%= render "shared/expandable_list", items: result_insights, limit: 0, label: "Show insights", id: "search_#{search.id}_insights", turbo_permanent: true do |insight| %>
+          <%= render insight, suppress_source: true %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <%= render "shared/section_heading", title: "Explore" %>
+    <div id="search_explore">
+      <% if search.complete? %>
+        <%= render "searches/explore", source: search, searches: search.searches %>
+      <% else %>
+        <%= render "shared/loading_placeholder", message: "Gathering insights..." %>
+      <% end %>
+    </div>
+
+    <% if related_items.any? %>
+      <%= render "shared/section_heading", title: "Related" %>
+      <%= render "shared/expandable_list", items: related_items do |item| %>
+        <%= render "shared/item", item: item %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

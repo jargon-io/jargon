@@ -1,8 +1,6 @@
 <% content_for(:title) { "Jargon" } %>
 <% content_for(:hide_header, true) if @items.empty? %>
 
-<%= turbo_stream_from "articles" %>
-
 <% if @items.empty? %>
   <div class="w-full max-w-2xl mx-auto flex flex-col items-center justify-center min-h-[60vh]">
     <div class="text-center mb-8">

@@ -1,0 +1,34 @@
+<%# locals: (items:, limit: 2, label: "Show {count} more", id: nil, turbo_permanent: false) %>
+
+<% if limit == 0 %>
+  <%# Fully collapsed - everything behind toggle %>
+  <details id="<%= id %>" <%= "data-turbo-permanent" if turbo_permanent %> class="group">
+    <summary class="text-sm text-link cursor-pointer text-right">
+      <span class="pl-1"><%= label.sub("{count}", items.size.to_s) %></span>
+    </summary>
+    <div class="space-y-4 mt-4">
+      <% items.each do |item| %>
+        <%= yield item %>
+      <% end %>
+    </div>
+  </details>
+<% else %>
+  <%# Show first N, rest behind toggle %>
+  <div class="space-y-4">
+    <% items.first(limit).each do |item| %>
+      <%= yield item %>
+    <% end %>
+    <% if items.size > limit %>
+      <details class="group">
+        <summary class="text-sm text-link cursor-pointer text-right">
+          <span class="pl-1"><%= label.sub("{count}", (items.size - limit).to_s) %></span>
+        </summary>
+        <div class="space-y-4 mt-4">
+          <% items.drop(limit).each do |item| %>
+            <%= yield item %>
+          <% end %>
+        </div>
+      </details>
+    <% end %>
+  </div>
+<% end %>

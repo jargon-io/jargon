@@ -20,34 +20,24 @@ class QueriesController < ApplicationController
   end
 
   def find_or_create_search(query)
-    if (pending = find_pending_search(query))
-      pending.generate_search_query_and_embedding!
-      pending.update!(status: :searching)
-      SearchJob.perform_later(pending)
+    source = find_source
+
+    if (pending = Search.pending.find_by(query:, source:))
       return pending
     end
 
-    search = Search.create!(
-      query:,
-      source: find_source,
-      status: :searching
-    )
-    search.generate_search_query_and_embedding!
-    SearchJob.perform_later(search)
-
-    search
-  end
-
-  def find_pending_search(query)
-    source = find_source
-    return nil unless source
-
-    Search.pending.find_by(query:, source:)
+    Search.create!(query:, source:).tap do |search|
+      SearchJob.perform_later(search)
+    end
   end
 
   def find_source
-    return nil unless params[:source_type].in?(%w[Article Insight Search])
+    klass = case params[:source_type]
+            when "Article" then Article
+            when "Insight" then Insight
+            when "Search" then Search
+            end
 
-    params[:source_type].constantize.find_by(id: params[:source_id])
+    klass&.find_by(id: params[:source_id])
   end
 end

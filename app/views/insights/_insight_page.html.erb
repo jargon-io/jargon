@@ -1,0 +1,59 @@
+<%# locals: (insight:) %>
+
+<%
+  if insight.has_children?
+    source_articles = insight.children
+                             .includes(:article)
+                             .filter_map { |i| i.article&.parent || i.article }
+                             .uniq
+    exclude_items = [insight] + source_articles + insight.sibling_insights
+  else
+    source_articles = []
+    exclude_items = [insight, insight.article].compact + insight.sibling_insights
+  end
+
+  similar_items = SimilarItemsQuery.new(
+    embedding: insight.embedding,
+    limit: 8,
+    exclude: exclude_items
+  ).call
+%>
+
+<div id="insight_<%= insight.id %>_page" class="w-full max-w-2xl mx-auto space-y-4">
+  <div>
+    <%= page_icon(insight) %>
+    <h1 class="text-3xl font-bold text-heading"><%= insight.title %></h1>
+    <% if insight.body.present? %>
+      <p class="text-lg text-body leading-relaxed mt-2"><%= render_content(insight.body, current_item: insight) %></p>
+    <% end %>
+  </div>
+
+  <%= render "shared/snippet", text: insight.snippet, current_item: insight %>
+
+  <% if insight.has_children? && source_articles.present? %>
+    <%= render "shared/section_heading", title: "Sources" %>
+    <%= render "shared/expandable_list", items: source_articles do |article| %>
+      <%= render "articles/article", article: article %>
+    <% end %>
+  <% elsif insight.article.present? %>
+    <%= render "articles/article", article: insight.article %>
+  <% end %>
+
+  <%= render "shared/section_heading", title: "Explore", id: "insights" %>
+  <%= render "searches/explore", source: insight, searches: insight.searches %>
+
+  <% sibling_insights = insight.sibling_insights %>
+  <% if sibling_insights.any? %>
+    <%= render "shared/section_heading", title: "Siblings" %>
+    <%= render "shared/expandable_list", items: sibling_insights do |item| %>
+      <%= render "shared/item", item: item, suppress_source: true %>
+    <% end %>
+  <% end %>
+
+  <% if similar_items.any? %>
+    <%= render "shared/section_heading", title: "Related" %>
+    <%= render "shared/expandable_list", items: similar_items do |item| %>
+      <%= render "shared/item", item: item %>
+    <% end %>
+  <% end %>
+</div>

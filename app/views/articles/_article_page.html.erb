@@ -31,10 +31,12 @@
     </div>
   <% else %>
     <div class="space-y-4">
-      <%= page_icon(article) %>
-      <div class="space-y-1">
-        <h1 class="text-3xl font-bold text-heading"><%= article.title %></h1>
-        <%= render "shared/byline", author: article.author, date: article.published_at %>
+      <div class="flex items-start gap-2">
+        <%= page_icon(article) %>
+        <div class="space-y-1">
+          <h1 class="text-3xl font-bold text-heading"><%= article.title %></h1>
+          <%= render "shared/byline", author: article.author, date: article.published_at %>
+        </div>
       </div>
 
       <% if article.video? && (video_id = article.url&.match(YoutubeClient::URL_REGEX)&.[](1)) %>

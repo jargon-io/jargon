@@ -22,17 +22,19 @@
       </details>
     <% end %>
   <% else %>
+    <div class="flex items-start gap-2">
+      <%= card_icon(article) %>
+      <div class="space-y-1">
+        <h2 class="text-xl font-semibold text-heading"><%= link_to article.title.presence || "Untitled", article %></h2>
+        <%= render "shared/byline", author: article.author, date: article.published_at %>
+      </div>
+    </div>
+
     <% if article.image_url.present? %>
-      <div class="hidden md:block h-32 w-48 float-right ml-4 rounded-lg overflow-hidden bg-black/5 dark:bg-white/5">
+      <div class="hidden md:block h-32 w-48 float-right ml-4 rounded-lg overflow-hidden bg-black/5 dark:bg-white/5 mt-3">
         <%= image_tag article.image_url, class: "w-full h-full object-contain" %>
       </div>
     <% end %>
-
-    <%= card_icon(article) %>
-    <div class="space-y-1">
-      <h2 class="text-xl font-semibold text-heading"><%= link_to article.title.presence || "Untitled", article %></h2>
-      <%= render "shared/byline", author: article.author, date: article.published_at %>
-    </div>
 
     <% if article.summary.present? %>
       <p class="text-body mt-3"><%= render_content(article.summary, current_item: article) %></p>

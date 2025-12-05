@@ -1,7 +1,10 @@
 <%# locals: (insight:, suppress_source: false, show_searches: false) %>
 
-<div id="<%= dom_id(insight) %>" class="border rounded-lg p-5 transition-colors <%= insight.failed? ? 'border-red-300 bg-red-50 dark:border-red-800 dark:bg-red-950' : 'border-default hover:border-strong space-y-3' %>">
-  <%= card_icon(insight) %>
+<div id="<%= dom_id(insight) %>" class="border rounded-lg p-5 transition-colors <%= insight.failed? ? 'border-red-300 bg-red-50 dark:border-red-800 dark:bg-red-950' : 'border-default hover:border-strong space-y-2' %>">
+  <div class="float-left mr-2 mb-1">
+    <%= card_icon(insight) %>
+  </div>
+
   <h2 class="text-xl font-semibold text-heading"><%= link_to insight.title || "Untitled", insight %></h2>
 
   <% if insight.body.present? %>

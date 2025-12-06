@@ -25,11 +25,13 @@ RUN apt-get update -qq && \
       python3-venv && \
     ln -s /usr/lib/$(uname -m)-linux-gnu/libjemalloc.so.2 /usr/local/lib/libjemalloc.so && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
+ENV PLAYWRIGHT_BROWSERS_PATH="/opt/ms-playwright"
 
 # Install crawl4ai in a virtual environment
 RUN python3 -m venv /opt/crawl4ai && \
     /opt/crawl4ai/bin/pip install --no-cache-dir crawl4ai && \
-    /opt/crawl4ai/bin/crawl4ai-setup
+    PLAYWRIGHT_BROWSERS_PATH=$PLAYWRIGHT_BROWSERS_PATH /opt/crawl4ai/bin/crawl4ai-setup && \
+    chown -R 1000:1000 $PLAYWRIGHT_BROWSERS_PATH
 
 ENV PATH="/opt/crawl4ai/bin:$PATH"
 

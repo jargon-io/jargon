@@ -26,11 +26,14 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
+  # Allow disabling SSL assumptions for local Docker runs without TLS termination.
+  force_ssl_enabled = ActiveModel::Type::Boolean.new.cast(ENV.fetch("FORCE_SSL", "true"))
+
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
-  config.assume_ssl = true
+  config.assume_ssl = force_ssl_enabled
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  config.force_ssl = true
+  config.force_ssl = force_ssl_enabled
 
   # Skip http-to-https redirect for the default health check endpoint.
   # config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }

@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 # Configure allowed WebSocket origins for Action Cable / Async::Cable.
-allowed_origins = ENV["ACTION_CABLE_ALLOWED_ORIGINS"]
+allowed_origins = ENV.fetch("ACTION_CABLE_ALLOWED_ORIGINS", nil)
 
 Rails.application.config.action_cable.allowed_request_origins =
   if allowed_origins.present?

@@ -145,7 +145,7 @@ Create a `docker-compose.yml`:
 ```yaml
 services:
   jargon:
-    image: ghcr.io/schoblaska/jargon:latest
+    image: ghcr.io/jargon-io/jargon:latest
     ports:
       - "3000:80"
     env_file: .env

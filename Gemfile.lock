@@ -205,7 +205,7 @@ GEM
     hashdiff (1.2.1)
     htmlbeautifier (1.4.3)
     http-2 (1.1.1)
-    httpx (1.6.3)
+    httpx (1.7.0)
       http-2 (>= 1.0.0)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)

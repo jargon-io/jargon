@@ -138,7 +138,7 @@ GEM
     base64 (0.3.0)
     bigdecimal (3.3.1)
     bindex (0.8.1)
-    brakeman (7.1.1)
+    brakeman (7.1.2)
       racc
     builder (3.3.0)
     bullet (8.1.0)

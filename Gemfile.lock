@@ -190,11 +190,11 @@ GEM
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
-    faraday-multipart (1.1.1)
+    faraday-multipart (1.2.0)
       multipart-post (~> 2.0)
     faraday-net_http (3.4.2)
       net-http (~> 0.5)
-    faraday-retry (2.3.2)
+    faraday-retry (2.4.0)
       faraday (~> 2.0)
     fiber-annotation (0.2.0)
     fiber-local (1.1.0)
@@ -221,7 +221,7 @@ GEM
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    json (2.16.0)
+    json (2.18.0)
     json-schema (6.0.0)
       addressable (~> 2.8)
       bigdecimal (~> 3.1)
@@ -252,7 +252,7 @@ GEM
     multipart-post (2.4.1)
     neighbor (0.6.0)
       activerecord (>= 7.1)
-    net-http (0.8.0)
+    net-http (0.9.1)
       uri (>= 0.11.1)
     net-imap (0.5.12)
       date
@@ -420,7 +420,7 @@ GEM
       rbs (>= 3, < 5)
       sorbet-runtime (>= 0.5.10782)
     ruby-progressbar (1.13.0)
-    ruby_llm (1.9.1)
+    ruby_llm (1.9.2)
       base64
       event_stream_parser (~> 1)
       faraday (>= 1.10.0)
@@ -478,7 +478,7 @@ GEM
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    zeitwerk (2.7.3)
+    zeitwerk (2.7.4)
 
 PLATFORMS
   aarch64-linux
